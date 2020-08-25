@@ -137,10 +137,7 @@ export default class Fondue {
 								NAME_RECORD[record.platformID].language[
 									record.languageID
 								];
-							const value =
-								table.get && table.get(nameId)
-									? table.get(nameId).replace(/\x00/g, "") // eslint-disable-line no-control-regex
-									: "";
+							const value = this.name(nameId);
 							return {
 								id: nameId,
 								platformId,
@@ -277,19 +274,15 @@ export default class Fondue {
 		return this._font.supports(char);
 	}
 
-	// Returns the information about a pre-defined name table. The id can be a value between 0 and 25.
+	// Returns a name table entry by its nameID.
 	// Example:
-	//   fondue.name(0) -> returns the pre-defined copyright value of this font.
+	//   fondue.name(0) -> returns the copyright notice.
 	name(id) {
-		let i = id;
-		const value = this._font.opentype.tables.name;
-		if (typeof id === "undefined") {
-			return value;
-		} else if (typeof id === "string") {
-			i = NAME_TABLE.findIndex((record) => record.name === id);
+		const name = this._font.opentype.tables.name;
+		if (name) {
+			return name.get(id) || "";
+		} else {
+			return "";
 		}
-		return value.get && value.get(i)
-			? value.get(i).replace(/\x00/g, "") // eslint-disable-line no-control-regex
-			: ""; // WHY
 	}
 }
