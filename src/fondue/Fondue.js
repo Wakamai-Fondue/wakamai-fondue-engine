@@ -181,20 +181,8 @@ export default class Fondue {
 	// Usage:
 	//   fondue.tables
 	get tables() {
-		const tableList = [];
-		const table = this._raw();
-
-		for (let index = 0; index < TABLES.length; index++) {
-			const tableName = TABLES[index];
-			try {
-				if (table[tableName]) {
-					tableList.push(tableName);
-				}
-			} catch (error) {
-				console.warn(`Fondue could not find table ${tableName}.`);
-			}
-		}
-		return tableList.map((item) => {
+		const tables = Object.keys(this._raw());
+		return tables.map((item) => {
 			return {
 				name: item,
 				value: this.get(item),
