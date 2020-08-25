@@ -51,41 +51,6 @@ export const TABLES = [
 	"VVAR",
 ];
 
-export const AXES = {
-	wght: {
-		name: "Weight",
-		id: "wght",
-	},
-	wdth: {
-		name: "Width",
-		id: "wdth",
-	},
-	slnt: {
-		name: "Slant",
-		id: "slnt",
-	},
-	opsz: {
-		name: "Optical Size",
-		id: "opsz",
-	},
-	ital: {
-		name: "Italics",
-		id: "ital",
-	},
-	GRAD: {
-		name: "Grade",
-		id: "GRAD",
-	},
-	SOFT: {
-		name: "Soften",
-		id: "SOFT",
-	},
-	WONK: {
-		name: "Wonk",
-		id: "WONK",
-	},
-};
-
 export const NAME_TABLE = [
 	{
 		id: 0,
