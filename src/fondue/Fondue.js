@@ -3,7 +3,6 @@ import {
 	NAME_RECORD,
 	TABLES,
 	CMAP_RECORD,
-	AXES,
 } from "../tools/variables.js";
 import getCSS, { getCSSAsJSON } from "../tools/css/get-css.js";
 import layoutFeature from "../tools/features/layout-features.js";
@@ -107,10 +106,12 @@ export default class Fondue {
 										instance.coordinates[index];
 								});
 								return {
-									...AXES[axis],
+									name: this.name(axisRaw.axisNameID),
+									id: axisRaw.tag,
 									min: axisRaw.minValue,
 									max: axisRaw.maxValue,
 									default: axisRaw.defaultValue,
+									current: axisRaw.defaultValue,
 								};
 							});
 						return { axes, instances };

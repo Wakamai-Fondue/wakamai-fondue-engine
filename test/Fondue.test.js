@@ -107,3 +107,30 @@ describe("isColor", () => {
 		expect(fondue.isColor).toBe(false);
 	});
 });
+
+describe("hasAxes", () => {
+	test("variable font axes", async () => {
+		const fondue = await variableFont();
+		expect(fondue.variables.axes).toEqual(
+			expect.arrayContaining([
+				expect.objectContaining({
+					id: "wght",
+				}),
+			])
+		);
+	});
+
+	test("variable font instances", async () => {
+		const fondue = await variableFont();
+		expect(fondue.variables.instances).toEqual(
+			expect.objectContaining({
+				ExtraLight: { wght: 200 },
+			})
+		);
+	});
+
+	test("nonvariable font", async () => {
+		const fondue = await ttfFont();
+		expect(fondue.variables).toBeUndefined();
+	});
+});
