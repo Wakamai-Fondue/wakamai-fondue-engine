@@ -130,3 +130,12 @@ describe("hasAxes", () => {
 		expect(fondue.variable).toBeUndefined();
 	});
 });
+
+describe("chars", () => {
+	test("supports char", async () => {
+		const fondue = await ttfFont();
+		expect(fondue.supportedCharacters).toEqual(
+			expect.arrayContaining(["41"]) // 0x41 = letter Z
+		);
+	});
+});
