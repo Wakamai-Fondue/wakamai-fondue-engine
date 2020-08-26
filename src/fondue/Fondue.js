@@ -281,10 +281,10 @@ export default class Fondue {
 				// as a supprted character
 				// https://github.com/Pomax/Font.js/issues/68
 				if (i == 65535) continue;
-				chars.push(i);
+				chars.push(i.toString(16));
 			}
 		}
-		return cmap;
+		return chars;
 	}
 
 	// Return the "best" unicode cmap dictionary available in the font,
