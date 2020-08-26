@@ -40,9 +40,7 @@ describe("The loaded font", () => {
 		const fondue = await loadFondue(
 			"./third_party/font.js/fonts/SourceCodeVariable-Roman.ttf"
 		);
-		expect(fondue.name("Copyright notice")).toContain(
-			"Adobe Systems Incorporated"
-		);
+		expect(fondue.name(1)).toContain("Source Code Variable");
 	});
 
 	test("returns empty data from an empty name table.", async () => {
