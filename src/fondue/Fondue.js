@@ -41,7 +41,7 @@ export default class Fondue {
 							summary: this.summary,
 							features: this.features,
 							color: undefined,
-							variables: this.variables,
+							variable: this.variable,
 							tables: this.tables,
 							characters: undefined,
 							css: this.css,
@@ -213,10 +213,10 @@ export default class Fondue {
 		return featureResult;
 	}
 
-	// Gets all information about the font variables.
+	// Gets all information about the font's variable features.
 	// Usage:
-	//   fondue.variables
-	get variables() {
+	//   fondue.variable
+	get variable() {
 		const fvar = this.get("fvar");
 		return fvar;
 	}
