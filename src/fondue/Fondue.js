@@ -20,7 +20,7 @@ export default class Fondue {
 
 	get isColor() {
 		const tables = this._font.opentype.directory.map((d) => d.tag);
-		return ["COLR", "sbix", "CBDT", "SVG"].some((table) =>
+		return ["COLR", "sbix", "CBDT", "SVG "].some((table) =>
 			tables.includes(table)
 		);
 	}
