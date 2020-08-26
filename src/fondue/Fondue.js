@@ -269,4 +269,47 @@ export default class Fondue {
 			return "";
 		}
 	}
+
+	// Returns an array of all supported Unicode characters
+	// from the "best" cmap.
+	get supportedCharacters() {
+		const cmap = this.getBestCmap();
+		const chars = [];
+		for (const chunk of cmap) {
+			for (let i = chunk.start; i < chunk.end + 1; i++) {
+				// Skip 0xFFFF, Font.js currently reports this
+				// as a supprted character
+				// https://github.com/Pomax/Font.js/issues/68
+				if (i == 65535) continue;
+				chars.push(i);
+			}
+		}
+		return cmap;
+	}
+
+	// Return the "best" unicode cmap dictionary available in the font,
+	// or false, if no unicode cmap subtable is available.
+	// Implementation of the awesome FontTools getBestCmap function.
+	getBestCmap() {
+		const cmapPreferences = [
+			[3, 10],
+			[0, 6],
+			[0, 4],
+			[3, 1],
+			[0, 3],
+			[0, 2],
+			[0, 1],
+			[0, 0],
+		];
+		for (const [platformID, platEncID] of cmapPreferences) {
+			const cmapSubtable = this._font.opentype.tables.cmap.getSupportedCharCodes(
+				platformID,
+				platEncID
+			);
+			if (cmapSubtable) {
+				return cmapSubtable;
+			}
+		}
+		return false;
+	}
 }
