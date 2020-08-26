@@ -1,9 +1,4 @@
-import {
-	NAME_TABLE,
-	NAME_RECORD,
-	TABLES,
-	CMAP_RECORD,
-} from "../tools/variables.js";
+import { NAME_TABLE, NAME_RECORD, CMAP_RECORD } from "../tools/variables.js";
 import getCSS, { getCSSAsJSON } from "../tools/css/get-css.js";
 import layoutFeature from "../tools/features/layout-features.js";
 import getFormat from "../tools/summary/format.js";
@@ -25,7 +20,7 @@ export default class Fondue {
 
 	get isColor() {
 		const tables = this._font.opentype.directory.map((d) => d.tag);
-		return ["COLR", "sbix", "CBDT", "SVG"].some((table) =>
+		return ["COLR", "sbix", "CBDT", "SVG "].some((table) =>
 			tables.includes(table)
 		);
 	}
@@ -46,7 +41,7 @@ export default class Fondue {
 							summary: this.summary,
 							features: this.features,
 							color: undefined,
-							variables: this.variables,
+							variable: this.variable,
 							tables: this.tables,
 							characters: undefined,
 							css: this.css,
@@ -179,20 +174,8 @@ export default class Fondue {
 	// Usage:
 	//   fondue.tables
 	get tables() {
-		const tableList = [];
-		const table = this._raw();
-
-		for (let index = 0; index < TABLES.length; index++) {
-			const tableName = TABLES[index];
-			try {
-				if (table[tableName]) {
-					tableList.push(tableName);
-				}
-			} catch (error) {
-				console.warn(`Fondue could not find table ${tableName}.`);
-			}
-		}
-		return tableList.map((item) => {
+		const tables = Object.keys(this._raw());
+		return tables.map((item) => {
 			return {
 				name: item,
 				value: this.get(item),
@@ -230,10 +213,10 @@ export default class Fondue {
 		return featureResult;
 	}
 
-	// Gets all information about the font variables.
+	// Gets all information about the font's variable features.
 	// Usage:
-	//   fondue.variables
-	get variables() {
+	//   fondue.variable
+	get variable() {
 		const fvar = this.get("fvar");
 		return fvar;
 	}

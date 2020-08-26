@@ -7,9 +7,7 @@ const otfFont = async () => {
 };
 
 const ttfFont = async () => {
-	return await loadFondue(
-		"./third_party/font.js/fonts/SourceCodePro-Regular.ttf"
-	);
+	return await loadFondue("./test/fixtures/letterA/letterA.ttf");
 };
 
 const variableFont = async () => {
@@ -109,7 +107,7 @@ describe("isColor", () => {
 describe("hasAxes", () => {
 	test("variable font axes", async () => {
 		const fondue = await variableFont();
-		expect(fondue.variables.axes).toEqual(
+		expect(fondue.variable.axes).toEqual(
 			expect.arrayContaining([
 				expect.objectContaining({
 					id: "wght",
@@ -120,7 +118,7 @@ describe("hasAxes", () => {
 
 	test("variable font instances", async () => {
 		const fondue = await variableFont();
-		expect(fondue.variables.instances).toEqual(
+		expect(fondue.variable.instances).toEqual(
 			expect.objectContaining({
 				ExtraLight: { wght: 200 },
 			})
@@ -129,6 +127,6 @@ describe("hasAxes", () => {
 
 	test("nonvariable font", async () => {
 		const fondue = await ttfFont();
-		expect(fondue.variables).toBeUndefined();
+		expect(fondue.variable).toBeUndefined();
 	});
 });
