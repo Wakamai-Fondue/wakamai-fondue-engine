@@ -273,7 +273,7 @@ export default class Fondue {
 	// Returns an array of all supported Unicode characters
 	// from the "best" cmap.
 	get supportedCharacters() {
-		const chars = [];
+		let chars = [];
 		const cmap = this.getBestCmap();
 		if (cmap) {
 			for (const chunk of cmap) {
