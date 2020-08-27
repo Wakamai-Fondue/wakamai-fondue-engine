@@ -273,15 +273,17 @@ export default class Fondue {
 	// Returns an array of all supported Unicode characters
 	// from the "best" cmap.
 	get supportedCharacters() {
-		const cmap = this.getBestCmap();
 		const chars = [];
-		for (const chunk of cmap) {
-			for (let i = chunk.start; i < chunk.end + 1; i++) {
-				// Skip 0xFFFF, Font.js currently reports this
-				// as a supprted character
-				// https://github.com/Pomax/Font.js/issues/68
-				if (i == 65535) continue;
-				chars.push(i.toString(16));
+		const cmap = this.getBestCmap();
+		if (cmap) {
+			for (const chunk of cmap) {
+				for (let i = chunk.start; i < chunk.end + 1; i++) {
+					// Skip 0xFFFF, Font.js currently reports this
+					// as a supprted character
+					// https://github.com/Pomax/Font.js/issues/68
+					if (i == 65535) continue;
+					chars.push(i.toString(16));
+				}
 			}
 		}
 		return chars;
@@ -310,6 +312,6 @@ export default class Fondue {
 				return cmapSubtable;
 			}
 		}
-		return false;
+		return null;
 	}
 }
