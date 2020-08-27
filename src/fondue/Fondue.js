@@ -236,14 +236,14 @@ export default class Fondue {
 	//   fondue.summary
 	get summary() {
 		const summary = {};
+		summary.Filename = getFilename(this);
+		summary.Filesize = getFileSize(this);
+		summary.Format = getFormat(this);
 		this.get("name").forEach((record) => {
 			if (record.value && record.predefined) {
 				summary[record.predefined.name] = record.value;
 			}
 		});
-		summary.Filename = getFilename(this);
-		summary.Format = getFormat(this);
-		summary.Size = getFileSize(this);
 		return summary;
 	}
 
