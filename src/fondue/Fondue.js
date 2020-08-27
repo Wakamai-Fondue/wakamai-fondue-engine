@@ -221,6 +221,16 @@ export default class Fondue {
 		return fvar;
 	}
 
+	// Return all color format tables.
+	// Usage:
+	//   fondue.colorFormats -> return e.g. ["SVG "] or empty array
+	get colorFormats() {
+		// const tables = Object.keys(this._raw()); // Why doesn't this work??
+		const tables = this._font.opentype.directory.map((d) => d.tag);
+		const colorTables = ["COLR", "sbix", "CBDT", "SVG "];
+		return tables.filter((table) => colorTables.includes(table));
+	}
+
 	// Gets all information about the font summary.
 	// Usage:
 	//   fondue.summary
