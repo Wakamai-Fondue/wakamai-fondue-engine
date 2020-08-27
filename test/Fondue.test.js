@@ -104,6 +104,18 @@ describe("isColor", () => {
 	});
 });
 
+describe("hasColorTable", () => {
+	test("color font", async () => {
+		const fondue = await colorFont();
+		expect(fondue.colorFormats).toContain("COLR");
+	});
+
+	test("non color font", async () => {
+		const fondue = await ttfFont();
+		expect(fondue.colorFormats).toStrictEqual([]);
+	});
+});
+
 describe("hasAxes", () => {
 	test("variable font axes", async () => {
 		const fondue = await variableFont();
