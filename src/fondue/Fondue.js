@@ -188,28 +188,33 @@ export default class Fondue {
 	// Usage:
 	//   fondue.features
 	get features() {
+		const featureResult = {};
 		const result = this._raw("GSUB");
 		const featuresRaw = result;
-		const features = result.featureList.featureRecords.map(
-			(record) => record.featureTag
-		);
-		const scripts = result.scriptList.scriptRecords.map(
-			(record) => record.scriptTag
-		);
-		// features = features.filter((feature, index) => features.indexOf(feature) === index); // remove doubles
-		const featureResult = {};
-		features.forEach((feature, index) => {
-			if (!featureResult[feature]) {
-				featureResult[feature] = {
-					...layoutFeature[feature],
-					scripts: {},
+
+		if (result) {
+			const features = result.featureList.featureRecords.map(
+				(record) => record.featureTag
+			);
+			const scripts = result.scriptList.scriptRecords.map(
+				(record) => record.scriptTag
+			);
+			// features = features.filter((feature, index) => features.indexOf(feature) === index); // remove doubles
+			features.forEach((feature, index) => {
+				if (!featureResult[feature]) {
+					featureResult[feature] = {
+						...layoutFeature[feature],
+						scripts: {},
+					};
+				}
+				featureResult[feature].scripts[
+					scripts[index % scripts.length]
+				] = {
+					id: scripts[index % scripts.length],
+					_raw: result.getLookups(featuresRaw.getFeature(index)), // .map(lookup => lookup.getSubTables())
 				};
-			}
-			featureResult[feature].scripts[scripts[index % scripts.length]] = {
-				id: scripts[index % scripts.length],
-				_raw: result.getLookups(featuresRaw.getFeature(index)), // .map(lookup => lookup.getSubTables())
-			};
-		});
+			});
+		}
 		return featureResult;
 	}
 
