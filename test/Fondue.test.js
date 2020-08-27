@@ -130,3 +130,19 @@ describe("hasAxes", () => {
 		expect(fondue.variable).toBeUndefined();
 	});
 });
+
+describe("supportedCharacters", () => {
+	test("returns characters of best cmap", async () => {
+		const fondue = await ttfFont();
+		expect(fondue.supportedCharacters).toEqual(
+			expect.arrayContaining(["41"]) // 0x41 = letter Z
+		);
+	});
+
+	test("does not return non-unicode char", async () => {
+		const fondue = await ttfFont();
+		expect(fondue.supportedCharacters).not.toEqual(
+			expect.arrayContaining(["ffff"]) // 0x41 = letter Z
+		);
+	});
+});
