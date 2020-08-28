@@ -19,10 +19,7 @@ export default class Fondue {
 	}
 
 	get isColor() {
-		const tables = this._font.opentype.directory.map((d) => d.tag);
-		return ["COLR", "sbix", "CBDT", "SVG "].some((table) =>
-			tables.includes(table)
-		);
+		return this.colorFormats.length >= 1;
 	}
 
 	// Gets all information about a table.
@@ -188,28 +185,33 @@ export default class Fondue {
 	// Usage:
 	//   fondue.features
 	get features() {
+		const featureResult = {};
 		const result = this._raw("GSUB");
 		const featuresRaw = result;
-		const features = result.featureList.featureRecords.map(
-			(record) => record.featureTag
-		);
-		const scripts = result.scriptList.scriptRecords.map(
-			(record) => record.scriptTag
-		);
-		// features = features.filter((feature, index) => features.indexOf(feature) === index); // remove doubles
-		const featureResult = {};
-		features.forEach((feature, index) => {
-			if (!featureResult[feature]) {
-				featureResult[feature] = {
-					...layoutFeature[feature],
-					scripts: {},
+
+		if (result) {
+			const features = result.featureList.featureRecords.map(
+				(record) => record.featureTag
+			);
+			const scripts = result.scriptList.scriptRecords.map(
+				(record) => record.scriptTag
+			);
+			// features = features.filter((feature, index) => features.indexOf(feature) === index); // remove doubles
+			features.forEach((feature, index) => {
+				if (!featureResult[feature]) {
+					featureResult[feature] = {
+						...layoutFeature[feature],
+						scripts: {},
+					};
+				}
+				featureResult[feature].scripts[
+					scripts[index % scripts.length]
+				] = {
+					id: scripts[index % scripts.length],
+					_raw: result.getLookups(featuresRaw.getFeature(index)), // .map(lookup => lookup.getSubTables())
 				};
-			}
-			featureResult[feature].scripts[scripts[index % scripts.length]] = {
-				id: scripts[index % scripts.length],
-				_raw: result.getLookups(featuresRaw.getFeature(index)), // .map(lookup => lookup.getSubTables())
-			};
-		});
+			});
+		}
 		return featureResult;
 	}
 
@@ -221,19 +223,28 @@ export default class Fondue {
 		return fvar;
 	}
 
+	// Return all color format tables.
+	// Usage:
+	//   fondue.colorFormats -> return e.g. ["SVG "] or empty array
+	get colorFormats() {
+		const colorTables = ["COLR", "sbix", "CBDT", "SVG"];
+		const tables = this._font.opentype.directory.map((d) => d.tag.trim());
+		return tables.filter((table) => colorTables.includes(table));
+	}
+
 	// Gets all information about the font summary.
 	// Usage:
 	//   fondue.summary
 	get summary() {
 		const summary = {};
+		summary.Filename = getFilename(this);
+		summary.Filesize = getFileSize(this);
+		summary.Format = getFormat(this);
 		this.get("name").forEach((record) => {
 			if (record.value && record.predefined) {
 				summary[record.predefined.name] = record.value;
 			}
 		});
-		summary.Filename = getFilename(this);
-		summary.Format = getFormat(this);
-		summary.Size = getFileSize(this);
 		return summary;
 	}
 
