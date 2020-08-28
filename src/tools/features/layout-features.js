@@ -1,7 +1,7 @@
 // OpenType Layout Features
 //
 // Based on "Enabling Typography: towards a general model of
-// OpenType Layout" by John Hudson, Tiro Typoworks
+// OpenType Layout" by John Hudson, Tiro Typeworks
 //
 // Features appear in recommended processing and font order
 //
