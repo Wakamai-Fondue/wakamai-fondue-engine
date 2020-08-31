@@ -91,9 +91,9 @@ def main():
         languages = extractLanguages(content)
         languages = json.dumps(languages, indent=4, sort_keys=True)
 
-        languagesJS = "export const LANGUAGES = " + languages + ";"
+        languagesJS = "export default " + languages + ";"
 
-        with open("ot-to-html-lang.js", "a") as out:
+        with open("ot-to-html-lang.js", "w") as out:
             out.write(languagesJS + "\n")
 
 
