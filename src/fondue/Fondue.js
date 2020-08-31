@@ -211,12 +211,17 @@ export default class Fondue {
 	// Gets all information about the font features.
 	// Usage:
 	//   fondue.features
+	// TODO: numbered featured, eg. ss01 (defined as ss## in layout-features.js)
 	get features() {
 		const featureResult = {};
 		const result = this._raw("GSUB");
 		const featuresRaw = result;
 
 		if (result) {
+			// This loops over all features, regardless of script/lang
+			// So it's fine when used to create a list of "all" features
+			// but not when you want to display *which* features are
+			// in the font for a specific script/language!
 			const features = result.featureList.featureRecords.map(
 				(record) => record.featureTag
 			);
@@ -240,6 +245,53 @@ export default class Fondue {
 			});
 		}
 		return featureResult;
+	}
+
+	// WIP!!! New implementation of features
+	get newFeatures() {
+		const GSUB = this._font.opentype.tables.GSUB;
+		const scripts = GSUB.getSupportedScripts();
+
+		// We want these top-down:
+		//
+		// - script
+		//   - language1
+		//     - ["tnum", "liga"]
+		//   - language2
+		//     - ["tnum", "liga"]
+		//
+		// Example:
+		//
+		// - DFLT
+		//   - DefaultLangSys
+		//     - ["tnum", "liga"]
+		// - latn
+		//   - DefaultLangSys
+		//     - ["tnum", "liga"]
+		//   - ROM
+		//     - ["tnum", "liga"]
+		//   - CAT
+		//     - ["tnum", "liga"]
+
+		for (const script of scripts) {
+			// TODO: Get features for DFLT
+			// https://github.com/Pomax/Font.js/issues/72
+			const scriptTable = GSUB.getScriptTable(script);
+			const languages = GSUB.getSupportedLangSys(scriptTable);
+			if (languages.length) {
+				for (const language of languages) {
+					const langSys = GSUB.getLangSysTable(scriptTable, language);
+					const features = GSUB.getFeatures(langSys);
+					console.log(
+						language,
+						features.map((d) => d.featureTag.trim())
+					);
+				}
+			}
+		}
+
+		// TODO: return all features per script/language
+		return;
 	}
 
 	// Gets all information about the font's variable features.
