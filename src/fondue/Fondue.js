@@ -29,10 +29,10 @@ export default class Fondue {
 		const getLangs = (table) => {
 			return table
 				.getSupportedScripts()
-				.flatMap((script) => {
+				.reduce((acc, script) => {
 					const scriptTable = table.getScriptTable(script);
-					return table.getSupportedLangSys(scriptTable);
-				})
+					return acc.concat(table.getSupportedLangSys(scriptTable));
+				}, [])
 				.map((lang) => lang.trim());
 		};
 
