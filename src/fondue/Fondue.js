@@ -27,20 +27,13 @@ export default class Fondue {
 	// either GSUB or GPOS. Tags are stripped ("ROM " → "ROM").
 	get languageSystems() {
 		const getLangs = (table) => {
-			let langs = [];
-			if (table) {
-				const scripts = table.getSupportedScripts();
-				for (const script of scripts) {
+			return table
+				.getSupportedScripts()
+				.flatMap((script) => {
 					const scriptTable = table.getScriptTable(script);
-					const LangSyses = table.getSupportedLangSys(scriptTable);
-					if (LangSyses.length) {
-						for (const LangSys of LangSyses) {
-							langs.push(LangSys.trim());
-						}
-					}
-				}
-			}
-			return langs;
+					return table.getSupportedLangSys(scriptTable);
+				})
+				.map((lang) => lang.trim());
 		};
 
 		const gsubLangs = getLangs(this._font.opentype.tables.GSUB);
