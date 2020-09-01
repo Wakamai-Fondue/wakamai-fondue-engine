@@ -1,7 +1,7 @@
 import { NAME_TABLE, NAME_RECORD, CMAP_RECORD } from "../tools/variables.js";
 import getCSS, { getCSSAsJSON } from "../tools/css/get-css.js";
 import layoutFeature from "../tools/features/layout-features.js";
-import languages from "../tools/ot-to-html-lang.js";
+import languageMapping from "../tools/ot-to-html-lang.js";
 import getFormat from "../tools/summary/format.js";
 import getFileSize from "../tools/summary/file-size.js";
 import getFilename from "../tools/summary/filename.js";
@@ -32,10 +32,10 @@ export default class Fondue {
 				const scripts = table.getSupportedScripts();
 				for (const script of scripts) {
 					const scriptTable = table.getScriptTable(script);
-					const languages = table.getSupportedLangSys(scriptTable);
-					if (languages.length) {
-						for (const language of languages) {
-							langs.push(language.trim());
+					const LangSyses = table.getSupportedLangSys(scriptTable);
+					if (LangSyses.length) {
+						for (const LangSys of LangSyses) {
+							langs.push(LangSys.trim());
 						}
 					}
 				}
@@ -49,8 +49,8 @@ export default class Fondue {
 
 		let langSys = {};
 		for (const lang of allLangs) {
-			if (languages[lang]) {
-				langSys[lang] = languages[lang];
+			if (languageMapping[lang]) {
+				langSys[lang] = languageMapping[lang];
 			}
 		}
 		return langSys;
