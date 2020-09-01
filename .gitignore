@@ -119,3 +119,6 @@ dist
 _ignore/
 
 lib/index.js
+
+# External data
+tools/hb-ot-tag-table.hh

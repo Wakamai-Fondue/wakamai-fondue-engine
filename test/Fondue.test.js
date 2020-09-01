@@ -158,3 +158,14 @@ describe("supportedCharacters", () => {
 		);
 	});
 });
+
+describe("supportedLanguages", () => {
+	test("returns supported languages", async () => {
+		const fondue = await variableFont();
+		expect(fondue.languageSystems).toEqual(
+			expect.objectContaining({
+				ATH: { html: "ath", name: "Athapascan" },
+			})
+		);
+	});
+});

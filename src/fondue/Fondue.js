@@ -1,6 +1,7 @@
 import { NAME_TABLE, NAME_RECORD, CMAP_RECORD } from "../tools/variables.js";
 import getCSS, { getCSSAsJSON } from "../tools/css/get-css.js";
 import layoutFeature from "../tools/features/layout-features.js";
+import languageMapping from "../tools/ot-to-html-lang.js";
 import getFormat from "../tools/summary/format.js";
 import getFileSize from "../tools/summary/file-size.js";
 import getFilename from "../tools/summary/filename.js";
@@ -20,6 +21,32 @@ export default class Fondue {
 
 	get isColor() {
 		return this.colorFormats.length >= 1;
+	}
+
+	// Return an object of all language systems supported by
+	// either GSUB or GPOS. Tags are stripped ("ROM " → "ROM").
+	get languageSystems() {
+		const getLangs = (table) => {
+			return table
+				.getSupportedScripts()
+				.reduce((acc, script) => {
+					const scriptTable = table.getScriptTable(script);
+					return acc.concat(table.getSupportedLangSys(scriptTable));
+				}, [])
+				.map((lang) => lang.trim());
+		};
+
+		const gsubLangs = getLangs(this._font.opentype.tables.GSUB);
+		const gposLangs = getLangs(this._font.opentype.tables.GPOS);
+		const allLangs = new Set([...gsubLangs, ...gposLangs]);
+
+		let langSys = {};
+		for (const lang of allLangs) {
+			if (languageMapping[lang]) {
+				langSys[lang] = languageMapping[lang];
+			}
+		}
+		return langSys;
 	}
 
 	// Gets all information about a table.
