@@ -1,6 +1,6 @@
 import { NAME_TABLE, NAME_RECORD, CMAP_RECORD } from "../tools/variables.js";
 import getCSS, { getCSSAsJSON } from "../tools/css/get-css.js";
-import layoutFeature from "../tools/features/layout-features.js";
+import layoutFeatureMapping from "../tools/features/layout-features.js";
 import languageMapping from "../tools/ot-to-html-lang.js";
 import getFormat from "../tools/summary/format.js";
 import getFileSize from "../tools/summary/file-size.js";
@@ -229,9 +229,17 @@ export default class Fondue {
 				(record) => record.scriptTag
 			);
 			features.forEach((feature, index) => {
+				// Translate e.g. cv64 to cv## so it can be found
+				// in the layoutFeatureMapping
+				let featureIndex = feature;
+				const featureInitial = featureIndex.substring(0, 2);
+				if (featureInitial == "ss" || featureInitial == "cv") {
+					featureIndex = `${featureInitial}##`;
+				}
+
 				if (!featureResult[feature]) {
 					featureResult[feature] = {
-						...layoutFeature[feature],
+						...layoutFeatureMapping[featureIndex],
 						scripts: {},
 					};
 				}
