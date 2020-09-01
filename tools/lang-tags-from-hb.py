@@ -16,12 +16,12 @@ import sys
 import json
 
 
-def extractLanguages(content):
+def extract_languages(content):
     langdict = {}
 
     # Regular languages
-    langContent = content.split("ot_languages[] = {\n")[1].split("\n};")[0]
-    languages = langContent.split("\n")
+    lang_content = content.split("ot_languages[] = {\n")[1].split("\n};")[0]
+    languages = lang_content.split("\n")
 
     # This loop will encounter some languages more than once,
     # e.g. "ATH " or "TNE " and will overwrite them!
@@ -46,39 +46,39 @@ def extractLanguages(content):
         # Human readable name
         tmp = parts[1].split("->")
         if len(tmp) == 2:
-            langName = tmp[1].strip()
+            lang_name = tmp[1].strip()
         else:
-            langName = tmp[0].strip()
+            lang_name = tmp[0].strip()
 
         # BCP47 and OT tag
         tmp = parts[0].split(",")
-        langBCP = tmp[0].strip()
-        langOT = tmp[1].strip()
+        lang_bcp = tmp[0].strip()
+        lang_ot = tmp[1].strip()
 
-        langdict[langOT] = {"html": langBCP, "name": langName}
+        langdict[lang_ot] = {"html": lang_bcp, "name": lang_name}
 
     # Ambiguous languages
-    amLangContent = (
+    am_lang_content = (
         content.split("hb_ot_ambiguous_tag_to_language (hb_tag_t tag)")[1]
         .split("{\n")[2]
         .split("default")[0]
     )
-    amLanguages = amLangContent.replace("\n    ", "").split("\n")
+    am_languages = am_lang_content.replace("\n    ", "").split("\n")
 
     # This loop will replace ambiguous languages with the
     # "correct" ones, as deemed by the HarfBuzz project
-    for amLanguage in amLanguages:
-        if amLanguage.strip():
+    for am_language in am_languages:
+        if am_language.strip():
             # Clean up some noise
-            amLanguage = (
-                amLanguage.replace("case HB_TAG('", "").replace("','", "").strip()
+            am_language = (
+                am_language.replace("case HB_TAG('", "").replace("','", "").strip()
             )
 
-            amLangOT = amLanguage.split("'")[0].strip().strip()
-            amLangBCP = amLanguage.split('("')[1].split('"')[0].strip()
-            amLangName = amLanguage.split(";  /*")[1].split("*/")[0].strip()
+            am_lang_ot = am_language.split("'")[0].strip().strip()
+            am_lang_bcp = am_language.split('("')[1].split('"')[0].strip()
+            am_lang_name = am_language.split(";  /*")[1].split("*/")[0].strip()
 
-            langdict[amLangOT] = {"html": amLangBCP, "name": amLangName}
+            langdict[am_lang_ot] = {"html": am_lang_bcp, "name": am_lang_name}
 
     return langdict
 
@@ -88,13 +88,13 @@ def main():
         with open(sys.argv[1]) as f:
             content = f.read()
 
-        languages = extractLanguages(content)
+        languages = extract_languages(content)
         languages = json.dumps(languages, indent=4, sort_keys=True)
 
-        languagesJS = "export default " + languages + ";"
+        languages_js = "export default " + languages + ";"
 
         with open("ot-to-html-lang.js", "w") as out:
-            out.write(languagesJS + "\n")
+            out.write(languages_js + "\n")
 
 
 if __name__ == "__main__":
