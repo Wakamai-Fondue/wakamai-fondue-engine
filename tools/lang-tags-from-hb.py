@@ -2,7 +2,7 @@
 #
 # Author: Roel Nieskens (roel@pixelambacht.nl)
 #
-# Usage: ./lang-tags-from-hb.py hb-ot-tag-table.hh
+# Usage: ./lang-tags-from-hb.py hb-ot-tag-table.hh > ../src/tools/ot-to-html-lang.js
 #
 # File should be formatted as in this version:
 # https://github.com/harfbuzz/harfbuzz/blob/7a961692e9568806221de8b2e2bf41bdfc1b8b3f/src/hb-ot-tag-table.hh
@@ -95,8 +95,7 @@ def main():
 
         languages_js = "export default " + languages + ";"
 
-        with open("ot-to-html-lang.js", "w") as out:
-            out.write(languages_js + "\n")
+        print(languages_js)
 
 
 if __name__ == "__main__":
