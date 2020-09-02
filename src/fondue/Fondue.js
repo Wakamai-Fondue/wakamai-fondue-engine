@@ -211,24 +211,22 @@ export default class Fondue {
 	// Gets all information about the font features.
 	// Usage:
 	//   fondue.features
-	// TODO: numbered featured, eg. ss01 (defined as ss## in layout-features.js)
 	get features() {
-		const featureResult = {};
+		const features = {
+			fixed: {},
+			optional: {},
+		};
 		const result = this._raw("GSUB");
-		const featuresRaw = result;
 
 		if (result) {
 			// This loops over all features, regardless of script/lang
 			// So it's fine when used to create a list of "all" features
 			// but not when you want to display *which* features are
 			// in the font for a specific script/language!
-			const features = result.featureList.featureRecords.map(
+			const rawFeatures = result.featureList.featureRecords.map(
 				(record) => record.featureTag
 			);
-			const scripts = result.scriptList.scriptRecords.map(
-				(record) => record.scriptTag
-			);
-			features.forEach((feature, index) => {
+			rawFeatures.forEach((feature) => {
 				// Translate e.g. cv64 to cv## so it can be found
 				// in the layoutFeatureMapping
 				let featureIndex = feature;
@@ -236,22 +234,19 @@ export default class Fondue {
 				if (featureInitial == "ss" || featureInitial == "cv") {
 					featureIndex = `${featureInitial}##`;
 				}
-
-				if (!featureResult[feature]) {
-					featureResult[feature] = {
-						...layoutFeatureMapping[featureIndex],
-						scripts: {},
-					};
+				// Map fixed and on/off features to their own set
+				if (!features[feature]) {
+					if (layoutFeatureMapping[featureIndex].state === "fixed") {
+						features["fixed"][feature] =
+							layoutFeatureMapping[featureIndex];
+					} else {
+						features["optional"][feature] =
+							layoutFeatureMapping[featureIndex];
+					}
 				}
-				featureResult[feature].scripts[
-					scripts[index % scripts.length]
-				] = {
-					id: scripts[index % scripts.length],
-					_raw: result.getLookups(featuresRaw.getFeature(index)), // .map(lookup => lookup.getSubTables())
-				};
 			});
 		}
-		return featureResult;
+		return features;
 	}
 
 	// Gets all information about the font's variable features.
