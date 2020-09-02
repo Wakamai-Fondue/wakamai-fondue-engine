@@ -20,20 +20,37 @@ export default class Fondue {
 	}
 
 	get isColor() {
-		return this.colorFormats.length >= 1;
+		return this.colorFormats.length > 0;
+	}
+
+	get hasFeatures() {
+		return (
+			Object.keys(this.features.fixed).length > 0 ||
+			Object.keys(this.features.optional).length > 0
+		);
+	}
+
+	get hasLanguages() {
+		return Object.keys(this.languageSystems).length > 0;
 	}
 
 	// Return an object of all language systems supported by
 	// either GSUB or GPOS. Tags are stripped ("ROM " → "ROM").
 	get languageSystems() {
 		const getLangs = (table) => {
-			return table
-				.getSupportedScripts()
-				.reduce((acc, script) => {
-					const scriptTable = table.getScriptTable(script);
-					return acc.concat(table.getSupportedLangSys(scriptTable));
-				}, [])
-				.map((lang) => lang.trim());
+			if (table) {
+				return table
+					.getSupportedScripts()
+					.reduce((acc, script) => {
+						const scriptTable = table.getScriptTable(script);
+						return acc.concat(
+							table.getSupportedLangSys(scriptTable)
+						);
+					}, [])
+					.map((lang) => lang.trim());
+			} else {
+				return [];
+			}
 		};
 
 		const gsubLangs = getLangs(this._font.opentype.tables.GSUB);
@@ -209,6 +226,8 @@ export default class Fondue {
 	}
 
 	// Gets all information about the font features.
+	// TODO: if feature has a UI Name ID, return its name
+	//       https://github.com/Pomax/Font.js/issues/73
 	// Usage:
 	//   fondue.features
 	get features() {
@@ -221,11 +240,12 @@ export default class Fondue {
 			if (result) {
 				// This loops over all features, regardless of script/lang
 				// So it's fine when used to create a list of "all" features
-				// but not when you want to display *which* features are
-				// in the font for a specific script/language!
+				// but not when you want to display *which* features belong
+				// to a specific script/language. For now, this is okay.
 				const rawFeatures = result.featureList.featureRecords.map(
 					(record) => record.featureTag
 				);
+
 				rawFeatures.forEach((feature) => {
 					// Translate e.g. cv64 to cv## so it can be found
 					// in the featureMapping
