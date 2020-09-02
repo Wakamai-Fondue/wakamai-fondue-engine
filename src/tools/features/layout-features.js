@@ -908,7 +908,7 @@ const layoutFeatures = {
 		category: "Discretionary typographic presentation",
 	},
 	"ss##": {
-		name: "Stylistic Sets",
+		name: "Stylistic Set",
 		css: {
 			feature: 'font-feature-settings: "ss##"',
 			variant: null, // todo font-variant-alternates

@@ -1,6 +1,6 @@
 import { NAME_TABLE, NAME_RECORD, CMAP_RECORD } from "../tools/variables.js";
 import getCSS, { getCSSAsJSON } from "../tools/css/get-css.js";
-import layoutFeatureMapping from "../tools/features/layout-features.js";
+import featureMapping from "../tools/features/layout-features.js";
 import languageMapping from "../tools/ot-to-html-lang.js";
 import getFormat from "../tools/summary/format.js";
 import getFileSize from "../tools/summary/file-size.js";
@@ -216,36 +216,41 @@ export default class Fondue {
 			fixed: {},
 			optional: {},
 		};
-		const result = this._raw("GSUB");
 
-		if (result) {
-			// This loops over all features, regardless of script/lang
-			// So it's fine when used to create a list of "all" features
-			// but not when you want to display *which* features are
-			// in the font for a specific script/language!
-			const rawFeatures = result.featureList.featureRecords.map(
-				(record) => record.featureTag
-			);
-			rawFeatures.forEach((feature) => {
-				// Translate e.g. cv64 to cv## so it can be found
-				// in the layoutFeatureMapping
-				let featureIndex = feature;
-				const featureInitial = featureIndex.substring(0, 2);
-				if (featureInitial == "ss" || featureInitial == "cv") {
-					featureIndex = `${featureInitial}##`;
-				}
-				// Map fixed and on/off features to their own set
-				if (!features[feature]) {
-					if (layoutFeatureMapping[featureIndex].state === "fixed") {
-						features["fixed"][feature] =
-							layoutFeatureMapping[featureIndex];
-					} else {
-						features["optional"][feature] =
-							layoutFeatureMapping[featureIndex];
+		const getFeats = (result) => {
+			if (result) {
+				// This loops over all features, regardless of script/lang
+				// So it's fine when used to create a list of "all" features
+				// but not when you want to display *which* features are
+				// in the font for a specific script/language!
+				const rawFeatures = result.featureList.featureRecords.map(
+					(record) => record.featureTag
+				);
+				rawFeatures.forEach((feature) => {
+					// Translate e.g. cv64 to cv## so it can be found
+					// in the featureMapping
+					let featureIndex = feature;
+					const featureInitial = featureIndex.substring(0, 2);
+					if (featureInitial == "ss" || featureInitial == "cv") {
+						featureIndex = `${featureInitial}##`;
 					}
-				}
-			});
-		}
+					// Map fixed and on/off features to their own set
+					if (!features[feature]) {
+						if (featureMapping[featureIndex].state === "fixed") {
+							features["fixed"][feature] =
+								featureMapping[featureIndex];
+						} else {
+							features["optional"][feature] =
+								featureMapping[featureIndex];
+						}
+					}
+				});
+			}
+		};
+
+		getFeats(this._raw("GSUB"));
+		getFeats(this._raw("GPOS"));
+
 		return features;
 	}
 
