@@ -384,4 +384,8 @@ export default class Fondue {
 		}
 		return null;
 	}
+
+	get customText() {
+		return this._font.opentype.tables.name.get(19) || false;
+	}
 }
