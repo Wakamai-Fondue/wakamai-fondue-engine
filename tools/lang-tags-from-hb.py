@@ -48,16 +48,18 @@ def extract_languages(content):
         # Human readable name
         tmp = parts[1].split("->")
         if len(tmp) == 2:
-            lang_name = tmp[1].strip()
+            lang_name = tmp[1]
         else:
-            lang_name = tmp[0].strip()
+            lang_name = tmp[0]
+        lang_name = lang_name.replace("[macrolanguage]", "").strip()
 
         # BCP47 and OT tag
         tmp = parts[0].split(",")
         lang_bcp = tmp[0].strip()
         lang_ot = tmp[1].strip()
 
-        langdict[lang_ot] = {"html": lang_bcp, "name": lang_name}
+        if not lang_ot in langdict:
+            langdict[lang_ot] = {"html": lang_bcp, "name": lang_name}
 
     # Ambiguous languages
     am_lang_content = (
