@@ -228,8 +228,12 @@ export default class Fondue {
 	// Usage:
 	//   fondue.features
 	get features() {
-		const getRawFeatures = (table) =>
-			table.featureList.featureRecords.map((record) => record.featureTag);
+		const getRawFeatures = (table) => {
+			if (!table) return [];
+			return table.featureList.featureRecords.map(
+				(record) => record.featureTag
+			);
+		};
 
 		const getFeatureIndex = (rawFeature) => {
 			const featureInitial = rawFeature.substring(0, 2);

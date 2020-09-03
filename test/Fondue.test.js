@@ -146,12 +146,12 @@ describe("hasAxes", () => {
 describe("hasFeatures", () => {
 	test("has layout features", async () => {
 		const fondue = await variableFont();
-		expect(fondue.features.fixed.ccmp).toBeDefined();
+		expect(fondue.features.find((f) => f.tag == "ccmp")).toBeDefined();
 	});
 
 	test("has no layout features", async () => {
 		const fondue = await ttfFont();
-		expect(fondue.features.fixed).toEqual({});
+		expect(fondue.features).toEqual([]);
 	});
 });
 
