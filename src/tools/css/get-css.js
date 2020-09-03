@@ -1,5 +1,5 @@
 import slugify from "./slugify.js";
-import layoutFeatures from "../features/layout-features.js";
+import featureMapping from "../features/layout-features.js";
 import CssJson from "./css-json.js";
 
 // Get indexed version, e.g. ss03 → ss##
@@ -9,8 +9,12 @@ const getFeatureIndex = (feature) => {
 
 // Return CSS with custom CSS properties
 const getFeatureCSS = (feature, name) => {
-	const indexedFeature = getFeatureIndex(feature);
-	const featureCSS = layoutFeatures[indexedFeature].css;
+	const featureIndex = getFeatureIndex(feature);
+	const featureData = {
+		...featureMapping.find((f) => f.tag == featureIndex),
+	};
+	const featureCSS = featureData.css;
+
 	let css = "";
 	// We can't take the variable out, or to auto/default or
 	// something, so set it to a non-existing feature
@@ -105,8 +109,11 @@ const getCSS = (fondue) => {
 		let cssvardecs = "";
 
 		for (const feature of features) {
-			const indexedFeature = getFeatureIndex(feature);
-			const defaultState = layoutFeatures[indexedFeature].state;
+			const featureIndex = getFeatureIndex(feature);
+			const featureData = {
+				...featureMapping.find((f) => f.tag == featureIndex),
+			};
+			const defaultState = featureData.state;
 
 			if (defaultState !== "off") {
 				continue;
