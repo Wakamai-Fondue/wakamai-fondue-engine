@@ -24,10 +24,7 @@ export default class Fondue {
 	}
 
 	get hasFeatures() {
-		return (
-			Object.keys(this.features.fixed).length > 0 ||
-			Object.keys(this.features.optional).length > 0
-		);
+		return this.features.length > 0;
 	}
 
 	get hasLanguages() {
@@ -231,10 +228,7 @@ export default class Fondue {
 	// Usage:
 	//   fondue.features
 	get features() {
-		const features = {
-			fixed: {},
-			optional: {},
-		};
+		const features = [];
 
 		const getFeats = (result) => {
 			if (result) {
@@ -249,20 +243,14 @@ export default class Fondue {
 				rawFeatures.forEach((feature) => {
 					// Translate e.g. cv64 to cv## so it can be found
 					// in the featureMapping
-					let featureIndex = feature;
-					const featureInitial = featureIndex.substring(0, 2);
+					let featureTag = feature;
+					const featureInitial = featureTag.substring(0, 2);
 					if (featureInitial == "ss" || featureInitial == "cv") {
-						featureIndex = `${featureInitial}##`;
+						featureTag = `${featureInitial}##`;
 					}
-					// Map fixed and on/off features to their own set
-					if (!features[feature]) {
-						if (featureMapping[featureIndex].state === "fixed") {
-							features["fixed"][feature] =
-								featureMapping[featureIndex];
-						} else {
-							features["optional"][feature] =
-								featureMapping[featureIndex];
-						}
+					const feat = featureMapping.find((f) => f.tag == feature);
+					if (feat) {
+						features.push(feat);
 					}
 				});
 			}
