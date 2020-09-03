@@ -228,38 +228,33 @@ export default class Fondue {
 	// Usage:
 	//   fondue.features
 	get features() {
-		const features = [];
+		const getRawFeatures = (table) =>
+			table.featureList.featureRecords.map((record) => record.featureTag);
 
-		const getFeats = (result) => {
-			if (result) {
-				// This loops over all features, regardless of script/lang
-				// So it's fine when used to create a list of "all" features
-				// but not when you want to display *which* features belong
-				// to a specific script/language. For now, this is okay.
-				const rawFeatures = result.featureList.featureRecords.map(
-					(record) => record.featureTag
-				);
-
-				rawFeatures.forEach((feature) => {
-					// Translate e.g. cv64 to cv## so it can be found
-					// in the featureMapping
-					let featureTag = feature;
-					const featureInitial = featureTag.substring(0, 2);
-					if (featureInitial == "ss" || featureInitial == "cv") {
-						featureTag = `${featureInitial}##`;
-					}
-					const feat = featureMapping.find((f) => f.tag == feature);
-					if (feat) {
-						features.push(feat);
-					}
-				});
+		const getFeatureIndex = (rawFeature) => {
+			const featureInitial = rawFeature.substring(0, 2);
+			if (featureInitial == "ss" || featureInitial == "cv") {
+				return `${featureInitial}##`;
+			} else {
+				return rawFeature;
 			}
 		};
 
-		getFeats(this._raw("GSUB"));
-		getFeats(this._raw("GPOS"));
+		const rawFeatures = new Set([
+			...getRawFeatures(this._raw("GSUB")),
+			...getRawFeatures(this._raw("GPOS")),
+		]);
 
-		return features;
+		return [...rawFeatures].reduce((features, rawFeature) => {
+			const featureIndex = getFeatureIndex(rawFeature);
+			const feature = featureMapping.find((f) => f.tag == featureIndex);
+			if (feature) {
+				// Restore original tag in case of enumerated tag (ss## or cv##)
+				// feature.tag = rawFeature;
+				features.push(feature);
+			}
+			return features;
+		}, []);
 	}
 
 	// Gets all information about the font's variable features.
