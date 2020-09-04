@@ -391,8 +391,7 @@ export default class Fondue {
 		// https://github.com/Pomax/Font.js/issues/74
 		return (
 			/* eslint-disable no-control-regex */
-			this._font.opentype.tables.name.get(19).replace(/\x00/g, "") ||
-			false
+			this._font.opentype.tables.name.get(19).replace(/\x00/g, "") || null
 		);
 	}
 }
