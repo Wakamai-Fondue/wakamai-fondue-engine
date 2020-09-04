@@ -386,6 +386,13 @@ export default class Fondue {
 	}
 
 	get customText() {
-		return this._font.opentype.tables.name.get(19) || false;
+		// Currently Font.js returns null bytes in name table strings,
+		// we filter them here.
+		// https://github.com/Pomax/Font.js/issues/74
+		return (
+			/* eslint-disable no-control-regex */
+			this._font.opentype.tables.name.get(19).replace(/\x00/g, "") ||
+			false
+		);
 	}
 }
