@@ -5,13 +5,17 @@
 //
 // Features appear in recommended processing and font order
 //
+// Note that numbered features like ss01 and cv01 are noted
+// with a "##" wildcard: ss## and cv##
+//
 // Regarding state:
 // fixed: on by default, cannot be turned off
 // on:    on by default, can be turned off
 // off:   off by default, can be turned on
 
-const layoutFeatures = {
-	locl: {
+const layoutFeatures = [
+	{
+		tag: "locl",
 		name: "Localized Forms",
 		css: {
 			feature: 'font-feature-settings: "locl"',
@@ -20,7 +24,8 @@ const layoutFeatures = {
 		state: "fixed",
 		category: "Default glyph pre-processing",
 	},
-	rvrn: {
+	{
+		tag: "rvrn",
 		name: "Required Variation Alternates",
 		css: {
 			feature: 'font-feature-settings: "rvrn"',
@@ -31,7 +36,8 @@ const layoutFeatures = {
 		state: "fixed",
 		category: "Default glyph pre-processing",
 	},
-	hngl: {
+	{
+		tag: "hngl",
 		name: "Hangul",
 		css: {
 			feature: 'font-feature-settings: "hngl"',
@@ -41,7 +47,8 @@ const layoutFeatures = {
 		state: "fixed",
 		category: "Default glyph pre-processing",
 	},
-	hojo: {
+	{
+		tag: "hojo",
 		name: "Hojo Kanji Forms (JIS X 0212-1990 Kanji Forms)",
 		css: {
 			feature: 'font-feature-settings: "hojo"',
@@ -51,7 +58,8 @@ const layoutFeatures = {
 		state: "fixed",
 		category: "Default glyph pre-processing",
 	},
-	jp04: {
+	{
+		tag: "jp04",
 		name: "JIS2004 Forms",
 		css: {
 			feature: 'font-feature-settings: "jp04"',
@@ -61,7 +69,8 @@ const layoutFeatures = {
 		state: "fixed",
 		category: "Default glyph pre-processing",
 	},
-	jp78: {
+	{
+		tag: "jp78",
 		name: "JIS78 Forms",
 		css: {
 			feature: 'font-feature-settings: "jp78"',
@@ -71,7 +80,8 @@ const layoutFeatures = {
 		state: "fixed",
 		category: "Default glyph pre-processing",
 	},
-	jp83: {
+	{
+		tag: "jp83",
 		name: "JIS83 Forms",
 		css: {
 			feature: 'font-feature-settings: "jp83"',
@@ -81,7 +91,8 @@ const layoutFeatures = {
 		state: "fixed",
 		category: "Default glyph pre-processing",
 	},
-	jp90: {
+	{
+		tag: "jp90",
 		name: "JIS90 Forms",
 		css: {
 			feature: 'font-feature-settings: "jp90"',
@@ -91,7 +102,8 @@ const layoutFeatures = {
 		state: "fixed",
 		category: "Default glyph pre-processing",
 	},
-	nlck: {
+	{
+		tag: "nlck",
 		name: "NLC Kanji Forms",
 		css: {
 			feature: 'font-feature-settings: "nlck"',
@@ -101,7 +113,8 @@ const layoutFeatures = {
 		state: "fixed",
 		category: "Default glyph pre-processing",
 	},
-	smpl: {
+	{
+		tag: "smpl",
 		name: "Simplified Forms",
 		css: {
 			feature: 'font-feature-settings: "smpl"',
@@ -110,7 +123,8 @@ const layoutFeatures = {
 		state: "fixed",
 		category: "Default glyph pre-processing",
 	},
-	tnam: {
+	{
+		tag: "tnam",
 		name: "Traditional Name Forms",
 		css: {
 			feature: 'font-feature-settings: "tnam"',
@@ -120,7 +134,8 @@ const layoutFeatures = {
 		state: "fixed",
 		category: "Default glyph pre-processing",
 	},
-	trad: {
+	{
+		tag: "trad",
 		name: "Traditional Forms",
 		css: {
 			feature: 'font-feature-settings: "trad"',
@@ -129,7 +144,8 @@ const layoutFeatures = {
 		state: "fixed",
 		category: "Default glyph pre-processing",
 	},
-	ltrm: {
+	{
+		tag: "ltrm",
 		name: "Left-to-right mirrored forms",
 		css: {
 			feature: 'font-feature-settings: "ltrm"',
@@ -138,7 +154,8 @@ const layoutFeatures = {
 		state: "fixed",
 		category: "Default glyph pre-processing",
 	},
-	ltra: {
+	{
+		tag: "ltra",
 		name: "Left-to-right alternates",
 		css: {
 			feature: 'font-feature-settings: "ltra"',
@@ -147,7 +164,8 @@ const layoutFeatures = {
 		state: "fixed",
 		category: "Default glyph pre-processing",
 	},
-	rtlm: {
+	{
+		tag: "rtlm",
 		name: "Right-to-left mirrored forms",
 		css: {
 			feature: 'font-feature-settings: "rtlm"',
@@ -156,7 +174,8 @@ const layoutFeatures = {
 		state: "fixed",
 		category: "Default glyph pre-processing",
 	},
-	rtla: {
+	{
+		tag: "rtla",
 		name: "Right-to-left alternates",
 		css: {
 			feature: 'font-feature-settings: "rtla"',
@@ -165,7 +184,8 @@ const layoutFeatures = {
 		state: "fixed",
 		category: "Default glyph pre-processing",
 	},
-	ccmp: {
+	{
+		tag: "ccmp",
 		name: "Glyph Composition / Decomposition",
 		css: {
 			feature: 'font-feature-settings: "ccmp"',
@@ -174,7 +194,8 @@ const layoutFeatures = {
 		state: "fixed",
 		category: "Default glyph pre-processing",
 	},
-	stch: {
+	{
+		tag: "stch",
 		name: "Stretching Glyph Decomposition",
 		css: {
 			feature: 'font-feature-settings: "stch"',
@@ -183,7 +204,8 @@ const layoutFeatures = {
 		state: "fixed",
 		category: "Default glyph pre-processing",
 	},
-	nukt: {
+	{
+		tag: "nukt",
 		name: "Nukta Forms",
 		css: {
 			feature: 'font-feature-settings: "nukt"',
@@ -193,7 +215,8 @@ const layoutFeatures = {
 		state: "fixed",
 		category: "Default glyph pre-processing",
 	},
-	akhn: {
+	{
+		tag: "akhn",
 		name: "Akhands",
 		css: {
 			feature: 'font-feature-settings: "akhn"',
@@ -203,7 +226,8 @@ const layoutFeatures = {
 		state: "fixed",
 		category: "Default glyph pre-processing",
 	},
-	rphf: {
+	{
+		tag: "rphf",
 		name: "Reph Forms",
 		css: {
 			feature: 'font-feature-settings: "rphf"',
@@ -213,7 +237,8 @@ const layoutFeatures = {
 		state: "fixed",
 		category: "Orthographic unit shaping",
 	},
-	pref: {
+	{
+		tag: "pref",
 		name: "Pre-Base forms,",
 		css: {
 			feature: 'font-feature-settings: "pref"',
@@ -223,7 +248,8 @@ const layoutFeatures = {
 		state: "fixed",
 		category: "Orthographic unit shaping",
 	},
-	rkrf: {
+	{
+		tag: "rkrf",
 		name: "Rakar Forms",
 		css: {
 			feature: 'font-feature-settings: "rkrf"',
@@ -233,7 +259,8 @@ const layoutFeatures = {
 		state: "fixed",
 		category: "Orthographic unit shaping",
 	},
-	abvf: {
+	{
+		tag: "abvf",
 		name: "Above-base Forms",
 		css: {
 			feature: 'font-feature-settings: "abvf"',
@@ -243,7 +270,8 @@ const layoutFeatures = {
 		state: "fixed",
 		category: "Orthographic unit shaping",
 	},
-	blwf: {
+	{
+		tag: "blwf",
 		name: "Below-base Forms",
 		css: {
 			feature: 'font-feature-settings: "blwf"',
@@ -253,7 +281,8 @@ const layoutFeatures = {
 		state: "fixed",
 		category: "Orthographic unit shaping",
 	},
-	half: {
+	{
+		tag: "half",
 		name: "Half Forms",
 		css: {
 			feature: 'font-feature-settings: "half"',
@@ -263,7 +292,8 @@ const layoutFeatures = {
 		state: "fixed",
 		category: "Orthographic unit shaping",
 	},
-	pstf: {
+	{
+		tag: "pstf",
 		name: "Post-base Forms",
 		css: {
 			feature: 'font-feature-settings: "pstf"',
@@ -273,7 +303,8 @@ const layoutFeatures = {
 		state: "fixed",
 		category: "Orthographic unit shaping",
 	},
-	vatu: {
+	{
+		tag: "vatu",
 		name: "Vattu Variants",
 		css: {
 			feature: 'font-feature-settings: "vatu"',
@@ -284,7 +315,8 @@ const layoutFeatures = {
 		state: "fixed",
 		category: "Orthographic unit shaping",
 	},
-	cfar: {
+	{
+		tag: "cfar",
 		name: "Conjunct Form After Ro",
 		css: {
 			feature: 'font-feature-settings: "cfar"',
@@ -294,7 +326,8 @@ const layoutFeatures = {
 		state: "fixed",
 		category: "Orthographic unit shaping",
 	},
-	cjct: {
+	{
+		tag: "cjct",
 		name: "Conjunct Forms",
 		css: {
 			feature: 'font-feature-settings: "cjct"',
@@ -304,7 +337,8 @@ const layoutFeatures = {
 		state: "fixed",
 		category: "Orthographic unit shaping",
 	},
-	med2: {
+	{
+		tag: "med2",
 		name: "Medial Forms 2",
 		css: {
 			feature: 'font-feature-settings: "med2"',
@@ -315,7 +349,8 @@ const layoutFeatures = {
 		state: "fixed",
 		category: "Orthographic unit shaping",
 	},
-	fin2: {
+	{
+		tag: "fin2",
 		name: "Terminal Forms 2",
 		css: {
 			feature: 'font-feature-settings: "fin2"',
@@ -326,7 +361,8 @@ const layoutFeatures = {
 		state: "fixed",
 		category: "Orthographic unit shaping",
 	},
-	fin3: {
+	{
+		tag: "fin3",
 		name: "Terminal Forms 3",
 		css: {
 			feature: 'font-feature-settings: "fin3"',
@@ -337,7 +373,8 @@ const layoutFeatures = {
 		state: "fixed",
 		category: "Orthographic unit shaping",
 	},
-	ljmo: {
+	{
+		tag: "ljmo",
 		name: "Leading Jamo Forms",
 		css: {
 			feature: 'font-feature-settings: "ljmo"',
@@ -347,7 +384,8 @@ const layoutFeatures = {
 		state: "fixed",
 		category: "Orthographic unit shaping",
 	},
-	vjmo: {
+	{
+		tag: "vjmo",
 		name: "Vowel Jamo Forms",
 		css: {
 			feature: 'font-feature-settings: "vjmo"',
@@ -357,7 +395,8 @@ const layoutFeatures = {
 		state: "fixed",
 		category: "Orthographic unit shaping",
 	},
-	tjmo: {
+	{
+		tag: "tjmo",
 		name: "Trailing Jamo Forms",
 		css: {
 			feature: 'font-feature-settings: "tjmo"',
@@ -367,7 +406,8 @@ const layoutFeatures = {
 		state: "fixed",
 		category: "Orthographic unit shaping",
 	},
-	abvs: {
+	{
+		tag: "abvs",
 		name: "Above-base Substitutions",
 		css: {
 			feature: 'font-feature-settings: "abvs"',
@@ -376,7 +416,8 @@ const layoutFeatures = {
 		state: "fixed",
 		category: "Standard typographic presentation",
 	},
-	blws: {
+	{
+		tag: "blws",
 		name: "Below-base Substitutions",
 		css: {
 			feature: 'font-feature-settings: "blws"',
@@ -385,7 +426,8 @@ const layoutFeatures = {
 		state: "fixed",
 		category: "Standard typographic presentation",
 	},
-	calt: {
+	{
+		tag: "calt",
 		name: "Contextual Alternates",
 		css: {
 			feature: 'font-feature-settings: "calt"',
@@ -394,7 +436,8 @@ const layoutFeatures = {
 		state: "on",
 		category: "Standard typographic presentation",
 	},
-	clig: {
+	{
+		tag: "clig",
 		name: "Contextual Ligatures",
 		css: {
 			feature: 'font-feature-settings: "clig"',
@@ -403,7 +446,8 @@ const layoutFeatures = {
 		state: "on",
 		category: "Standard typographic presentation",
 	},
-	fina: {
+	{
+		tag: "fina",
 		name: "Terminal Forms",
 		css: {
 			feature: 'font-feature-settings: "fina"',
@@ -414,7 +458,8 @@ const layoutFeatures = {
 		state: "fixed",
 		category: "Standard typographic presentation",
 	},
-	haln: {
+	{
+		tag: "haln",
 		name: "Halant Forms",
 		css: {
 			feature: 'font-feature-settings: "haln"',
@@ -423,7 +468,8 @@ const layoutFeatures = {
 		state: "fixed",
 		category: "Standard typographic presentation",
 	},
-	init: {
+	{
+		tag: "init",
 		name: "Initial Forms",
 		css: {
 			feature: 'font-feature-settings: "init"',
@@ -434,7 +480,8 @@ const layoutFeatures = {
 		state: "fixed",
 		category: "Standard typographic presentation",
 	},
-	isol: {
+	{
+		tag: "isol",
 		name: "Isolated Forms",
 		css: {
 			feature: 'font-feature-settings: "isol"',
@@ -445,7 +492,8 @@ const layoutFeatures = {
 		state: "fixed",
 		category: "Standard typographic presentation",
 	},
-	jalt: {
+	{
+		tag: "jalt",
 		name: "Justification Alternates",
 		css: {
 			feature: 'font-feature-settings: "jalt"',
@@ -456,7 +504,8 @@ const layoutFeatures = {
 		state: "on",
 		category: "Standard typographic presentation",
 	},
-	liga: {
+	{
+		tag: "liga",
 		name: "Standard Ligatures",
 		css: {
 			feature: 'font-feature-settings: "liga"',
@@ -465,7 +514,8 @@ const layoutFeatures = {
 		state: "on",
 		category: "Standard typographic presentation",
 	},
-	medi: {
+	{
+		tag: "medi",
 		name: "Medial Forms",
 		css: {
 			feature: 'font-feature-settings: "medi"',
@@ -476,7 +526,8 @@ const layoutFeatures = {
 		state: "fixed",
 		category: "Standard typographic presentation",
 	},
-	mset: {
+	{
+		tag: "mset",
 		name: "Mark Positioning via Substitution",
 		css: {
 			feature: 'font-feature-settings: "mset"',
@@ -486,7 +537,8 @@ const layoutFeatures = {
 		state: "fixed",
 		category: "Standard typographic presentation",
 	},
-	pres: {
+	{
+		tag: "pres",
 		name: "Pre-base Substitutions",
 		css: {
 			feature: 'font-feature-settings: "pres"',
@@ -495,7 +547,8 @@ const layoutFeatures = {
 		state: "fixed",
 		category: "Standard typographic presentation",
 	},
-	psts: {
+	{
+		tag: "psts",
 		name: "Post-base Substitutions",
 		css: {
 			feature: 'font-feature-settings: "psts"',
@@ -504,7 +557,8 @@ const layoutFeatures = {
 		state: "fixed",
 		category: "Standard typographic presentation",
 	},
-	rand: {
+	{
+		tag: "rand",
 		name: "Randomize",
 		css: {
 			feature: 'font-feature-settings: "rand"',
@@ -513,7 +567,8 @@ const layoutFeatures = {
 		state: "on",
 		category: "Standard typographic presentation",
 	},
-	rclt: {
+	{
+		tag: "rclt",
 		name: "Required Contextual Forms",
 		css: {
 			feature: 'font-feature-settings: "rclt"',
@@ -522,7 +577,8 @@ const layoutFeatures = {
 		state: "fixed",
 		category: "Standard typographic presentation",
 	},
-	rlig: {
+	{
+		tag: "rlig",
 		name: "Required Ligatures",
 		css: {
 			feature: 'font-feature-settings: "rlig"',
@@ -531,7 +587,8 @@ const layoutFeatures = {
 		state: "fixed",
 		category: "Standard typographic presentation",
 	},
-	vert: {
+	{
+		tag: "vert",
 		name: "Vertical Writing",
 		css: {
 			feature: 'font-feature-settings: "vert"',
@@ -542,7 +599,8 @@ const layoutFeatures = {
 		state: "fixed",
 		category: "Standard typographic presentation",
 	},
-	vrt2: {
+	{
+		tag: "vrt2",
 		name: "Vertical Alternates and Rotation",
 		css: {
 			feature: 'font-feature-settings: "vrt2"',
@@ -552,7 +610,8 @@ const layoutFeatures = {
 		state: "fixed",
 		category: "Standard typographic presentation",
 	},
-	afrc: {
+	{
+		tag: "afrc",
 		name: "Alternative Fractions",
 		css: {
 			feature: 'font-feature-settings: "afrc"',
@@ -561,7 +620,8 @@ const layoutFeatures = {
 		state: "off",
 		category: "Discretionary typographic presentation",
 	},
-	c2pc: {
+	{
+		tag: "c2pc",
 		name: "Petite Capitals From Capitals",
 		css: {
 			feature: 'font-feature-settings: "c2pc"',
@@ -570,7 +630,8 @@ const layoutFeatures = {
 		state: "off",
 		category: "Discretionary typographic presentation",
 	},
-	c2sc: {
+	{
+		tag: "c2sc",
 		name: "Small Capitals From Capitals",
 		css: {
 			feature: 'font-feature-settings: "c2sc"',
@@ -579,7 +640,8 @@ const layoutFeatures = {
 		state: "off",
 		category: "Discretionary typographic presentation",
 	},
-	case: {
+	{
+		tag: "case",
 		name: "Case-Sensitive Forms",
 		css: {
 			feature: 'font-feature-settings: "case"',
@@ -590,7 +652,8 @@ const layoutFeatures = {
 		state: "off",
 		category: "Discretionary typographic presentation",
 	},
-	cpct: {
+	{
+		tag: "cpct",
 		name: "Centered CJK Punctuation Mostly CJKV fonts",
 		css: {
 			feature: 'font-feature-settings: "cpct"',
@@ -599,7 +662,8 @@ const layoutFeatures = {
 		state: "off",
 		category: "Discretionary typographic presentation",
 	},
-	cpsp: {
+	{
+		tag: "cpsp",
 		name: "Capital Spacing",
 		css: {
 			feature: 'font-feature-settings: "cpsp"',
@@ -610,7 +674,8 @@ const layoutFeatures = {
 		state: "off",
 		category: "Discretionary typographic presentation",
 	},
-	cswh: {
+	{
+		tag: "cswh",
 		name: "Contextual Swash",
 		css: {
 			feature: 'font-feature-settings: "cswh"',
@@ -620,7 +685,8 @@ const layoutFeatures = {
 		state: "off",
 		category: "Discretionary typographic presentation",
 	},
-	"cv##": {
+	{
+		tag: "cv##",
 		name: "Character Variants",
 		css: {
 			feature: 'font-feature-settings: "cv##"',
@@ -631,7 +697,8 @@ const layoutFeatures = {
 		state: "off",
 		category: "Discretionary typographic presentation",
 	},
-	dlig: {
+	{
+		tag: "dlig",
 		name: "Discretionary Ligatures",
 		css: {
 			feature: 'font-feature-settings: "dlig"',
@@ -640,7 +707,8 @@ const layoutFeatures = {
 		state: "off",
 		category: "Discretionary typographic presentation",
 	},
-	dnom: {
+	{
+		tag: "dnom",
 		name: "Denominators",
 		css: {
 			feature: 'font-feature-settings: "dnom"',
@@ -650,7 +718,8 @@ const layoutFeatures = {
 		state: "off",
 		category: "Discretionary typographic presentation",
 	},
-	expt: {
+	{
+		tag: "expt",
 		name: "Expert Forms Currently Japanese only",
 		css: {
 			feature: 'font-feature-settings: "expt"',
@@ -659,7 +728,8 @@ const layoutFeatures = {
 		state: "off",
 		category: "Discretionary typographic presentation",
 	},
-	falt: {
+	{
+		tag: "falt",
 		name: "Final Glyph on Line Alternates",
 		css: {
 			feature: 'font-feature-settings: "falt"',
@@ -670,7 +740,8 @@ const layoutFeatures = {
 		state: "off",
 		category: "Discretionary typographic presentation",
 	},
-	frac: {
+	{
+		tag: "frac",
 		name: "Fractions",
 		css: {
 			feature: 'font-feature-settings: "frac"',
@@ -681,7 +752,8 @@ const layoutFeatures = {
 		state: "off",
 		category: "Discretionary typographic presentation",
 	},
-	fwid: {
+	{
+		tag: "fwid",
 		name: "Full Widths Mostly CJKV fonts",
 		css: {
 			feature: 'font-feature-settings: "fwid"',
@@ -690,7 +762,8 @@ const layoutFeatures = {
 		state: "off",
 		category: "Discretionary typographic presentation",
 	},
-	halt: {
+	{
+		tag: "halt",
 		name: "Alternate Half Widths See also <vhal> positioning",
 		css: {
 			feature: 'font-feature-settings: "halt"',
@@ -699,7 +772,8 @@ const layoutFeatures = {
 		state: "off",
 		category: "Discretionary typographic presentation",
 	},
-	hist: {
+	{
+		tag: "hist",
 		name: "Historical Forms",
 		css: {
 			feature: 'font-feature-settings: "hist"',
@@ -708,7 +782,8 @@ const layoutFeatures = {
 		state: "off",
 		category: "Discretionary typographic presentation",
 	},
-	hkna: {
+	{
+		tag: "hkna",
 		name: "Horizontal Kana Alternates",
 		css: {
 			feature: 'font-feature-settings: "hkna"',
@@ -719,7 +794,8 @@ const layoutFeatures = {
 		state: "off",
 		category: "Discretionary typographic presentation",
 	},
-	hlig: {
+	{
+		tag: "hlig",
 		name: "Historical Ligatures",
 		css: {
 			feature: 'font-feature-settings: "hlig"',
@@ -729,7 +805,8 @@ const layoutFeatures = {
 		state: "off",
 		category: "Discretionary typographic presentation",
 	},
-	hwid: {
+	{
+		tag: "hwid",
 		name: "Half Widths",
 		css: {
 			feature: 'font-feature-settings: "hwid"',
@@ -738,7 +815,8 @@ const layoutFeatures = {
 		state: "off",
 		category: "Discretionary typographic presentation",
 	},
-	ital: {
+	{
+		tag: "ital",
 		name: "Italics",
 		css: {
 			feature: 'font-feature-settings: "ital"',
@@ -748,7 +826,8 @@ const layoutFeatures = {
 		state: "off",
 		category: "Discretionary typographic presentation",
 	},
-	lnum: {
+	{
+		tag: "lnum",
 		name: "Lining Figures",
 		css: {
 			feature: 'font-feature-settings: "lnum"',
@@ -757,7 +836,8 @@ const layoutFeatures = {
 		state: "off",
 		category: "Discretionary typographic presentation",
 	},
-	mgrk: {
+	{
+		tag: "mgrk",
 		name: "Mathematical Greek",
 		css: {
 			feature: 'font-feature-settings: "mgrk"',
@@ -766,7 +846,8 @@ const layoutFeatures = {
 		state: "off",
 		category: "Discretionary typographic presentation",
 	},
-	nalt: {
+	{
+		tag: "nalt",
 		name: "Alternate Annotation Forms",
 		css: {
 			feature: 'font-feature-settings: "nalt"',
@@ -775,7 +856,8 @@ const layoutFeatures = {
 		state: "off",
 		category: "Discretionary typographic presentation",
 	},
-	numr: {
+	{
+		tag: "numr",
 		name: "Numerators",
 		css: {
 			feature: 'font-feature-settings: "numr"',
@@ -785,7 +867,8 @@ const layoutFeatures = {
 		state: "off",
 		category: "Discretionary typographic presentation",
 	},
-	onum: {
+	{
+		tag: "onum",
 		name: "Oldstyle Figures",
 		css: {
 			feature: 'font-feature-settings: "onum"',
@@ -794,7 +877,8 @@ const layoutFeatures = {
 		state: "off",
 		category: "Discretionary typographic presentation",
 	},
-	ordn: {
+	{
+		tag: "ordn",
 		name: "Ordinals",
 		css: {
 			feature: 'font-feature-settings: "ordn"',
@@ -803,7 +887,8 @@ const layoutFeatures = {
 		state: "off",
 		category: "Discretionary typographic presentation",
 	},
-	ornm: {
+	{
+		tag: "ornm",
 		name: "Ornaments",
 		css: {
 			feature: 'font-feature-settings: "ornm"',
@@ -812,7 +897,8 @@ const layoutFeatures = {
 		state: "off",
 		category: "Discretionary typographic presentation",
 	},
-	palt: {
+	{
+		tag: "palt",
 		name: "Proportional Alternate Widths",
 		css: {
 			feature: 'font-feature-settings: "palt"',
@@ -822,7 +908,8 @@ const layoutFeatures = {
 		state: "off",
 		category: "Discretionary typographic presentation",
 	},
-	pcap: {
+	{
+		tag: "pcap",
 		name: "Petite Capitals",
 		css: {
 			feature: 'font-feature-settings: "pcap"',
@@ -831,7 +918,8 @@ const layoutFeatures = {
 		state: "off",
 		category: "Discretionary typographic presentation",
 	},
-	pkna: {
+	{
+		tag: "pkna",
 		name: "Proportional Kana",
 		css: {
 			feature: 'font-feature-settings: "pkna"',
@@ -841,7 +929,8 @@ const layoutFeatures = {
 		state: "off",
 		category: "Discretionary typographic presentation",
 	},
-	pnum: {
+	{
+		tag: "pnum",
 		name: "Proportional Figures",
 		css: {
 			feature: 'font-feature-settings: "pnum"',
@@ -850,7 +939,8 @@ const layoutFeatures = {
 		state: "off",
 		category: "Discretionary typographic presentation",
 	},
-	pwid: {
+	{
+		tag: "pwid",
 		name: "Proportional Widths",
 		css: {
 			feature: 'font-feature-settings: "pwid"',
@@ -860,7 +950,8 @@ const layoutFeatures = {
 		state: "off",
 		category: "Discretionary typographic presentation",
 	},
-	qwid: {
+	{
+		tag: "qwid",
 		name: "Quarter Widths",
 		css: {
 			feature: 'font-feature-settings: "qwid"',
@@ -870,7 +961,8 @@ const layoutFeatures = {
 		state: "off",
 		category: "Discretionary typographic presentation",
 	},
-	ruby: {
+	{
+		tag: "ruby",
 		name: "Ruby Notation Forms",
 		css: {
 			feature: 'font-feature-settings: "ruby"',
@@ -879,7 +971,8 @@ const layoutFeatures = {
 		state: "off",
 		category: "Discretionary typographic presentation",
 	},
-	salt: {
+	{
+		tag: "salt",
 		name: "Stylistic Alternates",
 		css: {
 			feature: 'font-feature-settings: "salt"',
@@ -888,7 +981,8 @@ const layoutFeatures = {
 		state: "off",
 		category: "Discretionary typographic presentation",
 	},
-	sinf: {
+	{
+		tag: "sinf",
 		name: "Scientific Inferiors",
 		css: {
 			feature: 'font-feature-settings: "sinf"',
@@ -898,7 +992,8 @@ const layoutFeatures = {
 		state: "off",
 		category: "Discretionary typographic presentation",
 	},
-	smcp: {
+	{
+		tag: "smcp",
 		name: "Small Capitals",
 		css: {
 			feature: 'font-feature-settings: "smcp"',
@@ -907,7 +1002,8 @@ const layoutFeatures = {
 		state: "off",
 		category: "Discretionary typographic presentation",
 	},
-	"ss##": {
+	{
+		tag: "ss##",
 		name: "Stylistic Set",
 		css: {
 			feature: 'font-feature-settings: "ss##"',
@@ -918,7 +1014,8 @@ const layoutFeatures = {
 		state: "off",
 		category: "Discretionary typographic presentation",
 	},
-	subs: {
+	{
+		tag: "subs",
 		name: "Subscript",
 		css: {
 			feature: 'font-feature-settings: "subs"',
@@ -927,7 +1024,8 @@ const layoutFeatures = {
 		state: "off",
 		category: "Discretionary typographic presentation",
 	},
-	sups: {
+	{
+		tag: "sups",
 		name: "Superscript",
 		css: {
 			feature: 'font-feature-settings: "sups"',
@@ -936,7 +1034,8 @@ const layoutFeatures = {
 		state: "off",
 		category: "Discretionary typographic presentation",
 	},
-	swsh: {
+	{
+		tag: "swsh",
 		name: "Swash",
 		css: {
 			feature: 'font-feature-settings: "swsh"',
@@ -945,7 +1044,8 @@ const layoutFeatures = {
 		state: "off",
 		category: "Discretionary typographic presentation",
 	},
-	titl: {
+	{
+		tag: "titl",
 		name: "Titling",
 		css: {
 			feature: 'font-feature-settings: "titl"',
@@ -954,7 +1054,8 @@ const layoutFeatures = {
 		state: "off",
 		category: "Discretionary typographic presentation",
 	},
-	tnum: {
+	{
+		tag: "tnum",
 		name: "Tabular Figures",
 		css: {
 			feature: 'font-feature-settings: "tnum"',
@@ -963,7 +1064,8 @@ const layoutFeatures = {
 		state: "off",
 		category: "Discretionary typographic presentation",
 	},
-	twid: {
+	{
+		tag: "twid",
 		name: "Third Widths",
 		css: {
 			feature: 'font-feature-settings: "twid"',
@@ -973,7 +1075,8 @@ const layoutFeatures = {
 		state: "off",
 		category: "Discretionary typographic presentation",
 	},
-	unic: {
+	{
+		tag: "unic",
 		name: "Unicase",
 		css: {
 			feature: 'font-feature-settings: "unic"',
@@ -982,7 +1085,8 @@ const layoutFeatures = {
 		state: "off",
 		category: "Discretionary typographic presentation",
 	},
-	vkna: {
+	{
+		tag: "vkna",
 		name: "Vertical Kana Alternates",
 		css: {
 			feature: 'font-feature-settings: "vkna"',
@@ -993,7 +1097,8 @@ const layoutFeatures = {
 		state: "off",
 		category: "Discretionary typographic presentation",
 	},
-	zero: {
+	{
+		tag: "zero",
 		name: "Slashed Zero",
 		css: {
 			feature: 'font-feature-settings: "zero"',
@@ -1002,7 +1107,8 @@ const layoutFeatures = {
 		state: "off",
 		category: "Discretionary typographic presentation",
 	},
-	opbd: {
+	{
+		tag: "opbd",
 		name: "Optical Bounds",
 		css: {
 			feature: 'font-feature-settings: "opbd"',
@@ -1013,7 +1119,8 @@ const layoutFeatures = {
 		state: "off",
 		category: "Positioning",
 	},
-	lfbd: {
+	{
+		tag: "lfbd",
 		name: "Left Bounds",
 		css: {
 			feature: 'font-feature-settings: "lfbd"',
@@ -1023,7 +1130,8 @@ const layoutFeatures = {
 		state: "off",
 		category: "Positioning",
 	},
-	rtbd: {
+	{
+		tag: "rtbd",
 		name: "Right Bounds",
 		css: {
 			feature: 'font-feature-settings: "rtbd"',
@@ -1033,7 +1141,8 @@ const layoutFeatures = {
 		state: "off",
 		category: "Positioning",
 	},
-	valt: {
+	{
+		tag: "valt",
 		name: "Alternate Vertical Metrics",
 		css: {
 			feature: 'font-feature-settings: "valt"',
@@ -1043,7 +1152,8 @@ const layoutFeatures = {
 		state: "fixed",
 		category: "Positioning",
 	},
-	vpal: {
+	{
+		tag: "vpal",
 		name: "Proportional Alternate Vertical Metrics",
 		css: {
 			feature: 'font-feature-settings: "vpal"',
@@ -1053,7 +1163,8 @@ const layoutFeatures = {
 		state: "off",
 		category: "Positioning",
 	},
-	vhal: {
+	{
+		tag: "vhal",
 		name: "Alternate Vertical Half Metrics",
 		css: {
 			feature: 'font-feature-settings: "vhal"',
@@ -1063,7 +1174,8 @@ const layoutFeatures = {
 		state: "off",
 		category: "Positioning",
 	},
-	curs: {
+	{
+		tag: "curs",
 		name: "Cursive Positioning",
 		css: {
 			feature: 'font-feature-settings: "curs"',
@@ -1072,7 +1184,8 @@ const layoutFeatures = {
 		state: "fixed",
 		category: "Positioning",
 	},
-	dist: {
+	{
+		tag: "dist",
 		name: "Distances",
 		css: {
 			feature: 'font-feature-settings: "dist"',
@@ -1082,7 +1195,8 @@ const layoutFeatures = {
 		state: "fixed",
 		category: "Positioning",
 	},
-	kern: {
+	{
+		tag: "kern",
 		name: "Kerning",
 		css: {
 			feature: 'font-feature-settings: "kern"',
@@ -1091,7 +1205,8 @@ const layoutFeatures = {
 		state: "on",
 		category: "Positioning",
 	},
-	vkrn: {
+	{
+		tag: "vkrn",
 		name: "Vertical Kerning",
 		css: {
 			feature: 'font-feature-settings: "vkrn"',
@@ -1101,7 +1216,8 @@ const layoutFeatures = {
 		state: "on",
 		category: "Positioning",
 	},
-	mark: {
+	{
+		tag: "mark",
 		name: "Mark Positioning",
 		css: {
 			feature: 'font-feature-settings: "mark"',
@@ -1110,7 +1226,8 @@ const layoutFeatures = {
 		state: "fixed",
 		category: "Positioning",
 	},
-	abvm: {
+	{
+		tag: "abvm",
 		name: "Above-base Mark Positioning",
 		css: {
 			feature: 'font-feature-settings: "abvm"',
@@ -1120,7 +1237,8 @@ const layoutFeatures = {
 		state: "fixed",
 		category: "Positioning",
 	},
-	blwm: {
+	{
+		tag: "blwm",
 		name: "Below-base Mark Positioning",
 		css: {
 			feature: 'font-feature-settings: "blwm"',
@@ -1130,7 +1248,8 @@ const layoutFeatures = {
 		state: "fixed",
 		category: "Positioning",
 	},
-	mkmk: {
+	{
+		tag: "mkmk",
 		name: "Mark to Mark Positioning",
 		css: {
 			feature: 'font-feature-settings: "mkmk"',
@@ -1141,7 +1260,8 @@ const layoutFeatures = {
 		state: "fixed",
 		category: "Positioning",
 	},
-	aalt: {
+	{
+		tag: "aalt",
 		name: "Access All Alternates",
 		css: {
 			feature: 'font-feature-settings: "aalt"',
@@ -1152,7 +1272,8 @@ const layoutFeatures = {
 		state: "off",
 		category: "Discretionary typographic presentation",
 	},
-	size: {
+	{
+		tag: "size",
 		name: "Optical Size",
 		css: {
 			feature: 'font-feature-settings: "size"',
@@ -1162,6 +1283,6 @@ const layoutFeatures = {
 		state: "off",
 		category: "Discretionary typographic presentation",
 	},
-};
+];
 
 export default layoutFeatures;

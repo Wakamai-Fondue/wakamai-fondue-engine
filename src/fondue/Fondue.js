@@ -24,10 +24,7 @@ export default class Fondue {
 	}
 
 	get hasFeatures() {
-		return (
-			Object.keys(this.features.fixed).length > 0 ||
-			Object.keys(this.features.optional).length > 0
-		);
+		return this.features.length > 0;
 	}
 
 	get hasLanguages() {
@@ -231,47 +228,39 @@ export default class Fondue {
 	// Usage:
 	//   fondue.features
 	get features() {
-		const features = {
-			fixed: {},
-			optional: {},
+		const getRawFeatures = (table) => {
+			if (!table) return [];
+			return table.featureList.featureRecords.map(
+				(record) => record.featureTag
+			);
 		};
 
-		const getFeats = (result) => {
-			if (result) {
-				// This loops over all features, regardless of script/lang
-				// So it's fine when used to create a list of "all" features
-				// but not when you want to display *which* features belong
-				// to a specific script/language. For now, this is okay.
-				const rawFeatures = result.featureList.featureRecords.map(
-					(record) => record.featureTag
-				);
-
-				rawFeatures.forEach((feature) => {
-					// Translate e.g. cv64 to cv## so it can be found
-					// in the featureMapping
-					let featureIndex = feature;
-					const featureInitial = featureIndex.substring(0, 2);
-					if (featureInitial == "ss" || featureInitial == "cv") {
-						featureIndex = `${featureInitial}##`;
-					}
-					// Map fixed and on/off features to their own set
-					if (!features[feature]) {
-						if (featureMapping[featureIndex].state === "fixed") {
-							features["fixed"][feature] =
-								featureMapping[featureIndex];
-						} else {
-							features["optional"][feature] =
-								featureMapping[featureIndex];
-						}
-					}
-				});
+		const getFeatureIndex = (rawFeature) => {
+			const featureInitial = rawFeature.substring(0, 2);
+			if (featureInitial == "ss" || featureInitial == "cv") {
+				return `${featureInitial}##`;
+			} else {
+				return rawFeature;
 			}
 		};
 
-		getFeats(this._raw("GSUB"));
-		getFeats(this._raw("GPOS"));
+		const rawFeatures = new Set([
+			...getRawFeatures(this._raw("GSUB")),
+			...getRawFeatures(this._raw("GPOS")),
+		]);
 
-		return features;
+		return [...rawFeatures].reduce((features, rawFeature) => {
+			const featureIndex = getFeatureIndex(rawFeature);
+			const feature = {
+				...featureMapping.find((f) => f.tag == featureIndex),
+			};
+			if (feature) {
+				// Restore original tag in case of enumerated tag (ss## or cv##)
+				feature.tag = rawFeature;
+				features.push(feature);
+			}
+			return features;
+		}, []);
 	}
 
 	// Gets all information about the font's variable features.
