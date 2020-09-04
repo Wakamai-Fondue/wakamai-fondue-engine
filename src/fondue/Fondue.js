@@ -1,6 +1,6 @@
 import { NAME_TABLE, NAME_RECORD, CMAP_RECORD } from "../tools/variables.js";
 import getCSS, { getCSSAsJSON } from "../tools/css/get-css.js";
-import layoutFeature from "../tools/features/layout-features.js";
+import featureMapping from "../tools/features/layout-features.js";
 import languageMapping from "../tools/ot-to-html-lang.js";
 import getFormat from "../tools/summary/format.js";
 import getFileSize from "../tools/summary/file-size.js";
@@ -20,20 +20,34 @@ export default class Fondue {
 	}
 
 	get isColor() {
-		return this.colorFormats.length >= 1;
+		return this.colorFormats.length > 0;
+	}
+
+	get hasFeatures() {
+		return this.features.length > 0;
+	}
+
+	get hasLanguages() {
+		return Object.keys(this.languageSystems).length > 0;
 	}
 
 	// Return an object of all language systems supported by
 	// either GSUB or GPOS. Tags are stripped ("ROM " → "ROM").
 	get languageSystems() {
 		const getLangs = (table) => {
-			return table
-				.getSupportedScripts()
-				.reduce((acc, script) => {
-					const scriptTable = table.getScriptTable(script);
-					return acc.concat(table.getSupportedLangSys(scriptTable));
-				}, [])
-				.map((lang) => lang.trim());
+			if (table) {
+				return table
+					.getSupportedScripts()
+					.reduce((acc, script) => {
+						const scriptTable = table.getScriptTable(script);
+						return acc.concat(
+							table.getSupportedLangSys(scriptTable)
+						);
+					}, [])
+					.map((lang) => lang.trim());
+			} else {
+				return [];
+			}
 		};
 
 		const gsubLangs = getLangs(this._font.opentype.tables.GSUB);
@@ -209,37 +223,44 @@ export default class Fondue {
 	}
 
 	// Gets all information about the font features.
+	// TODO: if feature has a UI Name ID, return its name
+	//       https://github.com/Pomax/Font.js/issues/73
 	// Usage:
 	//   fondue.features
 	get features() {
-		const featureResult = {};
-		const result = this._raw("GSUB");
-		const featuresRaw = result;
-
-		if (result) {
-			const features = result.featureList.featureRecords.map(
+		const getRawFeatures = (table) => {
+			if (!table) return [];
+			return table.featureList.featureRecords.map(
 				(record) => record.featureTag
 			);
-			const scripts = result.scriptList.scriptRecords.map(
-				(record) => record.scriptTag
-			);
-			// features = features.filter((feature, index) => features.indexOf(feature) === index); // remove doubles
-			features.forEach((feature, index) => {
-				if (!featureResult[feature]) {
-					featureResult[feature] = {
-						...layoutFeature[feature],
-						scripts: {},
-					};
-				}
-				featureResult[feature].scripts[
-					scripts[index % scripts.length]
-				] = {
-					id: scripts[index % scripts.length],
-					_raw: result.getLookups(featuresRaw.getFeature(index)), // .map(lookup => lookup.getSubTables())
-				};
-			});
-		}
-		return featureResult;
+		};
+
+		const getFeatureIndex = (rawFeature) => {
+			const featureInitial = rawFeature.substring(0, 2);
+			if (featureInitial == "ss" || featureInitial == "cv") {
+				return `${featureInitial}##`;
+			} else {
+				return rawFeature;
+			}
+		};
+
+		const rawFeatures = new Set([
+			...getRawFeatures(this._raw("GSUB")),
+			...getRawFeatures(this._raw("GPOS")),
+		]);
+
+		return [...rawFeatures].reduce((features, rawFeature) => {
+			const featureIndex = getFeatureIndex(rawFeature);
+			const feature = {
+				...featureMapping.find((f) => f.tag == featureIndex),
+			};
+			if (feature) {
+				// Restore original tag in case of enumerated tag (ss## or cv##)
+				feature.tag = rawFeature;
+				features.push(feature);
+			}
+			return features;
+		}, []);
 	}
 
 	// Gets all information about the font's variable features.
