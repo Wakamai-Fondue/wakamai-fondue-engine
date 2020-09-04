@@ -113,7 +113,7 @@ export default {
 	},
 	BAD0: {
 		html: "bad",
-		name: "Banda [family]",
+		name: "Banda",
 	},
 	BAG: {
 		html: "bfy",
@@ -141,7 +141,7 @@ export default {
 	},
 	BBR: {
 		html: "ber",
-		name: "Berber [family]",
+		name: "Berber",
 	},
 	BCH: {
 		html: "bcq",
@@ -225,7 +225,7 @@ export default {
 	},
 	BML: {
 		html: "bai",
-		name: "Bamileke [family]",
+		name: "Bamileke",
 	},
 	BOS: {
 		html: "bs",
@@ -1117,7 +1117,7 @@ export default {
 	},
 	KRN: {
 		html: "kar",
-		name: "Karen [family]",
+		name: "Karen",
 	},
 	KRT: {
 		html: "kqy",
@@ -1505,7 +1505,7 @@ export default {
 	},
 	MYN: {
 		html: "myn",
-		name: "Mayan [family]",
+		name: "Mayan",
 	},
 	MZN: {
 		html: "mzn",
@@ -1517,7 +1517,7 @@ export default {
 	},
 	NAH: {
 		html: "nah",
-		name: "Nahuatl [family]",
+		name: "Nahuatl",
 	},
 	NAN: {
 		html: "gld",
@@ -1685,7 +1685,7 @@ export default {
 	},
 	PAP: {
 		html: "plp",
-		name: "Palpa (retired code)",
+		name: "Palpa",
 	},
 	PAP0: {
 		html: "pap",

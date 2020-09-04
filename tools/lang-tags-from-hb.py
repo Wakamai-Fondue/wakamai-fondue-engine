@@ -57,7 +57,11 @@ def extract_languages(content):
         else:
             lang_name = tmp[0]
         # No need to communicate this
-        lang_name = lang_name.replace("[macrolanguage]", "")
+        lang_name = (
+            lang_name.replace("[macrolanguage]", "")
+            .replace("[family]", "")
+            .replace("(retired code)", "")
+        )
         # This indicates a deprectaed OT tag, but we don't want
         # this information to be added to the langiage name
         lang_name = lang_name.replace("(deprecated)", "")
