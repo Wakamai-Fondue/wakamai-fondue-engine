@@ -153,7 +153,7 @@ describe("hasFeatures", () => {
 
 	test("has no layout features", async () => {
 		const fondue = await WhatCanThisFontDo();
-    expect(fondue.features).toEqual([]);
+		expect(fondue.features).toEqual([]);
 	});
 });
 
