@@ -20,6 +20,7 @@ import json
 
 def extract_languages(content):
     langdict = {}
+    last_resort_langdict = {}
 
     # Regular languages
     lang_content = content.split("ot_languages[] = {\n")[1].split("\n};")[0]
@@ -30,6 +31,10 @@ def extract_languages(content):
     # This will be fixed by the "ambiguous languages"
     # further on
     for language in languages:
+        # Commented-out languages can be added at the end
+        # when no other langiages match
+        last_resort = language.startswith("/*")
+
         # Clean up some noise
         language = (
             language.replace("HB_TAG(", "")
@@ -51,15 +56,22 @@ def extract_languages(content):
             lang_name = tmp[1]
         else:
             lang_name = tmp[0]
-        lang_name = lang_name.replace("[macrolanguage]", "").strip()
+        # No need to communicate this
+        lang_name = lang_name.replace("[macrolanguage]", "")
+        # This indicates a deprectaed OT tag, but we don't want
+        # this information to be added to the langiage name
+        lang_name = lang_name.replace("(deprecated)", "")
+        lang_name = lang_name.strip()
 
         # BCP47 and OT tag
         tmp = parts[0].split(",")
         lang_bcp = tmp[0].strip()
         lang_ot = tmp[1].strip()
 
-        if not lang_ot in langdict:
+        if not lang_ot in langdict and not last_resort:
             langdict[lang_ot] = {"html": lang_bcp, "name": lang_name}
+        if not lang_ot in last_resort_langdict and last_resort:
+            last_resort_langdict[lang_ot] = {"html": lang_bcp, "name": lang_name}
 
     # Ambiguous languages
     am_lang_content = (
@@ -83,6 +95,10 @@ def extract_languages(content):
             am_lang_name = am_language.split(";  /*")[1].split("*/")[0].strip()
 
             langdict[am_lang_ot] = {"html": am_lang_bcp, "name": am_lang_name}
+
+    for lr_lang in last_resort_langdict:
+        if not lr_lang in langdict:
+            langdict[lr_lang] = last_resort_langdict[lr_lang]
 
     return langdict
 

@@ -445,7 +445,7 @@ export default {
 	},
 	DHV: {
 		html: "dv",
-		name: "Divehi (Dhivehi, Maldivian) (deprecated)",
+		name: "Divehi (Dhivehi, Maldivian)",
 	},
 	DIQ: {
 		html: "diq",
@@ -480,8 +480,8 @@ export default {
 		name: "Dari",
 	},
 	DUJ: {
-		html: "duj",
-		name: "Dhuwal (retired code)",
+		html: "dwu",
+		name: "Dhuwal",
 	},
 	DUN: {
 		html: "dng",
