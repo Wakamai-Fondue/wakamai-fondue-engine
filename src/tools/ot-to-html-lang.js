@@ -36,7 +36,7 @@ export default {
 		name: "Aiton",
 	},
 	AKA: {
-		html: "tw",
+		html: "ak",
 		name: "Akan",
 	},
 	ALS: {
@@ -96,7 +96,7 @@ export default {
 		name: "Awadhi",
 	},
 	AYM: {
-		html: "ayr",
+		html: "ay",
 		name: "Aymara",
 	},
 	AZB: {
@@ -104,7 +104,7 @@ export default {
 		name: "Torki",
 	},
 	AZE: {
-		html: "azj",
+		html: "az",
 		name: "Azerbaijani",
 	},
 	BAD: {
@@ -113,10 +113,10 @@ export default {
 	},
 	BAD0: {
 		html: "bad",
-		name: "Banda [family]",
+		name: "Banda",
 	},
 	BAG: {
-		html: "ppa",
+		html: "bfy",
 		name: "Baghelkhandi",
 	},
 	BAL: {
@@ -141,7 +141,7 @@ export default {
 	},
 	BBR: {
 		html: "ber",
-		name: "Berber [family]",
+		name: "Berber",
 	},
 	BCH: {
 		html: "bcq",
@@ -176,7 +176,7 @@ export default {
 		name: "Bulgarian",
 	},
 	BHI: {
-		html: "bhi",
+		html: "bhb",
 		name: "Bhili",
 	},
 	BHO: {
@@ -204,7 +204,7 @@ export default {
 		name: "Blackfoot",
 	},
 	BLI: {
-		html: "bgp",
+		html: "bal",
 		name: "Baluchi",
 	},
 	BLK: {
@@ -212,7 +212,7 @@ export default {
 		name: "Pa\u2019o Karen",
 	},
 	BLN: {
-		html: "ble",
+		html: "bjt",
 		name: "Balante",
 	},
 	BLT: {
@@ -225,7 +225,7 @@ export default {
 	},
 	BML: {
 		html: "bai",
-		name: "Bamileke [family]",
+		name: "Bamileke",
 	},
 	BOS: {
 		html: "bs",
@@ -264,7 +264,7 @@ export default {
 		name: "Burushaski",
 	},
 	BTI: {
-		html: "mct",
+		html: "beb",
 		name: "Beti",
 	},
 	BTS: {
@@ -292,7 +292,7 @@ export default {
 		name: "Zamboanga Chavacano",
 	},
 	CCHN: {
-		html: "cvn",
+		html: "cco",
 		name: "Chinantec",
 	},
 	CEB: {
@@ -360,7 +360,7 @@ export default {
 		name: "Eastern Cham",
 	},
 	CMR: {
-		html: "zdj",
+		html: "swb",
 		name: "Comorian",
 	},
 	COP: {
@@ -381,7 +381,7 @@ export default {
 	},
 	CRE: {
 		html: "cr",
-		name: "Cree [macrolanguage]",
+		name: "Cree",
 	},
 	CRR: {
 		html: "crx",
@@ -436,7 +436,7 @@ export default {
 		name: "Dogri",
 	},
 	DGR: {
-		html: "xnr",
+		html: "doi",
 		name: "Dogri",
 	},
 	DHG: {
@@ -445,7 +445,7 @@ export default {
 	},
 	DHV: {
 		html: "dv",
-		name: "Divehi (Dhivehi, Maldivian) (deprecated)",
+		name: "Divehi (Dhivehi, Maldivian)",
 	},
 	DIQ: {
 		html: "diq",
@@ -480,7 +480,7 @@ export default {
 		name: "Dari",
 	},
 	DUJ: {
-		html: "dwy",
+		html: "dwu",
 		name: "Dhuwal",
 	},
 	DUN: {
@@ -496,7 +496,7 @@ export default {
 		name: "Ebira",
 	},
 	ECR: {
-		html: "crl",
+		html: "crj",
 		name: "Eastern Cree",
 	},
 	EDO: {
@@ -560,7 +560,7 @@ export default {
 		name: "Fang (Equatorial Guinea)",
 	},
 	FAR: {
-		html: "pes",
+		html: "fa",
 		name: "Persian",
 	},
 	FAT: {
@@ -584,7 +584,7 @@ export default {
 		name: "Fe\u2019fe\u2019",
 	},
 	FNE: {
-		html: "yrk",
+		html: "enf",
 		name: "Forest Nenets",
 	},
 	FON: {
@@ -620,7 +620,7 @@ export default {
 		name: "Futa",
 	},
 	FUL: {
-		html: "fuq",
+		html: "ff",
 		name: "Fulah",
 	},
 	FUV: {
@@ -696,7 +696,7 @@ export default {
 		name: "Garo",
 	},
 	GUA: {
-		html: "nhd",
+		html: "gn",
 		name: "Guarani",
 	},
 	GUC: {
@@ -724,7 +724,7 @@ export default {
 		name: "Haitian (Haitian Creole)",
 	},
 	HAL: {
-		html: "rnl",
+		html: "cfm",
 		name: "Halam (Falam Chin)",
 	},
 	HAR: {
@@ -796,7 +796,7 @@ export default {
 		name: "Hungarian",
 	},
 	HYE: {
-		html: "hyw",
+		html: "hy",
 		name: "Armenian",
 	},
 	HYE0: {
@@ -836,8 +836,8 @@ export default {
 		name: "Interlingua (International Auxiliary Language Association)",
 	},
 	IND: {
-		html: "in",
-		name: "Indonesian (retired code)",
+		html: "id",
+		name: "Indonesian",
 	},
 	ING: {
 		html: "inh",
@@ -876,8 +876,8 @@ export default {
 		name: "Italian",
 	},
 	IWR: {
-		html: "iw",
-		name: "Hebrew (retired code)",
+		html: "he",
+		name: "Hebrew",
 	},
 	JAM: {
 		html: "jam",
@@ -888,8 +888,8 @@ export default {
 		name: "Japanese",
 	},
 	JAV: {
-		html: "jw",
-		name: "Javanese (retired code)",
+		html: "jv",
+		name: "Javanese",
 	},
 	JBO: {
 		html: "jbo",
@@ -1004,7 +1004,7 @@ export default {
 		name: "Kirghiz (Kyrgyz)",
 	},
 	KIS: {
-		html: "kss",
+		html: "kqs",
 		name: "Kisii",
 	},
 	KIU: {
@@ -1069,14 +1069,14 @@ export default {
 	},
 	KOM: {
 		html: "kv",
-		name: "Komi [macrolanguage]",
+		name: "Komi",
 	},
 	KON: {
 		html: "ktu",
 		name: "Kikongo",
 	},
 	KON0: {
-		html: "ldi",
+		html: "kg",
 		name: "Kongo",
 	},
 	KOP: {
@@ -1097,7 +1097,7 @@ export default {
 	},
 	KPL: {
 		html: "kpe",
-		name: "Kpelle [macrolanguage]",
+		name: "Kpelle",
 	},
 	KRI: {
 		html: "kri",
@@ -1117,7 +1117,7 @@ export default {
 	},
 	KRN: {
 		html: "kar",
-		name: "Karen [family]",
+		name: "Karen",
 	},
 	KRT: {
 		html: "kqy",
@@ -1164,7 +1164,7 @@ export default {
 		name: "Kurdish",
 	},
 	KUU: {
-		html: "kxl",
+		html: "kru",
 		name: "Kurukh",
 	},
 	KUY: {
@@ -1264,7 +1264,7 @@ export default {
 		name: "Loma (Liberia)",
 	},
 	LRC: {
-		html: "zum",
+		html: "bqi",
 		name: "Luri",
 	},
 	LSB: {
@@ -1444,7 +1444,7 @@ export default {
 		name: "Manipuri",
 	},
 	MNK: {
-		html: "myq",
+		html: "emk",
 		name: "Maninka",
 	},
 	MNX: {
@@ -1505,7 +1505,7 @@ export default {
 	},
 	MYN: {
 		html: "myn",
-		name: "Mayan [family]",
+		name: "Mayan",
 	},
 	MZN: {
 		html: "mzn",
@@ -1517,7 +1517,7 @@ export default {
 	},
 	NAH: {
 		html: "nah",
-		name: "Nahuatl [family]",
+		name: "Nahuatl",
 	},
 	NAN: {
 		html: "gld",
@@ -1544,7 +1544,7 @@ export default {
 		name: "N-Cree",
 	},
 	NDB: {
-		html: "nr",
+		html: "nd",
 		name: "Ndebele",
 	},
 	NDC: {
@@ -1652,7 +1652,7 @@ export default {
 		name: "Ojibwa",
 	},
 	ORI: {
-		html: "spv",
+		html: "or",
 		name: "Odia (formerly Oriya)",
 	},
 	ORO: {
@@ -1685,7 +1685,7 @@ export default {
 	},
 	PAP: {
 		html: "plp",
-		name: "Palpa (retired code)",
+		name: "Palpa",
 	},
 	PAP0: {
 		html: "pap",
@@ -1728,7 +1728,7 @@ export default {
 		name: "Filipino",
 	},
 	PLG: {
-		html: "rbb",
+		html: "pce",
 		name: "Palaung",
 	},
 	PLK: {
@@ -1764,7 +1764,7 @@ export default {
 		name: "Western Pwo Karen",
 	},
 	QIN: {
-		html: "zom",
+		html: "bgr",
 		name: "Chin",
 	},
 	QUC: {
@@ -1776,7 +1776,7 @@ export default {
 		name: "South Bolivian Quechua",
 	},
 	QUZ: {
-		html: "qxu",
+		html: "qu",
 		name: "Quechua",
 	},
 	QVI: {
@@ -1936,7 +1936,7 @@ export default {
 		name: "Sidamo",
 	},
 	SIG: {
-		html: "xst",
+		html: "stv",
 		name: "Silte Gurage",
 	},
 	SKS: {
@@ -1948,7 +1948,7 @@ export default {
 		name: "Slovak",
 	},
 	SLA: {
-		html: "xsl",
+		html: "den",
 		name: "Slavey",
 	},
 	SLV: {
@@ -2004,7 +2004,7 @@ export default {
 		name: "Serbian",
 	},
 	SRD: {
-		html: "sro",
+		html: "sc",
 		name: "Sardinian",
 	},
 	SRK: {
@@ -2052,7 +2052,7 @@ export default {
 		name: "Swadaya Aramaic",
 	},
 	SWK: {
-		html: "swh",
+		html: "sw",
 		name: "Swahili",
 	},
 	SWZ: {
@@ -2180,7 +2180,7 @@ export default {
 		name: "Tonga (Zambia)",
 	},
 	TOD: {
-		html: "xwo",
+		html: "xal",
 		name: "Todo",
 	},
 	TOD0: {
@@ -2224,7 +2224,7 @@ export default {
 		name: "Tuvalu",
 	},
 	TWI: {
-		html: "tw",
+		html: "ak",
 		name: "Twi",
 	},
 	TYZ: {
@@ -2264,7 +2264,7 @@ export default {
 		name: "Uyghur",
 	},
 	UZB: {
-		html: "uzs",
+		html: "uz",
 		name: "Uzbek",
 	},
 	VEC: {
@@ -2376,7 +2376,7 @@ export default {
 		name: "Standard Moroccan Tamazight",
 	},
 	ZHA: {
-		html: "zzj",
+		html: "za",
 		name: "Zhuang",
 	},
 	ZHH: {
@@ -2401,6 +2401,6 @@ export default {
 	},
 	ZZA: {
 		html: "zza",
-		name: "Zazaki [macrolanguage]",
+		name: "Zazaki",
 	},
 };
