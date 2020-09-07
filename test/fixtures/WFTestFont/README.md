@@ -1,11 +1,11 @@
-# WhatCanThisFontDo
+# WFTestFont
 
 A versatile test font for Wakamai Fondue, created by Roel Nieskens.
 
 Make changes in the .ttx file, [compile](https://github.com/fonttools/fonttools) to .ttf so it can be used in Wakamai Fondue's tests:
 
 ```bash
-$ ttx -o WhatCanThisFontDo.ttf WhatCanThisFontDo.ttx
+$ ttx -o WFTestFont.ttf WFTestFont.ttx
 ```
 
 ## What can this font do?
