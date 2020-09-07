@@ -188,3 +188,14 @@ describe("nameTable", () => {
 		expect(fondue.customText).toContain("Wakamai Fondue rules!");
 	});
 });
+
+test("null bytes are omitted", async () => {
+	const fondue = await WFTestFont();
+
+	for (const prop in fondue.summary) {
+		const value = fondue.summary[prop];
+		const nullBytes = value.split("").filter((c) => c == "\u0000");
+
+		expect(nullBytes.length).toBe(0);
+	}
+});
