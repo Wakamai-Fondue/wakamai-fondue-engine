@@ -375,12 +375,14 @@ export default class Fondue {
 	}
 
 	get customText() {
-		// Currently Font.js returns null bytes in name table strings,
-		// we filter them here.
-		// https://github.com/Pomax/Font.js/issues/74
-		return (
+		const text = this._font.opentype.tables.name.get(19);
+		if (text) {
+			// Currently Font.js returns null bytes in name table
+			// strings, we filter them here.
+			// https://github.com/Pomax/Font.js/issues/74
 			/* eslint-disable no-control-regex */
-			this._font.opentype.tables.name.get(19).replace(/\x00/g, "") || null
-		);
+			return text.replace(/\x00/g, "");
+		}
+		return null;
 	}
 }
