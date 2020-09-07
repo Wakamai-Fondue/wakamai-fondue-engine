@@ -171,7 +171,9 @@ export default class Fondue {
 								NAME_RECORD[record.platformID].language[
 									record.languageID
 								];
-							const value = this.name(nameId);
+							const value = this._removeNullBytes(
+								this.name(nameId)
+							);
 							return {
 								id: nameId,
 								platformId,
@@ -376,13 +378,14 @@ export default class Fondue {
 
 	get customText() {
 		const text = this._font.opentype.tables.name.get(19);
-		if (text) {
-			// Currently Font.js returns null bytes in name table
-			// strings, we filter them here.
-			// https://github.com/Pomax/Font.js/issues/74
-			/* eslint-disable no-control-regex */
-			return text.replace(/\x00/g, "");
-		}
-		return null;
+		return text ? this._removeNullBytes(text) : null;
+	}
+
+	_removeNullBytes(value) {
+		// Currently Font.js returns null bytes in name table
+		// strings, we filter them here.
+		// https://github.com/Pomax/Font.js/issues/74
+		/* eslint-disable no-control-regex */
+		return value.replace(/\x00/g, "");
 	}
 }
