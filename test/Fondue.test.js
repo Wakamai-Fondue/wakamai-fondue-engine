@@ -6,8 +6,8 @@ const otfFont = async () => {
 	);
 };
 
-const ttfFont = async () => {
-	return await loadFondue("./test/fixtures/letterA/letterA.ttf");
+const WFTestFont = async () => {
+	return await loadFondue("./test/fixtures/WFTestFont/WFTestFont.ttf");
 };
 
 const variableFont = async () => {
@@ -75,7 +75,7 @@ describe("format", () => {
 	});
 
 	test("TTF font", async () => {
-		const fondue = await ttfFont();
+		const fondue = await WFTestFont();
 		expect(fondue.format).toBe("TrueType");
 	});
 });
@@ -87,7 +87,7 @@ describe("isVariable", () => {
 	});
 
 	test("nonvariable font", async () => {
-		const fondue = await ttfFont();
+		const fondue = await WFTestFont();
 		expect(fondue.isVariable).toBe(false);
 	});
 });
@@ -99,7 +99,7 @@ describe("isColor", () => {
 	});
 
 	test("non color font", async () => {
-		const fondue = await ttfFont();
+		const fondue = await WFTestFont();
 		expect(fondue.isColor).toBe(false);
 	});
 });
@@ -111,7 +111,7 @@ describe("hasColorTable", () => {
 	});
 
 	test("non color font", async () => {
-		const fondue = await ttfFont();
+		const fondue = await WFTestFont();
 		expect(fondue.colorFormats).toStrictEqual([]);
 	});
 });
@@ -138,7 +138,7 @@ describe("hasAxes", () => {
 	});
 
 	test("nonvariable font", async () => {
-		const fondue = await ttfFont();
+		const fondue = await WFTestFont();
 		expect(fondue.variable).toBeUndefined();
 	});
 });
@@ -150,21 +150,21 @@ describe("hasFeatures", () => {
 	});
 
 	test("has no layout features", async () => {
-		const fondue = await ttfFont();
+		const fondue = await WFTestFont();
 		expect(fondue.features).toEqual([]);
 	});
 });
 
 describe("supportedCharacters", () => {
 	test("returns characters of best cmap", async () => {
-		const fondue = await ttfFont();
+		const fondue = await WFTestFont();
 		expect(fondue.supportedCharacters).toEqual(
 			expect.arrayContaining(["41"]) // 0x41 = letter Z
 		);
 	});
 
 	test("does not return non-unicode char", async () => {
-		const fondue = await ttfFont();
+		const fondue = await WFTestFont();
 		expect(fondue.supportedCharacters).not.toEqual(
 			expect.arrayContaining(["ffff"]) // 0x41 = letter Z
 		);
@@ -179,5 +179,12 @@ describe("supportedLanguages", () => {
 				ATH: { html: "ath", name: "Athapascan" },
 			})
 		);
+	});
+});
+
+describe("nameTable", () => {
+	test("return sample text", async () => {
+		const fondue = await WFTestFont();
+		expect(fondue.customText).toContain("Wakamai Fondue rules!");
 	});
 });
