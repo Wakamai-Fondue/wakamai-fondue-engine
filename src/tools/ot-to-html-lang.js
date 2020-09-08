@@ -7,12 +7,12 @@ export default [
 	{
 		html: "sq",
 		name: "Albanian",
-		ot: "ZHA",
+		ot: "SQI",
 	},
 	{
 		html: "ar",
 		name: "Arabic",
-		ot: "ZHA",
+		ot: "ARA",
 	},
 	{
 		html: "ab",
@@ -37,7 +37,7 @@ export default [
 	{
 		html: "dz",
 		name: "Dzongkha",
-		ot: "ZHA",
+		ot: "DZN",
 	},
 	{
 		html: "af",
@@ -52,7 +52,7 @@ export default [
 	{
 		html: "ath",
 		name: "Athapascan",
-		ot: "ZHA",
+		ot: "ATH",
 	},
 	{
 		html: "aii",
@@ -62,7 +62,7 @@ export default [
 	{
 		html: "syr",
 		name: "Syriac",
-		ot: "ZHA",
+		ot: "SYR",
 	},
 	{
 		html: "aiw",
@@ -117,7 +117,7 @@ export default [
 	{
 		html: "alt",
 		name: "Southern Altai",
-		ot: "ZHA",
+		ot: "ALT",
 	},
 	{
 		html: "av",
@@ -162,7 +162,7 @@ export default [
 	{
 		html: "bik",
 		name: "Bikol",
-		ot: "ZHA",
+		ot: "BIK",
 	},
 	{
 		html: "bcq",
@@ -222,7 +222,7 @@ export default [
 	{
 		html: "mg",
 		name: "Malagasy",
-		ot: "ZHA",
+		ot: "MLG",
 	},
 	{
 		html: "bi",
@@ -237,7 +237,7 @@ export default [
 	{
 		html: "ms",
 		name: "Malay",
-		ot: "ZHA",
+		ot: "MLY",
 	},
 	{
 		html: "bjt",
@@ -287,7 +287,7 @@ export default [
 	{
 		html: "luy",
 		name: "Luyia",
-		ot: "ZHA",
+		ot: "LUH",
 	},
 	{
 		html: "bxr",
@@ -307,7 +307,7 @@ export default [
 	{
 		html: "crx",
 		name: "Carrier",
-		ot: "ZHA",
+		ot: "CRR",
 	},
 	{
 		html: "cco",
@@ -317,12 +317,12 @@ export default [
 	{
 		html: "rki",
 		name: "Rakhine",
-		ot: "ZHA",
+		ot: "ARK",
 	},
 	{
 		html: "zh-Hans",
 		name: "Chinese; Han (Simplified variant)",
-		ot: "ZHA",
+		ot: "ZHS",
 	},
 	{
 		html: "ce",
@@ -357,12 +357,12 @@ export default [
 	{
 		html: "oj",
 		name: "Ojibwa",
-		ot: "ZHA",
+		ot: "OJB",
 	},
 	{
 		html: "ku",
 		name: "Kurdish",
-		ot: "ZHA",
+		ot: "KUR",
 	},
 	{
 		html: "ckt",
@@ -377,17 +377,17 @@ export default [
 	{
 		html: "crp",
 		name: "Creoles and pidgins",
-		ot: "ZHA",
+		ot: "CPP",
 	},
 	{
 		html: "hmn",
 		name: "Hmong",
-		ot: "ZHA",
+		ot: "HMN",
 	},
 	{
 		html: "quh",
 		name: "South Bolivian Quechua",
-		ot: "ZHA",
+		ot: "QUH",
 	},
 	{
 		html: "cr",
@@ -472,7 +472,7 @@ export default [
 	{
 		html: "njz",
 		name: "Nyishi",
-		ot: "ZHA",
+		ot: "NIS",
 	},
 	{
 		html: "de",
@@ -487,12 +487,12 @@ export default [
 	{
 		html: "mwr",
 		name: "Marwari",
-		ot: "ZHA",
+		ot: "MAW",
 	},
 	{
 		html: "din",
 		name: "Dinka",
-		ot: "ZHA",
+		ot: "DNK",
 	},
 	{
 		html: "dje",
@@ -517,12 +517,12 @@ export default [
 	{
 		html: "mn",
 		name: "Mongolian",
-		ot: "ZHA",
+		ot: "MNG",
 	},
 	{
 		html: "prs",
 		name: "Dari",
-		ot: "ZHA",
+		ot: "DRI",
 	},
 	{
 		html: "dsb",
@@ -532,7 +532,7 @@ export default [
 	{
 		html: "ne",
 		name: "Nepali",
-		ot: "ZHA",
+		ot: "NEP",
 	},
 	{
 		html: "dv",
@@ -547,7 +547,7 @@ export default [
 	{
 		html: "uki",
 		name: "Kui (India)",
-		ot: "ZHA",
+		ot: "KUI",
 	},
 	{
 		html: "dwu",
@@ -567,7 +567,7 @@ export default [
 	{
 		html: "et",
 		name: "Estonian",
-		ot: "ZHA",
+		ot: "ETI",
 	},
 	{
 		html: "el",
@@ -592,7 +592,7 @@ export default [
 	{
 		html: "kln",
 		name: "Kalenjin",
-		ot: "ZHA",
+		ot: "KAL",
 	},
 	{
 		html: "enf",
@@ -602,7 +602,7 @@ export default [
 	{
 		html: "yrk",
 		name: "Nenets",
-		ot: "ZHA",
+		ot: "TNE",
 	},
 	{
 		html: "eo",
@@ -617,12 +617,12 @@ export default [
 	{
 		html: "gon",
 		name: "Gondi",
-		ot: "ZHA",
+		ot: "GON",
 	},
 	{
 		html: "ik",
 		name: "Inupiaq",
-		ot: "ZHA",
+		ot: "IPK",
 	},
 	{
 		html: "eu",
@@ -707,7 +707,7 @@ export default [
 	{
 		html: "om",
 		name: "Oromo",
-		ot: "ZHA",
+		ot: "ORO",
 	},
 	{
 		html: "gbm",
@@ -722,7 +722,7 @@ export default [
 	{
 		html: "raj",
 		name: "Rajasthani",
-		ot: "ZHA",
+		ot: "RAJ",
 	},
 	{
 		html: "gil",
@@ -747,7 +747,7 @@ export default [
 	{
 		html: "kok",
 		name: "Konkani",
-		ot: "ZHA",
+		ot: "KOK",
 	},
 	{
 		html: "grt",
@@ -812,7 +812,7 @@ export default [
 	{
 		html: "hnd",
 		name: "Southern Hindko",
-		ot: "ZHA",
+		ot: "HND",
 	},
 	{
 		html: "ho",
@@ -897,12 +897,12 @@ export default [
 	{
 		html: "ijo",
 		name: "Ijo",
-		ot: "ZHA",
+		ot: "IJO",
 	},
 	{
 		html: "iu",
 		name: "Inuktitut",
-		ot: "ZHA",
+		ot: "INU",
 	},
 	{
 		html: "inh",
@@ -932,7 +932,7 @@ export default [
 	{
 		html: "yi",
 		name: "Yiddish",
-		ot: "ZHA",
+		ot: "JII",
 	},
 	{
 		html: "jv",
@@ -972,7 +972,7 @@ export default [
 	{
 		html: "kr",
 		name: "Kanuri",
-		ot: "ZHA",
+		ot: "KNR",
 	},
 	{
 		html: "kca",
@@ -1252,7 +1252,7 @@ export default [
 	{
 		html: "lv",
 		name: "Latvian",
-		ot: "ZHA",
+		ot: "LVI",
 	},
 	{
 		html: "lu",
@@ -1267,7 +1267,7 @@ export default [
 	{
 		html: "zh-Hant",
 		name: "Chinese; Han (Traditional variant)",
-		ot: "ZHA",
+		ot: "ZHT",
 	},
 	{
 		html: "lzz",
@@ -1357,7 +1357,7 @@ export default [
 	{
 		html: "ro-MD",
 		name: "Romanian; Moldova",
-		ot: "ZHA",
+		ot: "MOL",
 	},
 	{
 		html: "mpe",
@@ -1402,7 +1402,7 @@ export default [
 	{
 		html: "no",
 		name: "Norwegian",
-		ot: "ZHA",
+		ot: "NOR",
 	},
 	{
 		html: "nd",
@@ -1507,7 +1507,7 @@ export default [
 	{
 		html: "ps",
 		name: "Pashto",
-		ot: "ZHA",
+		ot: "PAS",
 	},
 	{
 		html: "pce",
@@ -1542,12 +1542,12 @@ export default [
 	{
 		html: "qwh",
 		name: "Huaylas Ancash Quechua",
-		ot: "ZHA",
+		ot: "QWH",
 	},
 	{
 		html: "qvi",
 		name: "Imbabura Highland Quichua",
-		ot: "ZHA",
+		ot: "QVI",
 	},
 	{
 		html: "rm",
@@ -1557,7 +1557,7 @@ export default [
 	{
 		html: "rom",
 		name: "Romany",
-		ot: "ZHA",
+		ot: "ROY",
 	},
 	{
 		html: "rn",
@@ -1762,7 +1762,7 @@ export default [
 	{
 		html: "tmh",
 		name: "Tamashek",
-		ot: "ZHA",
+		ot: "TMH",
 	},
 	{
 		html: "tcy",
@@ -1962,7 +1962,7 @@ export default [
 	{
 		html: "zh-HK",
 		name: "Chinese; Hong Kong",
-		ot: "ZHA",
+		ot: "ZHH",
 	},
 	{
 		html: "za",
@@ -1982,47 +1982,47 @@ export default [
 	{
 		html: "und-fonnapa",
 		name: "Undetermined; North American Phonetic Alphabet",
-		ot: "ZHA",
+		ot: "APPH",
 	},
 	{
 		html: "und-fonipa",
 		name: "Undetermined; International Phonetic Alphabet",
-		ot: "ZHA",
+		ot: "IPPH",
 	},
 	{
 		html: "ga-Latg",
 		name: "Irish; Latin (Gaelic variant)",
-		ot: "ZHA",
+		ot: "IRT",
 	},
 	{
 		html: "und-Geok",
 		name: "Undetermined; Khutsuri (Asomtavruli and Nuskhuri)",
-		ot: "ZHA",
+		ot: "KGE",
 	},
 	{
 		html: "el-polyton",
 		name: "Modern Greek (1453-); Polytonic Greek",
-		ot: "ZHA",
+		ot: "PGR",
 	},
 	{
 		html: "pro",
 		name: "Old Proven\u00e7al (to 1500)",
-		ot: "ZHA",
+		ot: "PRO",
 	},
 	{
 		html: "und-Syre",
 		name: "Undetermined; Syriac (Estrangelo variant)",
-		ot: "ZHA",
+		ot: "SYRE",
 	},
 	{
 		html: "und-Syrj",
 		name: "Undetermined; Syriac (Western variant)",
-		ot: "ZHA",
+		ot: "SYRJ",
 	},
 	{
 		html: "und-Syrn",
 		name: "Undetermined; Syriac (Eastern variant)",
-		ot: "ZHA",
+		ot: "SYRN",
 	},
 	{
 		html: "ach",

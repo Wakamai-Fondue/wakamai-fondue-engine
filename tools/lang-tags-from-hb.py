@@ -103,7 +103,7 @@ def extract_languages(content):
             am_lang_name = am_language.split(";  /*")[1].split("*/")[0].strip()
 
             langdict[am_lang_ot] = {
-                "ot": lang_ot,
+                "ot": am_lang_ot,
                 "html": am_lang_bcp,
                 "name": am_lang_name,
             }
