@@ -277,6 +277,29 @@ export default class Fondue {
 		return tables.filter((table) => colorTables.includes(table));
 	}
 
+	get colorPalettes() {
+		let palettes = [];
+
+		// Create padded hex value for color string
+		const hex = (d) => Number(d).toString(16).padStart(2, "0");
+
+		// Convert color records to RGBA hex strings
+		// TODO: how are multiple palettes handled???
+		const cpal = this._font.opentype.tables.CPAL;
+		if (cpal) {
+			cpal.colorRecords.map((clr) => {
+				palettes.push(
+					`#${hex(clr.red)}` +
+						`${hex(clr.green)}` +
+						`${hex(clr.blue)}` +
+						`${hex(clr.alpha)}`
+				);
+			});
+		}
+
+		return palettes;
+	}
+
 	// Gets all information about the font summary.
 	// Usage:
 	//   fondue.summary
