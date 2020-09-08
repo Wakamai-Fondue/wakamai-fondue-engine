@@ -28,7 +28,7 @@ export default class Fondue {
 	}
 
 	get hasLanguages() {
-		return Object.keys(this.languageSystems).length > 0;
+		return this.languageSystems.length > 0;
 	}
 
 	// Return an object of all language systems supported by
@@ -54,12 +54,7 @@ export default class Fondue {
 		const gposLangs = getLangs(this._font.opentype.tables.GPOS);
 		const allLangs = new Set([...gsubLangs, ...gposLangs]);
 
-		let langSys = {};
-		for (const lang of allLangs) {
-			if (languageMapping[lang]) {
-				langSys[lang] = languageMapping[lang];
-			}
-		}
+		const langSys = languageMapping.filter((l) => allLangs.has(l.ot));
 		return langSys;
 	}
 
@@ -340,7 +335,7 @@ export default class Fondue {
 			for (const chunk of cmap) {
 				for (let i = chunk.start; i < chunk.end + 1; i++) {
 					// Skip 0xFFFF, Font.js currently reports this
-					// as a supprted character
+					// as a supported character
 					// https://github.com/Pomax/Font.js/issues/68
 					if (i == 65535) continue;
 					chars.push(i.toString(16));

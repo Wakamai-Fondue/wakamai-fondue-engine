@@ -48,6 +48,11 @@ def extract_languages(content):
             .strip()
         )
 
+        # Some reformatting to make notations consistent
+        language = language.replace("Sotho, Northern", "Northern Sotho").replace(
+            "Sotho, Southern", "Southern Sotho"
+        )
+
         parts = language.split(")", 1)
 
         # Human readable name
@@ -73,9 +78,13 @@ def extract_languages(content):
         lang_ot = tmp[1].strip()
 
         if not lang_ot in langdict and not last_resort:
-            langdict[lang_ot] = {"html": lang_bcp, "name": lang_name}
+            langdict[lang_ot] = {"ot": lang_ot, "html": lang_bcp, "name": lang_name}
         if not lang_ot in last_resort_langdict and last_resort:
-            last_resort_langdict[lang_ot] = {"html": lang_bcp, "name": lang_name}
+            last_resort_langdict[lang_ot] = {
+                "ot": lang_ot,
+                "html": lang_bcp,
+                "name": lang_name,
+            }
 
     # Ambiguous languages
     am_lang_content = (
@@ -98,13 +107,18 @@ def extract_languages(content):
             am_lang_bcp = am_language.split('("')[1].split('"')[0].strip()
             am_lang_name = am_language.split(";  /*")[1].split("*/")[0].strip()
 
-            langdict[am_lang_ot] = {"html": am_lang_bcp, "name": am_lang_name}
+            langdict[am_lang_ot] = {
+                "ot": am_lang_ot,
+                "html": am_lang_bcp,
+                "name": am_lang_name,
+            }
 
     for lr_lang in last_resort_langdict:
         if not lr_lang in langdict:
             langdict[lr_lang] = last_resort_langdict[lr_lang]
 
-    return langdict
+    # Return results as list
+    return list(langdict.values())
 
 
 def main():
