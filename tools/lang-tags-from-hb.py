@@ -48,6 +48,11 @@ def extract_languages(content):
             .strip()
         )
 
+        # Some reformatting to make notations consistent
+        language = language.replace("Sotho, Northern", "Northern Sotho").replace(
+            "Sotho, Southern", "Southern Sotho"
+        )
+
         parts = language.split(")", 1)
 
         # Human readable name

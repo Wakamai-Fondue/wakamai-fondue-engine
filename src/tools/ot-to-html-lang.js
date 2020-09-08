@@ -1721,7 +1721,7 @@ export default [
 	},
 	{
 		html: "st",
-		name: "Sotho, Southern",
+		name: "Southern Sotho",
 		ot: "SOT",
 	},
 	{
@@ -2651,7 +2651,7 @@ export default [
 	},
 	{
 		html: "nso",
-		name: "Sotho, Northern",
+		name: "Northern Sotho",
 		ot: "NSO",
 	},
 	{
