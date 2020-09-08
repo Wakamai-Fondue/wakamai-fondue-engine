@@ -54,9 +54,7 @@ export default class Fondue {
 		const gposLangs = getLangs(this._font.opentype.tables.GPOS);
 		const allLangs = new Set([...gsubLangs, ...gposLangs]);
 
-		const langSys = languageMapping.filter((l) =>
-			[...allLangs].includes(l.ot)
-		);
+		const langSys = languageMapping.filter((l) => allLangs.has(l.ot));
 		return langSys;
 	}
 
