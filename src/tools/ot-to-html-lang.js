@@ -75,7 +75,7 @@ export default [
 		ot: "AKA",
 	},
 	{
-		html: "ak",
+		html: "tw",
 		name: "Twi",
 		ot: "TWI",
 	},
@@ -775,11 +775,6 @@ export default [
 		ot: "GMZ",
 	},
 	{
-		html: "guk",
-		name: "Gumuz (SIL fonts)",
-		ot: "GUK",
-	},
-	{
 		html: "gv",
 		name: "Manx",
 		ot: "MNX",
@@ -855,8 +850,8 @@ export default [
 		ot: "HYE0",
 	},
 	{
-		html: "hy",
-		name: "Armenian",
+		html: "hyw",
+		name: "Western Armenian",
 		ot: "HYE",
 	},
 	{
@@ -1041,13 +1036,13 @@ export default [
 	},
 	{
 		html: "kht",
-		name: "Khamti Shan (Microsoft fonts)",
-		ot: "KHN",
+		name: "Khamti Shan",
+		ot: "KHT",
 	},
 	{
 		html: "kht",
-		name: "Khamti Shan (OpenType spec and SIL fonts)",
-		ot: "KHT",
+		name: "Khamti Shan (Microsoft fonts)",
+		ot: "KHN",
 	},
 	{
 		html: "ki",
@@ -1640,11 +1635,6 @@ export default [
 		ot: "CHG",
 	},
 	{
-		html: "sgw",
-		name: "Chaha Gurage (SIL fonts)",
-		ot: "SGW",
-	},
-	{
 		html: "si",
 		name: "Sinhala (Sinhalese)",
 		ot: "SNH",
@@ -1935,8 +1925,8 @@ export default [
 		ot: "KLM",
 	},
 	{
-		html: "xal",
-		name: "Todo",
+		html: "xwo",
+		name: "Written Oirat",
 		ot: "TOD",
 	},
 	{
