@@ -277,6 +277,35 @@ export default class Fondue {
 		return tables.filter((table) => colorTables.includes(table));
 	}
 
+	get colorPalettes() {
+		const cpal = this._font.opentype.tables.CPAL;
+		if (!cpal) return [];
+
+		// Create padded hex value for color string
+		const hex = (d) => Number(d).toString(16).padStart(2, "0");
+
+		// CPAL's colorRecords is one large, flat array of colors.
+		// We need to chop these up depending on numPaletteEntries
+		// (the number of colors per palette) so we can return an
+		// array of color-arrays.
+		return cpal.colorRecords.reduce((colors, clr, index) => {
+			const groupIndex = Math.floor(index / cpal.numPaletteEntries);
+
+			if (!colors[groupIndex]) {
+				colors[groupIndex] = [];
+			}
+
+			colors[groupIndex].push(
+				`#${hex(clr.red)}` +
+					`${hex(clr.green)}` +
+					`${hex(clr.blue)}` +
+					`${hex(clr.alpha)}`
+			);
+
+			return colors;
+		}, []);
+	}
+
 	// Gets all information about the font summary.
 	// Usage:
 	//   fondue.summary

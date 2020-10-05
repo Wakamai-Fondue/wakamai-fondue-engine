@@ -116,6 +116,29 @@ describe("hasColorTable", () => {
 	});
 });
 
+describe("hasColorPaletteTable", () => {
+	test("CPAL entries", async () => {
+		const fondue = await colorFont();
+		expect(fondue.colorPalettes).toEqual([
+			[
+				"#34343fff",
+				"#fcc200ff",
+				"#e541414d",
+				"#ffffffff",
+				"#9f4f00ff",
+				"#592700ff",
+				"#e54141ff",
+				"#69b2ccff",
+			],
+		]);
+	});
+
+	test("non color font", async () => {
+		const fondue = await WFTestFont();
+		expect(fondue.colorPalettes).toStrictEqual([]);
+	});
+});
+
 describe("hasAxes", () => {
 	test("variable font axes", async () => {
 		const fondue = await variableFont();
