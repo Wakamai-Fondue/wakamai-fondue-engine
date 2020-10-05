@@ -278,16 +278,16 @@ export default class Fondue {
 	}
 
 	get colorPalettes() {
-		let palettes = [];
+		const cpal = this._font.opentype.tables.CPAL;
+		if (!cpal) return [];
 
 		// Create padded hex value for color string
 		const hex = (d) => Number(d).toString(16).padStart(2, "0");
 
 		// Convert color records to RGBA hex strings
 		// and group them per palette
-		const cpal = this._font.opentype.tables.CPAL;
 		if (cpal) {
-			palettes = cpal.colorRecords.reduce((colors, clr, index) => {
+			return cpal.colorRecords.reduce((colors, clr, index) => {
 				const groupIndex = Math.floor(index / cpal.numPaletteEntries);
 
 				if (!colors[groupIndex]) {
@@ -304,8 +304,6 @@ export default class Fondue {
 				return colors;
 			}, []);
 		}
-
-		return palettes;
 	}
 
 	// Gets all information about the font summary.
