@@ -286,24 +286,22 @@ export default class Fondue {
 
 		// Convert color records to RGBA hex strings
 		// and group them per palette
-		if (cpal) {
-			return cpal.colorRecords.reduce((colors, clr, index) => {
-				const groupIndex = Math.floor(index / cpal.numPaletteEntries);
+		return cpal.colorRecords.reduce((colors, clr, index) => {
+			const groupIndex = Math.floor(index / cpal.numPaletteEntries);
 
-				if (!colors[groupIndex]) {
-					colors[groupIndex] = [];
-				}
+			if (!colors[groupIndex]) {
+				colors[groupIndex] = [];
+			}
 
-				colors[groupIndex].push(
-					`#${hex(clr.red)}` +
-						`${hex(clr.green)}` +
-						`${hex(clr.blue)}` +
-						`${hex(clr.alpha)}`
-				);
+			colors[groupIndex].push(
+				`#${hex(clr.red)}` +
+					`${hex(clr.green)}` +
+					`${hex(clr.blue)}` +
+					`${hex(clr.alpha)}`
+			);
 
-				return colors;
-			}, []);
-		}
+			return colors;
+		}, []);
 	}
 
 	// Gets all information about the font summary.
