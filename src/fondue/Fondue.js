@@ -284,8 +284,10 @@ export default class Fondue {
 		// Create padded hex value for color string
 		const hex = (d) => Number(d).toString(16).padStart(2, "0");
 
-		// Convert color records to RGBA hex strings
-		// and group them per palette
+		// CPAL's colorRecords is one large, flat array of colors.
+		// We need to chop these up depending on numPaletteEntries
+		// (the number of colors per palette) so we can return an
+		// array of color-arrays.
 		return cpal.colorRecords.reduce((colors, clr, index) => {
 			const groupIndex = Math.floor(index / cpal.numPaletteEntries);
 
