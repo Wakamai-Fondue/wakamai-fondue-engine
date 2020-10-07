@@ -50,11 +50,13 @@ const getAvailableFeatures = (font) => {
 };
 
 const getVariableCSS = (font) => {
-	const name = slugify(font.summary["Font name"]);
 	let css = "";
+	let maxProps = 6;
+	const name = slugify(font.summary["Font name"]);
 	const fvar = font.get("fvar");
 	const variations = fvar ? fvar.instances : [];
 	for (const v in variations) {
+		let counter = 2;
 		const variation = variations[v];
 		const instanceSlug = slugify(v);
 		const featureShortcut = `${name}-${instanceSlug}`;
@@ -64,6 +66,10 @@ const getVariableCSS = (font) => {
 		for (const axis of Object.keys(variation)) {
 			css = css + `${glue}"${axis}" ${variation[axis]}`;
 			glue = ", ";
+			// Poor man's code formatting
+			if (++counter % maxProps === 0) {
+				glue = `,\n        `;
+			}
 		}
 		css = css + ";";
 		css = css + "\n}\n\n";
@@ -105,8 +111,10 @@ const getCSS = (fondue) => {
 		let rootrules = "";
 		let featureclasses = "";
 		let featuredec = "font-feature-settings:";
-		let featuredecGlue = "";
+		let featuredecGlue = " ";
 		let cssvardecs = "";
+		let counter = 1;
+		let maxProps = 3;
 
 		for (const feature of features) {
 			const featureIndex = getFeatureIndex(feature);
@@ -128,7 +136,7 @@ const getCSS = (fondue) => {
 			featureclasses = featureclasses + `.${featureShortcut},\n`;
 
 			featuredec =
-				featuredec + `${featuredecGlue} var(--${featureShortcut})`;
+				featuredec + `${featuredecGlue}var(--${featureShortcut})`;
 
 			cssvardecs = cssvardecs + `.${featureShortcut} {\n`;
 			cssvardecs =
@@ -137,7 +145,11 @@ const getCSS = (fondue) => {
 
 			cssvardecs = cssvardecs + getFeatureCSS(feature, name);
 
-			featuredecGlue = ",";
+			if (++counter % maxProps === 0) {
+				featuredecGlue = ",\n        ";
+			} else {
+				featuredecGlue = ", ";
+			}
 		}
 
 		if (rootrules !== "") {
