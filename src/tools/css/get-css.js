@@ -56,7 +56,7 @@ const getVariableCSS = (font) => {
 	const fvar = font.get("fvar");
 	const variations = fvar ? fvar.instances : [];
 	for (const v in variations) {
-		let counter = 2;
+		let propCounter = 2; // First line of props should be shorter
 		const variation = variations[v];
 		const instanceSlug = slugify(v);
 		const featureShortcut = `${name}-${instanceSlug}`;
@@ -67,7 +67,7 @@ const getVariableCSS = (font) => {
 			css = css + `${glue}"${axis}" ${variation[axis]}`;
 			glue = ", ";
 			// Poor man's code formatting
-			if (++counter % maxProps === 0) {
+			if (++propCounter % maxProps === 0) {
 				glue = `,\n        `;
 			}
 		}
@@ -113,7 +113,7 @@ const getCSS = (fondue) => {
 		let featuredec = "font-feature-settings:";
 		let featuredecGlue = " ";
 		let cssvardecs = "";
-		let counter = 1;
+		let propCounter = 1; // First line of props should be shorter
 		let maxProps = 3;
 
 		for (const feature of features) {
@@ -145,7 +145,7 @@ const getCSS = (fondue) => {
 
 			cssvardecs = cssvardecs + getFeatureCSS(feature, name);
 
-			if (++counter % maxProps === 0) {
+			if (++propCounter % maxProps === 0) {
 				featuredecGlue = ",\n        ";
 			} else {
 				featuredecGlue = ", ";
