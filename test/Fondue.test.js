@@ -222,3 +222,19 @@ test("null bytes are omitted", async () => {
 		expect(nullBytes.length).toBe(0);
 	}
 });
+
+describe("Language support", () => {
+	test("supports no languages", async () => {
+		const fondue = await WFTestFont();
+		expect(fondue.languageSupport).toStrictEqual([]);
+	});
+
+	// This test can't currently work because of a bug in Font.js
+	// It's commented out so you know I didn't forgot, and should
+	// be restored to working order once FOnt.js properly reports
+	// on supported characters for its test fonts
+	// test("supports various languages", async () => {
+	// 	const fondue = await variableFont();
+	// 	expect(fondue.languageSupport).toStrictEqual(["somelanguage"]);
+	// });
+});

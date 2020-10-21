@@ -2,11 +2,20 @@ import { NAME_TABLE, NAME_RECORD, CMAP_RECORD } from "../tools/variables.js";
 import getCSS, { getCSSAsJSON } from "../tools/css/get-css.js";
 import featureMapping from "../tools/features/layout-features.js";
 import languageMapping from "../tools/ot-to-html-lang.js";
+import languageCharSets from "../tools/languageCharSets.js";
 import getFormat from "../tools/summary/format.js";
 import getFileSize from "../tools/summary/file-size.js";
 import getFilename from "../tools/summary/filename.js";
 
 export default class Fondue {
+	_removeNullBytes(value) {
+		// Currently Font.js returns null bytes in name table
+		// strings, we filter them here.
+		// https://github.com/Pomax/Font.js/issues/74
+		/* eslint-disable no-control-regex */
+		return value.replace(/\x00/g, "");
+	}
+
 	constructor(font) {
 		this._font = font;
 	}
@@ -405,11 +414,53 @@ export default class Fondue {
 		return text ? this._removeNullBytes(text) : null;
 	}
 
-	_removeNullBytes(value) {
-		// Currently Font.js returns null bytes in name table
-		// strings, we filter them here.
-		// https://github.com/Pomax/Font.js/issues/74
-		/* eslint-disable no-control-regex */
-		return value.replace(/\x00/g, "");
+	// Language support (from old Wakamai Fondue)
+	get languageSupport() {
+		const fontCharSet = this.supportedCharacters;
+		let result = [],
+			language,
+			chars,
+			charCode,
+			found,
+			i,
+			total,
+			ignoreList;
+
+		ignoreList = [
+			167, // section sign
+			8208, // hyphen
+			8224, // dagger
+			8225, // double dagger
+			8242, // prime
+			8243, // double prime
+			8274, // commercial minus sign
+			10216, // mathematical left angle bracket
+			10217, // mathematical right angle bracket
+		];
+
+		for (language in languageCharSets) {
+			chars = languageCharSets[language];
+			found = 0;
+			total = chars.length;
+
+			for (i = 0; i < total; i++) {
+				charCode = chars.codePointAt(i).toString(16);
+				if (
+					ignoreList.includes(charCode) ||
+					fontCharSet.includes(charCode)
+				) {
+					found += 1;
+				}
+			}
+
+			// We consider a language supported when *all* of the
+			// required characters are present in the font (except
+			// those in the ignoreList of course)
+			if (found === total) {
+				result.push(language);
+			}
+		}
+
+		return result.sort();
 	}
 }
