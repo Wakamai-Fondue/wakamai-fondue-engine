@@ -1,4 +1,5 @@
 import commonjs from "@rollup/plugin-commonjs";
+import json from "@rollup/plugin-json";
 
 export default {
 	input: "./index.js",
@@ -9,5 +10,5 @@ export default {
 		exports: "named",
 	},
 	external: ["fs", "path", "util"],
-	plugins: [commonjs()],
+	plugins: [commonjs(), json()],
 };

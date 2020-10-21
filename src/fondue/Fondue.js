@@ -6,7 +6,7 @@ import languageCharSets from "../tools/languageCharSets.js";
 import getFormat from "../tools/summary/format.js";
 import getFileSize from "../tools/summary/file-size.js";
 import getFilename from "../tools/summary/filename.js";
-import glyphData from "../tools/GlyphData.js";
+import glyphData from "../tools/GlyphData.json";
 
 export default class Fondue {
 	_removeNullBytes(value) {
