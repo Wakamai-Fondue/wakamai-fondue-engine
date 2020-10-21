@@ -6,6 +6,7 @@ import languageCharSets from "../tools/languageCharSets.js";
 import getFormat from "../tools/summary/format.js";
 import getFileSize from "../tools/summary/file-size.js";
 import getFilename from "../tools/summary/filename.js";
+import glyphData from "../tools/GlyphData.js";
 
 export default class Fondue {
 	_removeNullBytes(value) {
@@ -376,7 +377,7 @@ export default class Fondue {
 					// as a supported character
 					// https://github.com/Pomax/Font.js/issues/68
 					if (i == 65535) continue;
-					chars.push(i.toString(16));
+					chars.push(i.toString(16).toUpperCase());
 				}
 			}
 		}
@@ -462,5 +463,127 @@ export default class Fondue {
 		}
 
 		return result.sort();
+	}
+
+	get categorisedCharacters() {
+		// undefined = no subcategory
+		const categories = {
+			Letter: [
+				undefined,
+				"Uppercase",
+				"Lowercase",
+				"Superscript",
+				"Modifier",
+				"Ligature",
+				"Halfform",
+				"Matra",
+				"Spacing",
+				"Jamo",
+				"Syllable",
+				"Number",
+			],
+			Number: [
+				undefined,
+				"Decimal Digit",
+				"Small",
+				"Fraction",
+				"Spacing",
+				"Letter",
+			],
+			Punctuation: [
+				undefined,
+				"Quote",
+				"Parenthesis",
+				"Dash",
+				"Spacing",
+				"Modifier",
+			],
+			Symbol: [
+				undefined,
+				"Currency",
+				"Math",
+				"Modifier",
+				"Superscript",
+				"Format",
+				"Ligature",
+				"Spacing",
+				"Arrow",
+				"Geometry",
+			],
+			Separator: [undefined, "Space", "Format", "Nonspace"],
+			Mark: [
+				undefined,
+				"Modifier",
+				"Spacing",
+				"Nonspacing",
+				"Enclosing",
+				"Spacing Combining",
+				"Ligature",
+			],
+			Other: [undefined, "Format"],
+		};
+
+		const supportedChars = this.supportedCharacters;
+
+		let charset = [];
+		for (const category in categories) {
+			for (const subCategory of categories[category]) {
+				// Get all scripts in this subcategory
+				let scripts = new Set();
+				const subcatScripts = glyphData.filter(
+					(f) =>
+						f.category === category && f.subCategory === subCategory
+				);
+				subcatScripts.map((sc) => {
+					scripts.add(sc.script);
+				});
+
+				// Loop over each script and see which chars are in the font
+				for (const script of scripts) {
+					const chars = glyphData.filter(
+						(f) =>
+							f.category === category &&
+							f.subCategory === subCategory &&
+							f.script === script
+					);
+
+					// Which chars are in the font?
+					const presentChars = chars.filter((g) => {
+						// Doing string compare here, so need to strip
+						// leading 0 (otherwise "0410" != "410")
+						if (g.unicode) {
+							return supportedChars.includes(
+								g.unicode.replace(/^0+/, "")
+							);
+						}
+					});
+
+					// We only need the unicode values
+					const scriptChars = presentChars.map((g) => g.unicode);
+
+					if (scriptChars.length !== 0) {
+						const subCharset = {
+							category: category,
+							subCategory: subCategory || null,
+							script: script || null,
+							chars: scriptChars || null,
+						};
+
+						if (
+							charset.find(
+								(c) =>
+									c.category == subCharset.category &&
+									c.subCategory == subCharset.subCategory &&
+									c.script == subCharset.script
+							) === undefined
+						) {
+							charset.push(subCharset);
+						}
+					}
+				}
+			}
+		}
+
+		return charset;
 	}
 }
