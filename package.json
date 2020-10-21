@@ -1,0 +1,38 @@
+{
+  "name": "font.js",
+  "version": "0.78.0",
+  "description": "A JS based OpenType font inspector",
+  "main": "Font.js",
+  "type": "module",
+  "directories": {
+    "lib": "lib",
+    "src": "src"
+  },
+  "scripts": {
+    "clean": "prettier --write \"src/**/*.js\"",
+    "jest": "cross-env NODE_OPTIONS=--experimental-vm-modules jest --verbose=false ./test/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Pomax/font.js.git"
+  },
+  "keywords": [
+    "opentype",
+    "font",
+    "webfont",
+    "parse",
+    "inspect",
+    "debug"
+  ],
+  "author": "Pomax",
+  "license": "UNLICENSED",
+  "bugs": {
+    "url": "https://github.com/Pomax/font.js/issues"
+  },
+  "homepage": "https://github.com/Pomax/font.js#readme",
+  "devDependencies": {
+    "cross-env": "^7.0.2",
+    "jest": "^26.5.3",
+    "prettier": "^2.1.1"
+  }
+}
