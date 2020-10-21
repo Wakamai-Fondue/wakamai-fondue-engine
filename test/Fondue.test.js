@@ -29,7 +29,7 @@ describe("The loaded font", () => {
 	});
 
 	test("throws an error when it doesn't exist.", async () => {
-		await expect(() => loadFondue("./fonts/foo.ttf")).rejects.toThrow(
+		await expect(() => loadFondue("./fonts/foo.ttf")).rejects.toEqual(
 			"ENOENT: no such file or directory, open './fonts/foo.ttf'"
 		);
 	});
@@ -65,6 +65,23 @@ describe("The loaded font", () => {
 		expect(fondue.cssString).toContain(
 			"font-feature-settings: var(--source-code-pro-case)"
 		);
+	});
+
+	test("supports WOFF", async () => {
+		const fondue = await loadFondue(
+			"./third_party/font.js/fonts/SourceCodePro-Regular.ttf.woff"
+		);
+
+		/* Need to access an actual table here, because gzip decoding happens lazily */
+		expect(fondue._font.opentype.tables.cmap).toBeDefined();
+	});
+
+	test("supports WOFF2", async () => {
+		const fondue = await loadFondue(
+			"./third_party/font.js/fonts/SourceCodePro-Regular.ttf.woff2"
+		);
+
+		expect(fondue).toBeDefined();
 	});
 });
 
