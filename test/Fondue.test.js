@@ -1,48 +1,52 @@
-import loadFondue from "../index";
+import { fromPath, fromDataBuffer } from "../index";
+import { toArrayBuffer } from "./support/utils";
+
+import fs from "fs";
+const readFile = fs.promises.readFile;
 
 const otfFont = async () => {
-	return await loadFondue(
+	return await fromPath(
 		"./third_party/font.js/fonts/SourceCodePro-Regular.otf"
 	);
 };
 
 const WFTestFont = async () => {
-	return await loadFondue("./test/fixtures/WFTestFont/WFTestFont.ttf");
+	return await fromPath("./test/fixtures/WFTestFont/WFTestFont.ttf");
 };
 
 const variableFont = async () => {
-	return await loadFondue(
+	return await fromPath(
 		"./third_party/font.js/fonts/SourceCodeVariable-Roman.ttf"
 	);
 };
 
 const colorFont = async () => {
-	return await loadFondue("./test/fixtures/ss-emoji/ss-emoji-microsoft.ttf");
+	return await fromPath("./test/fixtures/ss-emoji/ss-emoji-microsoft.ttf");
 };
 
 describe("The loaded font", () => {
 	test("is loaded succesfully.", async () => {
-		const fondue = await loadFondue(
+		const fondue = await fromPath(
 			"./third_party/font.js/fonts/SourceCodeVariable-Roman.ttf"
 		);
 		expect(fondue._font).toBeDefined();
 	});
 
 	test("throws an error when it doesn't exist.", async () => {
-		await expect(() => loadFondue("./fonts/foo.ttf")).rejects.toEqual(
+		await expect(() => fromPath("./fonts/foo.ttf")).rejects.toEqual(
 			"ENOENT: no such file or directory, open './fonts/foo.ttf'"
 		);
 	});
 
 	test("returns data from the name table.", async () => {
-		const fondue = await loadFondue(
+		const fondue = await fromPath(
 			"./third_party/font.js/fonts/SourceCodeVariable-Roman.ttf"
 		);
 		expect(fondue.name(1)).toContain("Source Code Variable");
 	});
 
 	test("returns empty data from an empty name table.", async () => {
-		const fondue = await loadFondue(
+		const fondue = await fromPath(
 			"./third_party/font.js/fonts/SourceCodeVariable-Roman.ttf"
 		);
 		const subfamily = fondue.name("sample");
@@ -50,7 +54,7 @@ describe("The loaded font", () => {
 	});
 
 	test("returns CSS information.", async () => {
-		const fondue = await loadFondue(
+		const fondue = await fromPath(
 			"./third_party/font.js/fonts/SourceCodeVariable-Roman.ttf"
 		);
 		expect(fondue.cssString).toContain(
@@ -59,7 +63,7 @@ describe("The loaded font", () => {
 	});
 
 	test("without variations should return CSS information.", async () => {
-		const fondue = await loadFondue(
+		const fondue = await fromPath(
 			"./third_party/font.js/fonts/SourceCodePro-Regular.otf"
 		);
 		expect(fondue.cssString).toContain(
@@ -68,7 +72,7 @@ describe("The loaded font", () => {
 	});
 
 	test("supports WOFF", async () => {
-		const fondue = await loadFondue(
+		const fondue = await fromPath(
 			"./third_party/font.js/fonts/SourceCodePro-Regular.ttf.woff"
 		);
 
@@ -77,11 +81,27 @@ describe("The loaded font", () => {
 	});
 
 	test("supports WOFF2", async () => {
-		const fondue = await loadFondue(
+		const fondue = await fromPath(
 			"./third_party/font.js/fonts/SourceCodePro-Regular.ttf.woff2"
 		);
 
 		expect(fondue).toBeDefined();
+	});
+});
+
+describe("fromDataBuffer", () => {
+	it("loads a font from an ArrayBuffer", async () => {
+		const buf = await readFile(
+			"./third_party/font.js/fonts/SourceCodeVariable-Roman.ttf"
+		);
+		const arrayBuf = toArrayBuffer(buf);
+
+		const fondue = await fromDataBuffer(
+			arrayBuf,
+			"SourceCodeVariable-Roman.ttf"
+		);
+		expect(fondue._font).toBeDefined();
+		expect(fondue._font.opentype).toBeDefined();
 	});
 });
 
