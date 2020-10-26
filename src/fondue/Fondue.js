@@ -445,7 +445,7 @@ export default class Fondue {
 			total = chars.length;
 
 			for (i = 0; i < total; i++) {
-				charCode = chars.codePointAt(i).toString(16);
+				charCode = chars.codePointAt(i).toString(16).toUpperCase();
 				if (
 					ignoreList.includes(charCode) ||
 					fontCharSet.includes(charCode)

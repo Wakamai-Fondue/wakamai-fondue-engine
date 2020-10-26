@@ -270,10 +270,12 @@ describe("Language support", () => {
 	// It's commented out so you know I didn't forgot, and should
 	// be restored to working order once FOnt.js properly reports
 	// on supported characters for its test fonts
-	// test("supports various languages", async () => {
-	// 	const fondue = await variableFont();
-	// 	expect(fondue.languageSupport).toStrictEqual(["somelanguage"]);
-	// });
+	test("supports various languages", async () => {
+		const fondue = await variableFont();
+		expect(fondue.languageSupport).toEqual(
+			expect.arrayContaining(["English", "Dutch"])
+		);
+	});
 });
 
 test("Extracts charset", async () => {
