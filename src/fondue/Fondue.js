@@ -6,7 +6,7 @@ import languageCharSets from "../tools/languageCharSets.js";
 import getFormat from "../tools/summary/format.js";
 import getFileSize from "../tools/summary/file-size.js";
 import getFilename from "../tools/summary/filename.js";
-import glyphData from "../tools/GlyphData.js";
+import glyphData from "../tools/GlyphData.json";
 
 export default class Fondue {
 	_removeNullBytes(value) {
@@ -445,7 +445,7 @@ export default class Fondue {
 			total = chars.length;
 
 			for (i = 0; i < total; i++) {
-				charCode = chars.codePointAt(i).toString(16);
+				charCode = chars.codePointAt(i).toString(16).toUpperCase();
 				if (
 					ignoreList.includes(charCode) ||
 					fontCharSet.includes(charCode)

@@ -3,12 +3,29 @@ import { manPage } from "./src/manpage.js";
 import { Event, EventManager } from "./src/eventing.js";
 import { SFNT, WOFF, WOFF2 } from "./src/opentype/index.js";
 import { loadTableClasses } from "./src/opentype/tables/createTable.js";
-import { context, isBrowser } from "./lib/context.js";
 
-if(typeof fetch === "undefined") {
+const PERMITTED_TYPES = [
+    `ttf`,
+    `otf`,
+    `woff`,
+    `woff2`,
+];
+
+const ILLEGAL_TYPES = [
+    `eot`,
+    `svg`,
+    `fon`,
+    `ttc`,
+];
+
+const ALL_TYPES = [...PERMITTED_TYPES, ...ILLEGAL_TYPES];
+
+let fetch = globalThis.fetch;
+
+if(!fetch) {
     let backlog = [];
 
-    var fetch = (...args) => {
+    fetch = (...args) => {
         return new Promise((resolve, reject) => {
             backlog.push({ args, resolve, reject});
         });
@@ -34,6 +51,7 @@ if(typeof fetch === "undefined") {
     });
 }
 
+
 /**
  * either return the appropriate CSS format
  * for a specific font URL, or generate an
@@ -42,7 +60,7 @@ if(typeof fetch === "undefined") {
  *
  * @param {*} path
  */
-export function getFontCSSFormat(path) {
+function getFontCSSFormat(path) {
     let pos = path.lastIndexOf(`.`);
     let ext = (path.substring(pos + 1) || ``).toLowerCase();
     let format = {
@@ -51,7 +69,7 @@ export function getFontCSSFormat(path) {
         woff: `woff`,
         woff2: `woff2`
     }[ext];
-    
+
     if (format) return format;
 
     let msg = {
@@ -60,13 +78,10 @@ export function getFontCSSFormat(path) {
         fon: `The .fon format is not supported: this is an ancient Windows bitmap font format.`,
         ttc: `Based on the current CSS specification, font collections are not (yet?) supported.`
     }[ext];
-    if (!msg) msg = `${path} is not a font.`;
 
-    if(isBrowser) {
-        this.dispatch(new Event(`error`, {}, msg));
-    } else {
-       throw new Error(msg); // Error handling for NodeJS
-    }
+    if (!msg) msg = `${url} is not a font.`;
+
+    this.dispatch(new Event(`error`, {}, msg));
 }
 
 
@@ -132,14 +147,14 @@ class Font extends EventManager {
      * This is a non-blocking operation.
      *
      * @param {String} url The URL for the font in question
+     * @param {String} filename The filename when URL is a base64 string
      */
-    async loadFont(url) {
-        const type = getFontCSSFormat(url);
+    async loadFont(url, filename) {
         fetch(url)
         .then(response => checkFetchResponseStatus(response) && response.arrayBuffer())
-        .then(buffer => this.fromDataBuffer(buffer, type))
+        .then(buffer => this.fromDataBuffer(buffer, filename || url))
         .catch(err => {
-            const evt = new Event(`error`, err, `Failed to load font at ${url}`);
+            const evt = new Event(`error`, err, `Failed to load font at ${filename || url}`);
             this.dispatch(evt);
             if (this.onerror) this.onerror(evt);
         });
@@ -150,7 +165,11 @@ class Font extends EventManager {
      *
      * @param {Buffer} buffer The binary data associated with this font.
      */
-    async fromDataBuffer(buffer, type) {
+    async fromDataBuffer(buffer, typeOrPath) {
+        let type = typeOrPath;
+        if (!ALL_TYPES.includes(typeOrPath)) {
+            type = getFontCSSFormat(typeOrPath);
+        }
         this.fontData = new DataView(buffer); // Because we want to enforce Big Endian everywhere
         await this.parseBasicData(type);
         const evt = new Event("load", { font: this });
@@ -180,8 +199,24 @@ class Font extends EventManager {
      * Does this font support the specified character?
      * @param {*} char
      */
+    getGlyphId(char) {
+        return this.opentype.tables.cmap.getGlyphId(char);
+    }
+
+    /**
+     * find the actual "letter" for a given glyphid
+     * @param {*} glyphid
+     */
+    reverse(glyphid) {
+        return this.opentype.tables.cmap.reverse(glyphid);
+    }
+
+    /**
+     * Does this font support the specified character?
+     * @param {*} char
+     */
     supports(char) {
-        return this.opentype.tables.cmap.supports(char) !== false;
+        return this.getGlyphId(char) !== 0
     }
 
     /**
