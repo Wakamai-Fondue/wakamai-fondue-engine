@@ -466,6 +466,10 @@ export default class Fondue {
 	}
 
 	get categorisedCharacters() {
+		const fontCharset = this.supportedCharacters.map((g) =>
+			g.padStart(4, "0").toUpperCase()
+		);
+
 		// undefined = no subcategory
 		const categories = {
 			Letter: [
@@ -523,9 +527,8 @@ export default class Fondue {
 			Other: [undefined, "Format"],
 		};
 
-		const supportedChars = this.supportedCharacters;
-
 		let charset = [];
+		let allScriptChars = [];
 		for (const category in categories) {
 			for (const subCategory of categories[category]) {
 				// Get all scripts in this subcategory
@@ -548,18 +551,13 @@ export default class Fondue {
 					);
 
 					// Which chars are in the font?
-					const presentChars = chars.filter((g) => {
-						// Doing string compare here, so need to strip
-						// leading 0 (otherwise "0410" != "410")
-						if (g.unicode) {
-							return supportedChars.includes(
-								g.unicode.replace(/^0+/, "")
-							);
-						}
-					});
+					const presentChars = chars.filter((g) =>
+						fontCharset.includes(g.unicode)
+					);
 
 					// We only need the unicode values
 					const scriptChars = presentChars.map((g) => g.unicode);
+					allScriptChars = [...allScriptChars, ...scriptChars];
 
 					if (scriptChars.length !== 0) {
 						const subCharset = {
@@ -582,6 +580,21 @@ export default class Fondue {
 					}
 				}
 			}
+		}
+
+		// List all chars not grouped under scripts in a misc category
+		// Also, ignore 0xFFFF which is erroneously reported as a char
+		// by Fontkit
+		const uncategorisedChars = fontCharset.filter(
+			(g) => !allScriptChars.includes(g) && g != "FFFF"
+		);
+		if (uncategorisedChars.length !== 0) {
+			charset.push({
+				category: "Uncategorised",
+				subCategory: null,
+				script: null,
+				chars: uncategorisedChars || null,
+			});
 		}
 
 		return charset;
