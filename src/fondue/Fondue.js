@@ -586,4 +586,112 @@ export default class Fondue {
 
 		return charset;
 	}
+
+	// Return characters per feature
+	get featureChars() {
+		const { cmap, name, GSUB } = this._font.opentype.tables;
+
+		function letterFor(glyphid) {
+			let reversed = cmap.reverse(glyphid);
+			return reversed.unicode ?? `[${glyphid}:??]`;
+		}
+
+		let scripts = GSUB.getSupportedScripts();
+		let allglyphs = {};
+
+		scripts.forEach((script) => {
+			let langsys = GSUB.getSupportedLangSys(script);
+
+			langsys.forEach((lang) => {
+				let langSysTable = GSUB.getLangSysTable(script, lang);
+				let features = GSUB.getFeatures(langSysTable);
+				let featureCount = features.length;
+
+				features.forEach((feature) => {
+					const lookupIDs = feature.lookupListIndices;
+
+					lookupIDs.forEach((id) => {
+						const lookup = GSUB.getLookup(id);
+
+						// Single substitution
+						if (lookup.lookupType === 1) {
+							lookup.subtableOffsets.forEach((_, i) => {
+								const subtable = lookup.getSubTable(i);
+								const coverage = subtable.getCoverageTable();
+								let glyphs = coverage.glyphArray;
+
+								if (!(feature.featureTag in allglyphs)) {
+									allglyphs[feature.featureTag] = [];
+								}
+
+								if (!glyphs) {
+									// Glyphs in start/end ranges
+									for (const r of coverage.rangeRecords) {
+										for (
+											let g = r.startGlyphID;
+											g < r.endGlyphID + 1;
+											g++
+										) {
+											allglyphs[feature.featureTag].push(
+												letterFor(g)
+											);
+										}
+									}
+								} else {
+									// Individual glyphs
+									allglyphs[feature.featureTag] = [
+										...allglyphs[feature.featureTag],
+										...glyphs.map((g) => letterFor(g)),
+									];
+								}
+							});
+						}
+
+						// Ligature substitution
+						if (lookup.lookupType === 4) {
+							lookup.subtableOffsets.forEach((_, i) => {
+								const subtable = lookup.getSubTable(i);
+								const coverage = subtable.getCoverageTable();
+
+								subtable.ligatureSetOffsets.forEach(
+									(_, setIndex) => {
+										const ligatureSet = subtable.getLigatureSet(
+											setIndex
+										);
+
+										ligatureSet.ligatureOffsets.forEach(
+											(_, ligIndex) => {
+												const ligatureTable = ligatureSet.getLigature(
+													ligIndex
+												);
+
+												const sequence = [
+													coverage.glyphArray[
+														setIndex
+													],
+													...ligatureTable.componentGlyphIDs,
+												];
+
+												// console.log(
+												//   `ligature set [${setIndex}], ligature table [${ligIndex}]: ${script}[${lang}].${feature.featureTag}[${id}]: ligature (coverage:${coverage.coverageFormat}) [ ${
+												//     sequence.map(letterFor).join(` + `)
+												//   } ] -> ${
+												//     letterFor(ligatureTable.ligatureGlyph)
+												//   }`
+												// );
+											}
+										);
+									}
+								);
+							});
+						}
+					}); // end lookup foreach
+				}); // end feature foreach
+
+				if (script === "DFLT") {
+					console.log(allglyphs);
+				}
+			}); // end langsys foreach
+		}); // end script foreach
+	}
 }
