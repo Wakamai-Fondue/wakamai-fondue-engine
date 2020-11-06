@@ -602,10 +602,14 @@ export default class Fondue {
 		scripts.forEach((script) => {
 			let langsys = GSUB.getSupportedLangSys(script);
 
+			allglyphs[script] = {};
+
 			langsys.forEach((lang) => {
 				let langSysTable = GSUB.getLangSysTable(script, lang);
 				let features = GSUB.getFeatures(langSysTable);
 				let featureCount = features.length;
+
+				allglyphs[script][lang] = {};
 
 				features.forEach((feature) => {
 					const lookupIDs = feature.lookupListIndices;
@@ -620,8 +624,15 @@ export default class Fondue {
 								const coverage = subtable.getCoverageTable();
 								let glyphs = coverage.glyphArray;
 
-								if (!(feature.featureTag in allglyphs)) {
-									allglyphs[feature.featureTag] = [];
+								if (
+									!(
+										feature.featureTag in
+										allglyphs[script][lang]
+									)
+								) {
+									allglyphs[script][lang][
+										feature.featureTag
+									] = [];
 								}
 
 								if (!glyphs) {
@@ -632,15 +643,19 @@ export default class Fondue {
 											g < r.endGlyphID + 1;
 											g++
 										) {
-											allglyphs[feature.featureTag].push(
-												letterFor(g)
-											);
+											allglyphs[script][lang][
+												feature.featureTag
+											].push(letterFor(g));
 										}
 									}
 								} else {
 									// Individual glyphs
-									allglyphs[feature.featureTag] = [
-										...allglyphs[feature.featureTag],
+									allglyphs[script][lang][
+										feature.featureTag
+									] = [
+										...allglyphs[script][lang][
+											feature.featureTag
+										],
 										...glyphs.map((g) => letterFor(g)),
 									];
 								}
@@ -672,13 +687,23 @@ export default class Fondue {
 													...ligatureTable.componentGlyphIDs,
 												];
 
-												// console.log(
-												//   `ligature set [${setIndex}], ligature table [${ligIndex}]: ${script}[${lang}].${feature.featureTag}[${id}]: ligature (coverage:${coverage.coverageFormat}) [ ${
-												//     sequence.map(letterFor).join(` + `)
-												//   } ] -> ${
-												//     letterFor(ligatureTable.ligatureGlyph)
-												//   }`
-												// );
+												if (
+													!allglyphs[script][lang][
+														feature.featureTag
+													]
+												) {
+													allglyphs[script][lang][
+														feature.featureTag
+													] = [];
+												}
+
+												allglyphs[script][lang][
+													feature.featureTag
+												].push(
+													sequence
+														.map(letterFor)
+														.join("")
+												);
 											}
 										);
 									}
@@ -687,11 +712,9 @@ export default class Fondue {
 						}
 					}); // end lookup foreach
 				}); // end feature foreach
-
-				if (script === "DFLT") {
-					console.log(allglyphs);
-				}
 			}); // end langsys foreach
 		}); // end script foreach
+
+		console.log(allglyphs);
 	}
 }
