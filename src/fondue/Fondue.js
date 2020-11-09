@@ -589,11 +589,10 @@ export default class Fondue {
 
 	// Return characters per feature
 	get featureChars() {
-		const { cmap, name, GSUB } = this._font.opentype.tables;
+		const { cmap, GSUB } = this._font.opentype.tables;
 
 		function letterFor(glyphid) {
-			let reversed = cmap.reverse(glyphid);
-			return reversed.unicode ?? `[${glyphid}:??]`;
+			return cmap.reverse(glyphid).unicode;
 		}
 
 		let scripts = GSUB.getSupportedScripts();
@@ -607,7 +606,6 @@ export default class Fondue {
 			langsys.forEach((lang) => {
 				let langSysTable = GSUB.getLangSysTable(script, lang);
 				let features = GSUB.getFeatures(langSysTable);
-				let featureCount = features.length;
 
 				allglyphs[script][lang] = {};
 
@@ -643,9 +641,12 @@ export default class Fondue {
 											g < r.endGlyphID + 1;
 											g++
 										) {
-											allglyphs[script][lang][
-												feature.featureTag
-											].push(letterFor(g));
+											const char = letterFor(g);
+											if (char) {
+												allglyphs[script][lang][
+													feature.featureTag
+												].push(char);
+											}
 										}
 									}
 								} else {
@@ -656,7 +657,12 @@ export default class Fondue {
 										...allglyphs[script][lang][
 											feature.featureTag
 										],
-										...glyphs.map((g) => letterFor(g)),
+										...glyphs
+											.filter(
+												(g) =>
+													letterFor(g) !== undefined
+											)
+											.map((g) => letterFor(g)),
 									];
 								}
 							});
@@ -687,7 +693,12 @@ export default class Fondue {
 													...ligatureTable.componentGlyphIDs,
 												];
 
+												const ligatureSequence = sequence
+													.map(letterFor)
+													.join("");
+
 												if (
+													ligatureSequence &&
 													!allglyphs[script][lang][
 														feature.featureTag
 													]
@@ -697,13 +708,11 @@ export default class Fondue {
 													] = [];
 												}
 
-												allglyphs[script][lang][
-													feature.featureTag
-												].push(
-													sequence
-														.map(letterFor)
-														.join("")
-												);
+												if (ligatureSequence) {
+													allglyphs[script][lang][
+														feature.featureTag
+													].push(ligatureSequence);
+												}
 											}
 										);
 									}
