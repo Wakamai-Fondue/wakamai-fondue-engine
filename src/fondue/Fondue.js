@@ -588,8 +588,11 @@ export default class Fondue {
 	}
 
 	// Return characters per feature
+	// Only GSUB for now, TODO: GPOS
 	get featureChars() {
 		const { cmap, GSUB } = this._font.opentype.tables;
+
+		if (!GSUB) return {};
 
 		function letterFor(glyphid) {
 			return cmap.reverse(glyphid).unicode;
