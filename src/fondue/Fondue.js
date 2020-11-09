@@ -595,19 +595,99 @@ export default class Fondue {
 			return cmap.reverse(glyphid).unicode;
 		}
 
+		function parseLookup(lookup, script, lang, feature, currentAllGlyphs) {
+			// Single substitution
+			if (lookup.lookupType === 1) {
+				lookup.subtableOffsets.forEach((_, i) => {
+					const subtable = lookup.getSubTable(i);
+					const coverage = subtable.getCoverageTable();
+					let glyphs = coverage.glyphArray;
+					let results = [];
+
+					if (!glyphs) {
+						// Glyphs in start/end ranges
+						for (const r of coverage.rangeRecords) {
+							for (
+								let g = r.startGlyphID;
+								g < r.endGlyphID + 1;
+								g++
+							) {
+								const char = letterFor(g);
+								if (char) {
+									results.push(char);
+								}
+							}
+						}
+					} else {
+						// Individual glyphs
+						results = glyphs
+							.filter((g) => letterFor(g) !== undefined)
+							.map(letterFor);
+					}
+
+					if (results.length > 0) {
+						if (!(feature.featureTag in currentAllGlyphs)) {
+							currentAllGlyphs[feature.featureTag] = [];
+						}
+
+						currentAllGlyphs[feature.featureTag] = [
+							...currentAllGlyphs[feature.featureTag],
+							...results,
+						];
+					}
+				});
+			}
+
+			// Ligature substitution
+			if (lookup.lookupType === 4) {
+				lookup.subtableOffsets.forEach((_, i) => {
+					const subtable = lookup.getSubTable(i);
+					const coverage = subtable.getCoverageTable();
+
+					subtable.ligatureSetOffsets.forEach((_, setIndex) => {
+						const ligatureSet = subtable.getLigatureSet(setIndex);
+
+						ligatureSet.ligatureOffsets.forEach((_, ligIndex) => {
+							const ligatureTable = ligatureSet.getLigature(
+								ligIndex
+							);
+
+							const sequence = [
+								coverage.glyphArray[setIndex],
+								...ligatureTable.componentGlyphIDs,
+							].map(letterFor);
+
+							// Only keep sequences with glyphs mapped to letters
+							if (!sequence.includes(undefined)) {
+								if (!(feature.featureTag in currentAllGlyphs)) {
+									currentAllGlyphs[feature.featureTag] = [];
+								}
+
+								currentAllGlyphs[feature.featureTag].push(
+									sequence.join("")
+								);
+							}
+						});
+					});
+				});
+			}
+
+			return currentAllGlyphs;
+		}
+
 		let scripts = GSUB.getSupportedScripts();
-		let allglyphs = {};
+		let allGlyphs = {};
 
 		scripts.forEach((script) => {
 			let langsys = GSUB.getSupportedLangSys(script);
 
-			allglyphs[script] = {};
+			allGlyphs[script] = {};
 
 			langsys.forEach((lang) => {
 				let langSysTable = GSUB.getLangSysTable(script, lang);
 				let features = GSUB.getFeatures(langSysTable);
 
-				allglyphs[script][lang] = {};
+				allGlyphs[script][lang] = {};
 
 				features.forEach((feature) => {
 					const lookupIDs = feature.lookupListIndices;
@@ -615,115 +695,18 @@ export default class Fondue {
 					lookupIDs.forEach((id) => {
 						const lookup = GSUB.getLookup(id);
 
-						// Single substitution
-						if (lookup.lookupType === 1) {
-							lookup.subtableOffsets.forEach((_, i) => {
-								const subtable = lookup.getSubTable(i);
-								const coverage = subtable.getCoverageTable();
-								let glyphs = coverage.glyphArray;
+						allGlyphs[script][lang] = parseLookup(
+							lookup,
+							script,
+							lang,
+							feature,
+							allGlyphs[script][lang]
+						);
+					});
+				});
+			});
+		});
 
-								if (
-									!(
-										feature.featureTag in
-										allglyphs[script][lang]
-									)
-								) {
-									allglyphs[script][lang][
-										feature.featureTag
-									] = [];
-								}
-
-								if (!glyphs) {
-									// Glyphs in start/end ranges
-									for (const r of coverage.rangeRecords) {
-										for (
-											let g = r.startGlyphID;
-											g < r.endGlyphID + 1;
-											g++
-										) {
-											const char = letterFor(g);
-											if (char) {
-												allglyphs[script][lang][
-													feature.featureTag
-												].push(char);
-											}
-										}
-									}
-								} else {
-									// Individual glyphs
-									allglyphs[script][lang][
-										feature.featureTag
-									] = [
-										...allglyphs[script][lang][
-											feature.featureTag
-										],
-										...glyphs
-											.filter(
-												(g) =>
-													letterFor(g) !== undefined
-											)
-											.map((g) => letterFor(g)),
-									];
-								}
-							});
-						}
-
-						// Ligature substitution
-						if (lookup.lookupType === 4) {
-							lookup.subtableOffsets.forEach((_, i) => {
-								const subtable = lookup.getSubTable(i);
-								const coverage = subtable.getCoverageTable();
-
-								subtable.ligatureSetOffsets.forEach(
-									(_, setIndex) => {
-										const ligatureSet = subtable.getLigatureSet(
-											setIndex
-										);
-
-										ligatureSet.ligatureOffsets.forEach(
-											(_, ligIndex) => {
-												const ligatureTable = ligatureSet.getLigature(
-													ligIndex
-												);
-
-												const sequence = [
-													coverage.glyphArray[
-														setIndex
-													],
-													...ligatureTable.componentGlyphIDs,
-												];
-
-												const ligatureSequence = sequence
-													.map(letterFor)
-													.join("");
-
-												if (
-													ligatureSequence &&
-													!allglyphs[script][lang][
-														feature.featureTag
-													]
-												) {
-													allglyphs[script][lang][
-														feature.featureTag
-													] = [];
-												}
-
-												if (ligatureSequence) {
-													allglyphs[script][lang][
-														feature.featureTag
-													].push(ligatureSequence);
-												}
-											}
-										);
-									}
-								);
-							});
-						}
-					}); // end lookup foreach
-				}); // end feature foreach
-			}); // end langsys foreach
-		}); // end script foreach
-
-		console.log(allglyphs);
+		return allGlyphs;
 	}
 }
