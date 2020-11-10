@@ -278,15 +278,40 @@ describe("Language support", () => {
 	});
 });
 
-test("Extracts charset", async () => {
-	const fondue = await WFTestFont();
+describe("Detect charset support", () => {
+	test("Detect latin uppercase letters", async () => {
+		const fondue = await WFTestFont();
 
-	expect(fondue.categorisedCharacters).toEqual([
-		{
-			category: "Letter",
-			chars: ["0041"],
-			script: "latin",
-			subCategory: "Uppercase",
-		},
-	]);
+		expect(fondue.categorisedCharacters).toEqual([
+			{
+				category: "Letter",
+				chars: ["0041"],
+				script: "latin",
+				subCategory: "Uppercase",
+			},
+		]);
+	});
+
+	test("Detect uncategorised chars", async () => {
+		const fondue = await otfFont();
+
+		expect(fondue.categorisedCharacters).toEqual(
+			expect.arrayContaining([
+				{
+					category: "Uncategorised",
+					chars: [
+						"E0A0",
+						"E0A1",
+						"E0A2",
+						"E0B0",
+						"E0B1",
+						"E0B2",
+						"E0B3",
+					],
+					script: null,
+					subCategory: null,
+				},
+			])
+		);
+	});
 });
