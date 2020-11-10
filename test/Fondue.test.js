@@ -315,3 +315,21 @@ describe("Detect charset support", () => {
 		);
 	});
 });
+
+describe("Layout features", () => {
+	test("has GSUB layout features", async () => {
+		const fondue = await otfFont();
+
+		expect(fondue.featureChars["DFLT"]["dflt"]).toEqual(
+			expect.objectContaining({
+				onum: ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"],
+			})
+		);
+	});
+
+	test("has no GSUB layout features", async () => {
+		const fondue = await WFTestFont();
+
+		expect(fondue.featureChars).toEqual({});
+	});
+});
