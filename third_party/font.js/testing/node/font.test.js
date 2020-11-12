@@ -9,7 +9,7 @@ describe("Basic font testing", () => {
       throw err;
     };
     font.onload = async () => done();
-    font.src = "./fonts/SourceCodePro-Regular.ttf";
+    font.src = "./fonts/SourceCodePro/SourceCodePro-Regular.ttf";
   });
 
   test("font loaded", () => {
@@ -19,6 +19,7 @@ describe("Basic font testing", () => {
   test("Glyph support", () => {
     expect(font.supports(`f`)).toBe(true);
     expect(font.supports(`i`)).toBe(true);
+    expect(font.supports(String.fromCharCode(0xffff))).toBe(false);
   });
 
   test("HEAD table", () => {
