@@ -239,7 +239,7 @@ const layoutFeatures = [
 	},
 	{
 		tag: "pref",
-		name: "Pre-Base forms,",
+		name: "Pre-Base Forms",
 		css: {
 			feature: 'font-feature-settings: "pref"',
 			variant: null,
