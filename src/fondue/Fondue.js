@@ -669,6 +669,10 @@ export default class Fondue {
 					// ...and how many alternates it has
 					const alternateCount = altset.alternateGlyphIDs.length;
 
+					// TODO: we're now assuming one single input char for
+					// a lookup type 3. What if there are more chars with
+					// alternates?
+
 					currentAllGlyphs[feature.featureTag]["input"] = character;
 					currentAllGlyphs[feature.featureTag][
 						"alternateCount"
