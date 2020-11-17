@@ -322,7 +322,11 @@ describe("Layout features", () => {
 
 		expect(fondue.featureChars["DFLT"]["dflt"]).toEqual(
 			expect.objectContaining({
-				onum: ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"],
+				onum: {
+					type: 1,
+					input: ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"],
+					alternateCount: [],
+				},
 			})
 		);
 	});
