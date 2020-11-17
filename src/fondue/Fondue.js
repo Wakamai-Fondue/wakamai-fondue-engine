@@ -616,6 +616,7 @@ export default class Fondue {
 				currentAllGlyphs[feature.featureTag] = {
 					type: lookup.lookupType,
 					input: [],
+					alternateCount: [],
 				};
 			}
 
@@ -673,10 +674,12 @@ export default class Fondue {
 					// a lookup type 3. What if there are more chars with
 					// alternates?
 
-					currentAllGlyphs[feature.featureTag]["input"] = character;
-					currentAllGlyphs[feature.featureTag][
-						"alternateCount"
-					] = alternateCount;
+					currentAllGlyphs[feature.featureTag]["input"].push(
+						character
+					);
+					currentAllGlyphs[feature.featureTag]["alternateCount"].push(
+						alternateCount
+					);
 				});
 			}
 
