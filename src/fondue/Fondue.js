@@ -612,6 +612,13 @@ export default class Fondue {
 		}
 
 		function parseLookup(lookup, script, lang, feature, currentAllGlyphs) {
+			if (!(feature.featureTag in currentAllGlyphs)) {
+				currentAllGlyphs[feature.featureTag] = {
+					type: lookup.lookupType,
+					input: [],
+				};
+			}
+
 			// Single substitution
 			if (lookup.lookupType === 1) {
 				lookup.subtableOffsets.forEach((_, i) => {
@@ -642,13 +649,6 @@ export default class Fondue {
 					}
 
 					if (results.length > 0) {
-						if (!(feature.featureTag in currentAllGlyphs)) {
-							currentAllGlyphs[feature.featureTag] = {
-								type: 1,
-								input: [],
-							};
-						}
-
 						currentAllGlyphs[feature.featureTag]["input"] = [
 							...currentAllGlyphs[feature.featureTag]["input"],
 							...results,
@@ -668,13 +668,6 @@ export default class Fondue {
 					const character = letterFor(coverage.glyphArray[0]);
 					// ...and how many alternates it has
 					const alternateCount = altset.alternateGlyphIDs.length;
-
-					if (!(feature.featureTag in currentAllGlyphs)) {
-						currentAllGlyphs[feature.featureTag] = {
-							type: 3,
-							input: [],
-						};
-					}
 
 					currentAllGlyphs[feature.featureTag]["input"] = character;
 					currentAllGlyphs[feature.featureTag][
@@ -704,13 +697,6 @@ export default class Fondue {
 
 							// Only keep sequences with glyphs mapped to letters
 							if (!sequence.includes(undefined)) {
-								if (!(feature.featureTag in currentAllGlyphs)) {
-									currentAllGlyphs[feature.featureTag] = {
-										type: 4,
-										input: [],
-									};
-								}
-
 								currentAllGlyphs[feature.featureTag][
 									"input"
 								].push(sequence.join(""));
