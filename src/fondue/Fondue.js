@@ -643,14 +643,43 @@ export default class Fondue {
 
 					if (results.length > 0) {
 						if (!(feature.featureTag in currentAllGlyphs)) {
-							currentAllGlyphs[feature.featureTag] = [];
+							currentAllGlyphs[feature.featureTag] = {
+								type: 1,
+								input: [],
+							};
 						}
 
-						currentAllGlyphs[feature.featureTag] = [
-							...currentAllGlyphs[feature.featureTag],
+						currentAllGlyphs[feature.featureTag]["input"] = [
+							...currentAllGlyphs[feature.featureTag]["input"],
 							...results,
 						];
 					}
+				});
+			}
+
+			// Alternate Substitution
+			if (lookup.lookupType === 3) {
+				lookup.subtableOffsets.forEach((_, i) => {
+					const subtable = lookup.getSubTable(i);
+					const coverage = subtable.getCoverageTable();
+					const altset = subtable.getAlternateSet(0);
+
+					// We need to know the original character...
+					const character = letterFor(coverage.glyphArray[0]);
+					// ...and how many alternates it has
+					const alternateCount = altset.alternateGlyphIDs.length;
+
+					if (!(feature.featureTag in currentAllGlyphs)) {
+						currentAllGlyphs[feature.featureTag] = {
+							type: 3,
+							input: [],
+						};
+					}
+
+					currentAllGlyphs[feature.featureTag]["input"] = character;
+					currentAllGlyphs[feature.featureTag][
+						"alternateCount"
+					] = alternateCount;
 				});
 			}
 
@@ -676,12 +705,15 @@ export default class Fondue {
 							// Only keep sequences with glyphs mapped to letters
 							if (!sequence.includes(undefined)) {
 								if (!(feature.featureTag in currentAllGlyphs)) {
-									currentAllGlyphs[feature.featureTag] = [];
+									currentAllGlyphs[feature.featureTag] = {
+										type: 4,
+										input: [],
+									};
 								}
 
-								currentAllGlyphs[feature.featureTag].push(
-									sequence.join("")
-								);
+								currentAllGlyphs[feature.featureTag][
+									"input"
+								].push(sequence.join(""));
 							}
 						});
 					});
