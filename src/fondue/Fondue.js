@@ -685,27 +685,33 @@ export default class Fondue {
 					const subtable = lookup.getSubTable(i);
 					const coverage = subtable.getCoverageTable();
 
-					subtable.ligatureSetOffsets.forEach((_, setIndex) => {
-						const ligatureSet = subtable.getLigatureSet(setIndex);
-
-						ligatureSet.ligatureOffsets.forEach((_, ligIndex) => {
-							const ligatureTable = ligatureSet.getLigature(
-								ligIndex
+					if (coverage.glyphArray !== undefined) {
+						subtable.ligatureSetOffsets.forEach((_, setIndex) => {
+							const ligatureSet = subtable.getLigatureSet(
+								setIndex
 							);
 
-							const sequence = [
-								coverage.glyphArray[setIndex],
-								...ligatureTable.componentGlyphIDs,
-							].map(letterFor);
+							ligatureSet.ligatureOffsets.forEach(
+								(_, ligIndex) => {
+									const ligatureTable = ligatureSet.getLigature(
+										ligIndex
+									);
 
-							// Only keep sequences with glyphs mapped to letters
-							if (!sequence.includes(undefined)) {
-								currentAllGlyphs[feature.featureTag][
-									"input"
-								].push(sequence.join(""));
-							}
+									const sequence = [
+										coverage.glyphArray[setIndex],
+										...ligatureTable.componentGlyphIDs,
+									].map(letterFor);
+
+									// Only keep sequences with glyphs mapped to letters
+									if (!sequence.includes(undefined)) {
+										currentAllGlyphs[feature.featureTag][
+											"input"
+										].push(sequence.join(""));
+									}
+								}
+							);
 						});
-					});
+					}
 				});
 			}
 
