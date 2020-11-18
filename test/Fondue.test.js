@@ -24,6 +24,10 @@ const colorFont = async () => {
 	return await fromPath("./test/fixtures/ss-emoji/ss-emoji-microsoft.ttf");
 };
 
+const complexFont = async () => {
+	return await fromPath("./third_party/font.js/fonts/AthenaRuby_b018.ttf");
+};
+
 describe("The loaded font", () => {
 	test("is loaded succesfully.", async () => {
 		const fondue = await fromPath(
@@ -317,7 +321,7 @@ describe("Detect charset support", () => {
 });
 
 describe("Layout features", () => {
-	test("has GSUB layout features", async () => {
+	test("returns lookup 1 layout features", async () => {
 		const fondue = await otfFont();
 
 		expect(fondue.featureChars["DFLT"]["dflt"]).toEqual(
@@ -326,6 +330,20 @@ describe("Layout features", () => {
 					type: 1,
 					input: ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"],
 					alternateCount: [],
+				},
+			})
+		);
+	});
+
+	test("returns lookup 3 layout features", async () => {
+		const fondue = await complexFont();
+
+		expect(fondue.featureChars["DFLT"]["dflt"]).toEqual(
+			expect.objectContaining({
+				cv01: {
+					type: 3,
+					input: ["Α"], // Note this is U+0391 : GREEK CAPITAL LETTER ALPHA
+					alternateCount: [27],
 				},
 			})
 		);
