@@ -616,7 +616,7 @@ export default class Fondue {
 				currentAllGlyphs[feature.featureTag] = {
 					type: lookup.lookupType,
 					input: [],
-					alternateCount: [],
+					alternateCount: 0,
 				};
 			}
 
@@ -663,19 +663,28 @@ export default class Fondue {
 				lookup.subtableOffsets.forEach((_, i) => {
 					const subtable = lookup.getSubTable(i);
 					const coverage = subtable.getCoverageTable();
-					const altset = subtable.getAlternateSet(0);
 
-					// We need to know the original character...
-					const character = letterFor(coverage.glyphArray[0]);
-					// ...and how many alternates it has
-					const alternateCount = altset.alternateGlyphIDs.length;
+					// It's possible to have AlternateSets with different lengths
+					// inside the same lookup (e.g. 10 alternates for "A", 5 for
+					// "B"). We return the highest alternateCount so the interface
+					// can show them all.
+					subtable.alternateSetOffsets.forEach((_, j) => {
+						currentAllGlyphs[feature.featureTag]["input"].push(
+							letterFor(coverage.glyphArray[j])
+						);
 
-					currentAllGlyphs[feature.featureTag]["input"].push(
-						character
-					);
-					currentAllGlyphs[feature.featureTag]["alternateCount"].push(
-						alternateCount
-					);
+						// Keep the highest alternateCount
+						const altset = subtable.getAlternateSet(j);
+						const alternateCount = altset.alternateGlyphIDs.length;
+						currentAllGlyphs[feature.featureTag][
+							"alternateCount"
+						] = Math.max(
+							currentAllGlyphs[feature.featureTag][
+								"alternateCount"
+							],
+							alternateCount
+						);
+					});
 				});
 			}
 
