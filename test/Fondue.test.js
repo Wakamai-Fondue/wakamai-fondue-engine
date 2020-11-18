@@ -28,6 +28,12 @@ const complexFont = async () => {
 	return await fromPath("./third_party/font.js/fonts/AthenaRuby_b018.ttf");
 };
 
+const xxx = async () => {
+	return await fromPath(
+		"./third_party/font.js/fonts/OpenSans/OpenSans-Regular.ttf"
+	);
+};
+
 describe("The loaded font", () => {
 	test("is loaded succesfully.", async () => {
 		const fondue = await fromPath(
@@ -344,6 +350,20 @@ describe("Layout features", () => {
 					type: 3,
 					input: ["Α"], // Note this is U+0391 : GREEK CAPITAL LETTER ALPHA
 					alternateCount: [27],
+				},
+			})
+		);
+	});
+
+	test("returns lookup 4 layout features", async () => {
+		const fondue = await xxx();
+
+		expect(fondue.featureChars["latn"]["dflt"]).toEqual(
+			expect.objectContaining({
+				liga: {
+					alternateCount: [],
+					input: ["ffl", "ffi", "ff", "fl", "fi"],
+					type: 4,
 				},
 			})
 		);
