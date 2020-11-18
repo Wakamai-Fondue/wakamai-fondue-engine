@@ -335,7 +335,7 @@ describe("Layout features", () => {
 				onum: {
 					type: 1,
 					input: ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"],
-					alternateCount: 0,
+					alternateCount: [],
 				},
 			})
 		);
@@ -349,7 +349,7 @@ describe("Layout features", () => {
 				cv01: {
 					type: 3,
 					input: ["Α"], // Note this is U+0391 : GREEK CAPITAL LETTER ALPHA
-					alternateCount: 27,
+					alternateCount: [27],
 				},
 			})
 		);
@@ -361,7 +361,7 @@ describe("Layout features", () => {
 		expect(fondue.featureChars["latn"]["dflt"]).toEqual(
 			expect.objectContaining({
 				liga: {
-					alternateCount: 0,
+					alternateCount: [],
 					input: ["ffl", "ffi", "ff", "fl", "fi"],
 					type: 4,
 				},
