@@ -4,7 +4,7 @@ import { toArrayBuffer } from "./support/utils";
 import fs from "fs";
 const readFile = fs.promises.readFile;
 
-const otfFont = async () => {
+const SourceCodeProOTFFont = async () => {
 	return await fromPath(
 		"./third_party/font.js/fonts/SourceCodePro/SourceCodePro-Regular.otf"
 	);
@@ -14,14 +14,24 @@ const WFTestFont = async () => {
 	return await fromPath("./test/fixtures/WFTestFont/WFTestFont.ttf");
 };
 
-const variableFont = async () => {
+const SourceCodeVariableTTFFont = async () => {
 	return await fromPath(
 		"./third_party/font.js/fonts/SourceCodePro/SourceCodeVariable-Roman.ttf"
 	);
 };
 
-const colorFont = async () => {
+const SSEmojiFont = async () => {
 	return await fromPath("./test/fixtures/ss-emoji/ss-emoji-microsoft.ttf");
+};
+
+const AthenaRubyFont = async () => {
+	return await fromPath("./third_party/font.js/fonts/AthenaRuby_b018.ttf");
+};
+
+const OpenSansFont = async () => {
+	return await fromPath(
+		"./third_party/font.js/fonts/OpenSans/OpenSans-Regular.ttf"
+	);
 };
 
 describe("The loaded font", () => {
@@ -107,7 +117,7 @@ describe("fromDataBuffer", () => {
 
 describe("format", () => {
 	test("OTF font", async () => {
-		const fondue = await otfFont();
+		const fondue = await SourceCodeProOTFFont();
 		expect(fondue.format).toBe("OpenType/CFF");
 	});
 
@@ -119,7 +129,7 @@ describe("format", () => {
 
 describe("isVariable", () => {
 	test("variable font", async () => {
-		const fondue = await variableFont();
+		const fondue = await SourceCodeVariableTTFFont();
 		expect(fondue.isVariable).toBe(true);
 	});
 
@@ -131,7 +141,7 @@ describe("isVariable", () => {
 
 describe("isColor", () => {
 	test("color font", async () => {
-		const fondue = await colorFont();
+		const fondue = await SSEmojiFont();
 		expect(fondue.isColor).toBe(true);
 	});
 
@@ -143,7 +153,7 @@ describe("isColor", () => {
 
 describe("hasColorTable", () => {
 	test("color font", async () => {
-		const fondue = await colorFont();
+		const fondue = await SSEmojiFont();
 		expect(fondue.colorFormats).toContain("COLR");
 	});
 
@@ -155,7 +165,7 @@ describe("hasColorTable", () => {
 
 describe("hasColorPaletteTable", () => {
 	test("CPAL entries", async () => {
-		const fondue = await colorFont();
+		const fondue = await SSEmojiFont();
 		expect(fondue.colorPalettes).toEqual([
 			[
 				"#34343fff",
@@ -178,7 +188,7 @@ describe("hasColorPaletteTable", () => {
 
 describe("hasAxes", () => {
 	test("variable font axes", async () => {
-		const fondue = await variableFont();
+		const fondue = await SourceCodeVariableTTFFont();
 		expect(fondue.variable.axes).toEqual(
 			expect.arrayContaining([
 				expect.objectContaining({
@@ -189,7 +199,7 @@ describe("hasAxes", () => {
 	});
 
 	test("variable font instances", async () => {
-		const fondue = await variableFont();
+		const fondue = await SourceCodeVariableTTFFont();
 		expect(fondue.variable.instances).toEqual(
 			expect.objectContaining({
 				ExtraLight: { wght: 200 },
@@ -205,7 +215,7 @@ describe("hasAxes", () => {
 
 describe("hasFeatures", () => {
 	test("has layout features", async () => {
-		const fondue = await variableFont();
+		const fondue = await SourceCodeVariableTTFFont();
 		expect(fondue.features.find((f) => f.tag == "ccmp")).toBeDefined();
 	});
 
@@ -233,7 +243,7 @@ describe("supportedCharacters", () => {
 
 describe("supportedLanguages", () => {
 	test("returns supported languages", async () => {
-		const fondue = await variableFont();
+		const fondue = await SourceCodeVariableTTFFont();
 		expect(fondue.languageSystems).toEqual(
 			expect.arrayContaining([
 				{ ot: "ATH", html: "ath", name: "Athapascan" },
@@ -271,7 +281,7 @@ describe("Language support", () => {
 	// be restored to working order once FOnt.js properly reports
 	// on supported characters for its test fonts
 	test("supports various languages", async () => {
-		const fondue = await variableFont();
+		const fondue = await SourceCodeVariableTTFFont();
 		expect(fondue.languageSupport).toEqual(
 			expect.arrayContaining(["English", "Dutch"])
 		);
@@ -293,7 +303,7 @@ describe("Detect charset support", () => {
 	});
 
 	test("Detect uncategorised chars", async () => {
-		const fondue = await otfFont();
+		const fondue = await SourceCodeProOTFFont();
 
 		expect(fondue.categorisedCharacters).toEqual(
 			expect.arrayContaining([
@@ -317,12 +327,44 @@ describe("Detect charset support", () => {
 });
 
 describe("Layout features", () => {
-	test("has GSUB layout features", async () => {
-		const fondue = await otfFont();
+	test("returns lookup 1 layout features", async () => {
+		const fondue = await SourceCodeProOTFFont();
 
 		expect(fondue.featureChars["DFLT"]["dflt"]).toEqual(
 			expect.objectContaining({
-				onum: ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"],
+				onum: {
+					type: 1,
+					input: ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"],
+					alternateCount: [],
+				},
+			})
+		);
+	});
+
+	test("returns lookup 3 layout features", async () => {
+		const fondue = await AthenaRubyFont();
+
+		expect(fondue.featureChars["DFLT"]["dflt"]).toEqual(
+			expect.objectContaining({
+				cv01: {
+					type: 3,
+					input: ["Α"], // Note this is U+0391 : GREEK CAPITAL LETTER ALPHA
+					alternateCount: [27],
+				},
+			})
+		);
+	});
+
+	test("returns lookup 4 layout features", async () => {
+		const fondue = await OpenSansFont();
+
+		expect(fondue.featureChars["latn"]["dflt"]).toEqual(
+			expect.objectContaining({
+				liga: {
+					alternateCount: [],
+					input: ["ffl", "ffi", "ff", "fl", "fi"],
+					type: 4,
+				},
 			})
 		);
 	});

@@ -612,6 +612,14 @@ export default class Fondue {
 		}
 
 		function parseLookup(lookup, script, lang, feature, currentAllGlyphs) {
+			if (!(feature.featureTag in currentAllGlyphs)) {
+				currentAllGlyphs[feature.featureTag] = {
+					type: lookup.lookupType,
+					input: [],
+					alternateCount: [],
+				};
+			}
+
 			// Single substitution
 			if (lookup.lookupType === 1) {
 				lookup.subtableOffsets.forEach((_, i) => {
@@ -642,15 +650,33 @@ export default class Fondue {
 					}
 
 					if (results.length > 0) {
-						if (!(feature.featureTag in currentAllGlyphs)) {
-							currentAllGlyphs[feature.featureTag] = [];
-						}
-
-						currentAllGlyphs[feature.featureTag] = [
-							...currentAllGlyphs[feature.featureTag],
+						currentAllGlyphs[feature.featureTag]["input"] = [
+							...currentAllGlyphs[feature.featureTag]["input"],
 							...results,
 						];
 					}
+				});
+			}
+
+			// Alternate Substitution
+			if (lookup.lookupType === 3) {
+				lookup.subtableOffsets.forEach((_, i) => {
+					const subtable = lookup.getSubTable(i);
+					const coverage = subtable.getCoverageTable();
+
+					// It's possible to have AlternateSets with different lengths
+					// inside the same lookup (e.g. 10 alternates for "A", 5 for
+					// "B"), so we keep track of the alternateCount per glyph.
+					subtable.alternateSetOffsets.forEach((_, j) => {
+						currentAllGlyphs[feature.featureTag]["input"].push(
+							letterFor(coverage.glyphArray[j])
+						);
+
+						const altset = subtable.getAlternateSet(j);
+						currentAllGlyphs[feature.featureTag][
+							"alternateCount"
+						].push(altset.alternateGlyphIDs.length);
+					});
 				});
 			}
 
@@ -660,31 +686,33 @@ export default class Fondue {
 					const subtable = lookup.getSubTable(i);
 					const coverage = subtable.getCoverageTable();
 
-					subtable.ligatureSetOffsets.forEach((_, setIndex) => {
-						const ligatureSet = subtable.getLigatureSet(setIndex);
-
-						ligatureSet.ligatureOffsets.forEach((_, ligIndex) => {
-							const ligatureTable = ligatureSet.getLigature(
-								ligIndex
+					if (coverage.glyphArray !== undefined) {
+						subtable.ligatureSetOffsets.forEach((_, setIndex) => {
+							const ligatureSet = subtable.getLigatureSet(
+								setIndex
 							);
 
-							const sequence = [
-								coverage.glyphArray[setIndex],
-								...ligatureTable.componentGlyphIDs,
-							].map(letterFor);
+							ligatureSet.ligatureOffsets.forEach(
+								(_, ligIndex) => {
+									const ligatureTable = ligatureSet.getLigature(
+										ligIndex
+									);
 
-							// Only keep sequences with glyphs mapped to letters
-							if (!sequence.includes(undefined)) {
-								if (!(feature.featureTag in currentAllGlyphs)) {
-									currentAllGlyphs[feature.featureTag] = [];
+									const sequence = [
+										coverage.glyphArray[setIndex],
+										...ligatureTable.componentGlyphIDs,
+									].map(letterFor);
+
+									// Only keep sequences with glyphs mapped to letters
+									if (!sequence.includes(undefined)) {
+										currentAllGlyphs[feature.featureTag][
+											"input"
+										].push(sequence.join(""));
+									}
 								}
-
-								currentAllGlyphs[feature.featureTag].push(
-									sequence.join("")
-								);
-							}
+							);
 						});
-					});
+					}
 				});
 			}
 
