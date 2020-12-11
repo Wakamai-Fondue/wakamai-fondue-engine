@@ -41,6 +41,13 @@ export default class Fondue {
 		return this.languageSystems.length > 0;
 	}
 
+	get hasOpticalSize() {
+		return (
+			this.isVariable &&
+			this.variable.axes.find((o) => o.id === "opsz") !== undefined
+		);
+	}
+
 	// Return an object of all language systems supported by
 	// either GSUB or GPOS. Tags are stripped ("ROM " → "ROM").
 	get languageSystems() {
