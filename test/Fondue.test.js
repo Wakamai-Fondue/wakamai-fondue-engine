@@ -21,27 +21,21 @@ const SSEmojiFont = async () => {
 };
 
 const OpenSansFont = async () => {
-	return await fromPath(
-		"./test/fixtures/OpenSans-Regular.ttf"
-	);
+	return await fromPath("./test/fixtures/OpenSans-Regular.ttf");
 };
 
 const SourceCodeProOTFFont = async () => {
-	return await fromPath(
-		"./test/fixtures/SourceCodePro-Regular.otf"
-	);
+	return await fromPath("./test/fixtures/SourceCodePro-Regular.otf");
 };
 
 const SourceCodeVariableTTFFont = async () => {
-	return await fromPath(
-		"./test/fixtures/SourceCodeVariable-Roman.ttf"
-	);
+	return await fromPath("./test/fixtures/SourceCodeVariable-Roman.ttf");
 };
 
 describe("The loaded font", () => {
 	test("is loaded succesfully.", async () => {
 		const fondue = await fromPath(
-			"./third_party/font.js/fonts/SourceCodePro/SourceCodeVariable-Roman.ttf"
+			"./test/fixtures/SourceCodeVariable-Roman.ttf"
 		);
 		expect(fondue._font).toBeDefined();
 	});
@@ -54,14 +48,14 @@ describe("The loaded font", () => {
 
 	test("returns data from the name table.", async () => {
 		const fondue = await fromPath(
-			"./third_party/font.js/fonts/SourceCodePro/SourceCodeVariable-Roman.ttf"
+			"./test/fixtures/SourceCodeVariable-Roman.ttf"
 		);
 		expect(fondue.name(1)).toContain("Source Code Variable");
 	});
 
 	test("returns empty data from an empty name table.", async () => {
 		const fondue = await fromPath(
-			"./third_party/font.js/fonts/SourceCodePro/SourceCodeVariable-Roman.ttf"
+			"./test/fixtures/SourceCodeVariable-Roman.ttf"
 		);
 		const subfamily = fondue.name("sample");
 		expect(subfamily).toContain("");
@@ -69,7 +63,7 @@ describe("The loaded font", () => {
 
 	test("returns CSS information.", async () => {
 		const fondue = await fromPath(
-			"./third_party/font.js/fonts/SourceCodePro/SourceCodeVariable-Roman.ttf"
+			"./test/fixtures/SourceCodeVariable-Roman.ttf"
 		);
 		expect(fondue.cssString).toContain(
 			'font-variation-settings: "wght" 900;'
@@ -78,7 +72,7 @@ describe("The loaded font", () => {
 
 	test("without variations should return CSS information.", async () => {
 		const fondue = await fromPath(
-			"./third_party/font.js/fonts/SourceCodePro/SourceCodePro-Regular.otf"
+			"./test/fixtures/SourceCodePro-Regular.otf"
 		);
 		expect(fondue.cssString).toContain(
 			"font-feature-settings: var(--source-code-pro-case)"
@@ -87,7 +81,7 @@ describe("The loaded font", () => {
 
 	test("supports WOFF", async () => {
 		const fondue = await fromPath(
-			"./third_party/font.js/fonts/SourceCodePro/SourceCodePro-Regular.ttf.woff"
+			"./test/fixtures/SourceCodePro-Regular.ttf.woff"
 		);
 
 		/* Need to access an actual table here, because gzip decoding happens lazily */
@@ -96,7 +90,7 @@ describe("The loaded font", () => {
 
 	test("supports WOFF2", async () => {
 		const fondue = await fromPath(
-			"./third_party/font.js/fonts/SourceCodePro/SourceCodePro-Regular.ttf.woff2"
+			"./test/fixtures/SourceCodePro-Regular.ttf.woff2"
 		);
 
 		expect(fondue).toBeDefined();
@@ -106,7 +100,7 @@ describe("The loaded font", () => {
 describe("fromDataBuffer", () => {
 	it("loads a font from an ArrayBuffer", async () => {
 		const buf = await readFile(
-			"./third_party/font.js/fonts/SourceCodePro/SourceCodeVariable-Roman.ttf"
+			"./test/fixtures/SourceCodeVariable-Roman.ttf"
 		);
 		const arrayBuf = toArrayBuffer(buf);
 
