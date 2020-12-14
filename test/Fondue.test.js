@@ -21,9 +21,7 @@ const SourceCodeVariableTTFFont = async () => {
 };
 
 const FrauncesTTFFont = async () => {
-	return await fromPath(
-		"./test/fixtures/Fraunces/Fraunces-VF.ttf"
-	);
+	return await fromPath("./test/fixtures/Fraunces/Fraunces-VF.ttf");
 };
 
 const SSEmojiFont = async () => {
