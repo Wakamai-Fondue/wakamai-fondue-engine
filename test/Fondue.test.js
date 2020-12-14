@@ -4,20 +4,12 @@ import { toArrayBuffer } from "./support/utils";
 import fs from "fs";
 const readFile = fs.promises.readFile;
 
-const SourceCodeProOTFFont = async () => {
-	return await fromPath(
-		"./third_party/font.js/fonts/SourceCodePro/SourceCodePro-Regular.otf"
-	);
-};
-
 const WFTestFont = async () => {
 	return await fromPath("./test/fixtures/WFTestFont/WFTestFont.ttf");
 };
 
-const SourceCodeVariableTTFFont = async () => {
-	return await fromPath(
-		"./third_party/font.js/fonts/SourceCodePro/SourceCodeVariable-Roman.ttf"
-	);
+const AthenaRubyFont = async () => {
+	return await fromPath("./test/fixtures/AthenaRuby_b018.ttf");
 };
 
 const FrauncesTTFFont = async () => {
@@ -28,13 +20,21 @@ const SSEmojiFont = async () => {
 	return await fromPath("./test/fixtures/ss-emoji/ss-emoji-microsoft.ttf");
 };
 
-const AthenaRubyFont = async () => {
-	return await fromPath("./third_party/font.js/fonts/AthenaRuby_b018.ttf");
-};
-
 const OpenSansFont = async () => {
 	return await fromPath(
-		"./third_party/font.js/fonts/OpenSans/OpenSans-Regular.ttf"
+		"./test/fixtures/OpenSans-Regular.ttf"
+	);
+};
+
+const SourceCodeProOTFFont = async () => {
+	return await fromPath(
+		"./test/fixtures/SourceCodePro-Regular.otf"
+	);
+};
+
+const SourceCodeVariableTTFFont = async () => {
+	return await fromPath(
+		"./test/fixtures/SourceCodeVariable-Roman.ttf"
 	);
 };
 
