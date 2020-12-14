@@ -1,4 +1,5 @@
-import { Font } from "./third_party/font.patched.js";
+
+import { Font } from "lib-font";
 import Fondue from "./src/fondue/Fondue.js";
 
 export function fromPath(fontPath) {
