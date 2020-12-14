@@ -1,5 +1,5 @@
-import brotliDecode from "lib-font/lib/unbrotli";
-import * as pako from "lib-font/lib/inflate";
+import brotliDecode from "brotli/decompress";
+import pako from "pako";
 
 globalThis.unbrotli = brotliDecode;
-globalThis.pako = pako.default;
+globalThis.pako = pako;
