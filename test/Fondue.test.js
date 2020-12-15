@@ -20,6 +20,10 @@ const SourceCodeVariableTTFFont = async () => {
 	);
 };
 
+const FrauncesTTFFont = async () => {
+	return await fromPath("./test/fixtures/Fraunces/Fraunces-VF.ttf");
+};
+
 const SSEmojiFont = async () => {
 	return await fromPath("./test/fixtures/ss-emoji/ss-emoji-microsoft.ttf");
 };
@@ -210,6 +214,16 @@ describe("hasAxes", () => {
 	test("nonvariable font", async () => {
 		const fondue = await WFTestFont();
 		expect(fondue.variable).toBeUndefined();
+	});
+
+	test("has optical size axis", async () => {
+		const fondue = await FrauncesTTFFont();
+		expect(fondue.hasOpticalSize).toBe(true);
+	});
+
+	test("has no optical size axis", async () => {
+		const fondue = await WFTestFont();
+		expect(fondue.hasOpticalSize).toBe(false);
 	});
 });
 
