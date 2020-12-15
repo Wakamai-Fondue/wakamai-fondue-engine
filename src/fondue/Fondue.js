@@ -384,7 +384,7 @@ export default class Fondue {
 					// as a supported character
 					// https://github.com/Pomax/Font.js/issues/68
 					if (i == 65535) continue;
-					chars.push(i.toString(16).toUpperCase());
+					chars.push(i.toString(16).padStart(4, "0").toUpperCase());
 				}
 			}
 		}
@@ -473,9 +473,7 @@ export default class Fondue {
 	}
 
 	get categorisedCharacters() {
-		const fontCharset = this.supportedCharacters.map((g) =>
-			g.padStart(4, "0").toUpperCase()
-		);
+		const fontCharSet = this.supportedCharacters;
 
 		// undefined = no subcategory
 		const categories = {
@@ -559,7 +557,7 @@ export default class Fondue {
 
 					// Which chars are in the font?
 					const presentChars = chars.filter((g) =>
-						fontCharset.includes(g.unicode)
+						fontCharSet.includes(g.unicode)
 					);
 
 					// We only need the unicode values
@@ -592,7 +590,7 @@ export default class Fondue {
 		// List all chars not grouped under scripts in a misc category
 		// Also, ignore 0xFFFF which is erroneously reported as a char
 		// by Fontkit
-		const uncategorisedChars = fontCharset.filter(
+		const uncategorisedChars = fontCharSet.filter(
 			(g) => !allScriptChars.includes(g) && g != "FFFF"
 		);
 		if (uncategorisedChars.length !== 0) {
