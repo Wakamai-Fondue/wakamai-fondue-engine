@@ -48,6 +48,14 @@ export default class Fondue {
 		);
 	}
 
+	get charCount() {
+		return this.supportedCharacters.length;
+	}
+
+	get glyphCount() {
+		return this._font.opentype.tables.maxp.numGlyphs;
+	}
+
 	// Return an object of all language systems supported by
 	// either GSUB or GPOS. Tags are stripped ("ROM " → "ROM").
 	get languageSystems() {
