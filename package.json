@@ -27,7 +27,7 @@
 		"otf",
 		"fontkit",
 		"opentype",
-		"font.js",
+		"lib-font",
 		"layout",
 		"css"
 	],
@@ -41,6 +41,7 @@
 		"@babel/preset-env": "^7.10.2",
 		"@rollup/plugin-commonjs": "^14.0.0",
 		"@rollup/plugin-json": "^4.1.0",
+		"@rollup/plugin-node-resolve": "^11.0.1",
 		"babel-jest": "^26.0.1",
 		"eslint": "^7.4.0",
 		"eslint-plugin-jest": "^23.18.0",
@@ -56,11 +57,10 @@
 		"verbose": true,
 		"moduleDirectories": [
 			"src",
-			"font.js",
 			"node_modules"
 		],
-		"modulePathIgnorePatterns": [
-			"font.js"
+		"transformIgnorePatterns": [
+			"node_modules/(?!lib-font)"
 		],
 		"collectCoverage": true,
 		"collectCoverageFrom": [
@@ -79,5 +79,8 @@
 	},
 	"engines": {
 		"node": ">=12"
+	},
+	"dependencies": {
+		"lib-font": "^2.0.5"
 	}
 }
