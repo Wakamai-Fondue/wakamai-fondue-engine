@@ -27,7 +27,7 @@
 		"otf",
 		"fontkit",
 		"opentype",
-		"font.js",
+		"lib-font",
 		"layout",
 		"css"
 	],
@@ -57,11 +57,7 @@
 		"verbose": true,
 		"moduleDirectories": [
 			"src",
-			"font.js",
 			"node_modules"
-		],
-		"modulePathIgnorePatterns": [
-			"font.js"
 		],
 		"transformIgnorePatterns": [
 			"node_modules/(?!lib-font)"
