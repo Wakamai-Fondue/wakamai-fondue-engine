@@ -32,6 +32,10 @@ const SourceCodeVariableTTFFont = async () => {
 	return await fromPath("./test/fixtures/SourceCodeVariable-Roman.ttf");
 };
 
+const BreeSerifFont = async () => {
+	return await fromPath("./test/fixtures/BreeSerif-Regular.ttf");
+};
+
 describe("The loaded font", () => {
 	test("is loaded succesfully.", async () => {
 		const fondue = await fromPath(
@@ -381,5 +385,22 @@ describe("Layout features", () => {
 		const fondue = await WFTestFont();
 
 		expect(fondue.featureChars).toEqual({});
+	});
+});
+
+describe("Hinted fonts", () => {
+	test("has hinting", async () => {
+		const fondue = await AthenaRubyFont();
+		expect(fondue.isHinted).toBe(true);
+	});
+
+	test("has no hinting", async () => {
+		const fondue = await WFTestFont();
+		expect(fondue.isHinted).toBe(false);
+	});
+
+	test("does not report false positive for unhinted Google Fonts font", async () => {
+		const fondue = await BreeSerifFont();
+		expect(fondue.isHinted).toBe(false);
 	});
 });
