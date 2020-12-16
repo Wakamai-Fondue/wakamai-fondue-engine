@@ -375,3 +375,15 @@ describe("Layout features", () => {
 		expect(fondue.featureChars).toEqual({});
 	});
 });
+
+describe("Counting", () => {
+	test("return number of chars", async () => {
+		const fondue = await SourceCodeProOTFFont();
+		expect(fondue.charCount).toEqual(1331);
+	});
+
+	test("return number of glyphs", async () => {
+		const fondue = await SourceCodeProOTFFont();
+		expect(fondue.glyphCount).toEqual(1585);
+	});
+});
