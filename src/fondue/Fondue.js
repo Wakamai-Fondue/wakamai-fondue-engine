@@ -17,6 +17,11 @@ export default class Fondue {
 		return value.replace(/\x00/g, "");
 	}
 
+	_toUnicodeValue(value) {
+		// Return neatly formatted Unicode value for a character
+		return value.toString(16).padStart(4, "0").toUpperCase();
+	}
+
 	constructor(font) {
 		this._font = font;
 	}
@@ -46,6 +51,14 @@ export default class Fondue {
 			this.isVariable &&
 			this.variable.axes.find((o) => o.id === "opsz") !== undefined
 		);
+	}
+
+	get charCount() {
+		return this.supportedCharacters.length;
+	}
+
+	get glyphCount() {
+		return this._font.opentype.tables.maxp.numGlyphs;
 	}
 
 	// Return an object of all language systems supported by
@@ -384,7 +397,7 @@ export default class Fondue {
 					// as a supported character
 					// https://github.com/Pomax/lib-font/issues/68
 					if (i == 65535) continue;
-					chars.push(i.toString(16).toUpperCase());
+					chars.push(this._toUnicodeValue(i));
 				}
 			}
 		}
@@ -452,7 +465,7 @@ export default class Fondue {
 			total = chars.length;
 
 			for (i = 0; i < total; i++) {
-				charCode = chars.codePointAt(i).toString(16).toUpperCase();
+				charCode = this._toUnicodeValue(chars.codePointAt(i));
 				if (
 					ignoreList.includes(charCode) ||
 					fontCharSet.includes(charCode)
@@ -473,9 +486,7 @@ export default class Fondue {
 	}
 
 	get categorisedCharacters() {
-		const fontCharset = this.supportedCharacters.map((g) =>
-			g.padStart(4, "0").toUpperCase()
-		);
+		const fontCharSet = this.supportedCharacters;
 
 		// undefined = no subcategory
 		const categories = {
@@ -559,7 +570,7 @@ export default class Fondue {
 
 					// Which chars are in the font?
 					const presentChars = chars.filter((g) =>
-						fontCharset.includes(g.unicode)
+						fontCharSet.includes(g.unicode)
 					);
 
 					// We only need the unicode values
@@ -592,7 +603,7 @@ export default class Fondue {
 		// List all chars not grouped under scripts in a misc category
 		// Also, ignore 0xFFFF which is erroneously reported as a char
 		// by Fontkit
-		const uncategorisedChars = fontCharset.filter(
+		const uncategorisedChars = fontCharSet.filter(
 			(g) => !allScriptChars.includes(g) && g != "FFFF"
 		);
 		if (uncategorisedChars.length !== 0) {
