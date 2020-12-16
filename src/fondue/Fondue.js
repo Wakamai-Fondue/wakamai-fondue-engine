@@ -10,9 +10,9 @@ import glyphData from "../tools/GlyphData.json";
 
 export default class Fondue {
 	_removeNullBytes(value) {
-		// Currently Font.js returns null bytes in name table
+		// Currently lib-font returns null bytes in name table
 		// strings, we filter them here.
-		// https://github.com/Pomax/Font.js/issues/74
+		// https://github.com/Pomax/lib-font/issues/74
 		/* eslint-disable no-control-regex */
 		return value.replace(/\x00/g, "");
 	}
@@ -238,7 +238,7 @@ export default class Fondue {
 
 	// Gets all information about the font features.
 	// TODO: if feature has a UI Name ID, return its name
-	//       https://github.com/Pomax/Font.js/issues/73
+	//       https://github.com/Pomax/lib-font/issues/73
 	// Usage:
 	//   fondue.features
 	get features() {
@@ -380,9 +380,9 @@ export default class Fondue {
 		if (cmap) {
 			for (const chunk of cmap) {
 				for (let i = chunk.start; i < chunk.end + 1; i++) {
-					// Skip 0xFFFF, Font.js currently reports this
+					// Skip 0xFFFF, lib-font currently reports this
 					// as a supported character
-					// https://github.com/Pomax/Font.js/issues/68
+					// https://github.com/Pomax/lib-font/issues/68
 					if (i == 65535) continue;
 					chars.push(i.toString(16).toUpperCase());
 				}

@@ -284,9 +284,9 @@ describe("Language support", () => {
 		expect(fondue.languageSupport).toStrictEqual([]);
 	});
 
-	// This test can't currently work because of a bug in Font.js
+	// This test can't currently work because of a bug in lib-font
 	// It's commented out so you know I didn't forgot, and should
-	// be restored to working order once FOnt.js properly reports
+	// be restored to working order once lib-font properly reports
 	// on supported characters for its test fonts
 	test("supports various languages", async () => {
 		const fondue = await SourceCodeVariableTTFFont();
