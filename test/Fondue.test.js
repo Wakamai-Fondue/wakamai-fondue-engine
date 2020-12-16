@@ -229,7 +229,7 @@ describe("supportedCharacters", () => {
 	test("returns characters of best cmap", async () => {
 		const fondue = await WFTestFont();
 		expect(fondue.supportedCharacters).toEqual(
-			expect.arrayContaining(["41"]) // 0x41 = letter Z
+			expect.arrayContaining(["0041"]) // 0x41 = letter Z
 		);
 	});
 

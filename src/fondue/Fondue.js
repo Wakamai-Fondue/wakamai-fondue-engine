@@ -17,6 +17,11 @@ export default class Fondue {
 		return value.replace(/\x00/g, "");
 	}
 
+	_toUnicodeValue(value) {
+		// Return neatly formatted Unicode value for a character
+		return value.toString(16).padStart(4, "0").toUpperCase();
+	}
+
 	constructor(font) {
 		this._font = font;
 	}
@@ -392,7 +397,7 @@ export default class Fondue {
 					// as a supported character
 					// https://github.com/Pomax/Font.js/issues/68
 					if (i == 65535) continue;
-					chars.push(i.toString(16).padStart(4, "0").toUpperCase());
+					chars.push(this._toUnicodeValue(i));
 				}
 			}
 		}
@@ -460,7 +465,7 @@ export default class Fondue {
 			total = chars.length;
 
 			for (i = 0; i < total; i++) {
-				charCode = chars.codePointAt(i).toString(16).toUpperCase();
+				charCode = this._toUnicodeValue(chars.codePointAt(i));
 				if (
 					ignoreList.includes(charCode) ||
 					fontCharSet.includes(charCode)
