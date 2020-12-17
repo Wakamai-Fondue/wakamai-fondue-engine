@@ -241,7 +241,7 @@ describe("supportedCharacters", () => {
 	test("returns characters of best cmap", async () => {
 		const fondue = await WFTestFont();
 		expect(fondue.supportedCharacters).toEqual(
-			expect.arrayContaining(["41"]) // 0x41 = letter Z
+			expect.arrayContaining(["0041"]) // 0x41 = letter Z
 		);
 	});
 
@@ -402,5 +402,17 @@ describe("Hinted fonts", () => {
 	test("does not report false positive for unhinted Google Fonts font", async () => {
 		const fondue = await BreeSerifFont();
 		expect(fondue.isHinted).toBe(false);
+	});
+});
+
+describe("Counting", () => {
+	test("return number of chars", async () => {
+		const fondue = await SourceCodeProOTFFont();
+		expect(fondue.charCount).toEqual(1331);
+	});
+
+	test("return number of glyphs", async () => {
+		const fondue = await SourceCodeProOTFFont();
+		expect(fondue.glyphCount).toEqual(1585);
 	});
 });
