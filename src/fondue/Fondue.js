@@ -53,6 +53,32 @@ export default class Fondue {
 		);
 	}
 
+	get isHinted() {
+		// Ideally we should (also) check for hinting data to be present
+		// for individual glyphs. For now the presence of these "helper
+		// tables" is a good enough indication of a hinted font.
+		const hintingTables = ["cvt", "cvar", "fpgm", "hdmx", "VDMX"];
+		for (const hintingTable of hintingTables) {
+			if (hintingTable in this._font.opentype.tables) {
+				return true;
+			}
+		}
+		// Some (Google) fonts contain a simple `prep` table, which seems
+		// to be an artifact of a build/verification process.
+		// This is considered a false positive, so we're ignoring `prep`
+		// tables with this specific content.
+		// Also see https://github.com/googlefonts/fontbakery/issues/3076
+		const simplePrep = [184, 1, 255, 133, 176, 4, 141].toString();
+		if (
+			"prep" in this._font.opentype.tables &&
+			this._font.opentype.tables.prep.instructions.toString() !==
+				simplePrep
+		) {
+			return true;
+		}
+		return false;
+	}
+
 	get charCount() {
 		return this.supportedCharacters.length;
 	}
