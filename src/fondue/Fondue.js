@@ -682,16 +682,15 @@ export default class Fondue {
 			return results;
 		}
 
-		function parseLookup(lookup, script, lang, feature, currentAllGlyphs) {
-			if (!(feature.featureTag in currentAllGlyphs)) {
-				currentAllGlyphs[feature.featureTag] = {
-					type: lookup.lookupType,
-					input: [],
-					backtrack: [],
-					lookahead: [],
-					alternateCount: [],
-				};
-			}
+		function parseLookup(lookup) {
+			const parsedLookup = {
+				type: lookup.lookupType,
+				input: [],
+				backtrack: [],
+				lookahead: [],
+				alternateCount: [],
+			};
+
 
 			// Single substitution
 			if (lookup.lookupType === 1) {
@@ -701,15 +700,12 @@ export default class Fondue {
 	                const results = glyphToLetter(coverage);
 
 					if (results.length > 0) {
-						currentAllGlyphs[feature.featureTag]["input"] = [
-							...currentAllGlyphs[feature.featureTag]["input"],
-							...results,
-						];
+						parsedLookup["input"] = results;
 					}
 				});
 			}
 
-			// Alternate Substitution
+			// Alternate substitution
 			if (lookup.lookupType === 3) {
 				lookup.subtableOffsets.forEach((_, i) => {
 					const subtable = lookup.getSubTable(i);
@@ -719,12 +715,12 @@ export default class Fondue {
 					// inside the same lookup (e.g. 10 alternates for "A", 5 for
 					// "B"), so we keep track of the alternateCount per glyph.
 					subtable.alternateSetOffsets.forEach((_, j) => {
-						currentAllGlyphs[feature.featureTag]["input"].push(
+						parsedLookup["input"].push(
 							letterFor(coverage.glyphArray[j])
 						);
 
 						const altset = subtable.getAlternateSet(j);
-						currentAllGlyphs[feature.featureTag][
+						parsedLookup[
 							"alternateCount"
 						].push(altset.alternateGlyphIDs.length);
 					});
@@ -756,7 +752,7 @@ export default class Fondue {
 
 									// Only keep sequences with glyphs mapped to letters
 									if (!sequence.includes(undefined)) {
-										currentAllGlyphs[feature.featureTag][
+										parsedLookup[
 											"input"
 										].push(sequence.join(""));
 									}
@@ -767,36 +763,35 @@ export default class Fondue {
 				});
 			}
 
+			// Chained context substitution
 			if (lookup.lookupType === 6) {
-				lookup.subtableOffsets.forEach((_, i) => { // Loop through ChainContextSubst subtables
+				lookup.subtableOffsets.forEach((_, i) => {
 				  let subtable = lookup.getSubTable(i);
 
 	              if (subtable.inputGlyphCount > 0) {
 		              subtable.inputCoverageOffsets.forEach((offset, id) => {
 		                const coverage = subtable.getCoverageFromOffset(offset);
-		                currentAllGlyphs[feature.featureTag]["input"][i] = glyphToLetter(coverage);
+		                parsedLookup["input"][i] = glyphToLetter(coverage);
 		              });
 			      }
 
 	              if (subtable.backtrackGlyphCount > 0) {
 		              subtable.backtrackCoverageOffsets.forEach((offset, id) => {
 		                const coverage = subtable.getCoverageFromOffset(offset);
-		                currentAllGlyphs[feature.featureTag]["backtrack"][i] = glyphToLetter(coverage);
+		                parsedLookup["backtrack"][i] = glyphToLetter(coverage);
 		              });
 	              }
 
 	              if (subtable.lookaheadGlyphCount > 0) {
 		              subtable.lookaheadCoverageOffsets.forEach((offset, id) => {
 		                const coverage = subtable.getCoverageFromOffset(offset);
-		                currentAllGlyphs[feature.featureTag]["lookahead"][i] = glyphToLetter(coverage);
+		                parsedLookup["lookahead"][i] = glyphToLetter(coverage);
 		              });
 	              }
 				});
 			}
 
-			console.log(currentAllGlyphs);
-
-			return currentAllGlyphs;
+			return parsedLookup;
 		}
 
 		let scripts = GSUB.getSupportedScripts();
@@ -815,23 +810,17 @@ export default class Fondue {
 
 				features.forEach((feature) => {
 					const lookupIDs = feature.lookupListIndices;
+					allGlyphs[script][lang][feature.featureTag] = [];
 
 					lookupIDs.forEach((id) => {
 						const lookup = GSUB.getLookup(id);
-
-						allGlyphs[script][lang] = parseLookup(
-							lookup,
-							script,
-							lang,
-							feature,
-							allGlyphs[script][lang]
-						);
+						allGlyphs[script][lang][feature.featureTag].push(parseLookup(lookup));
 					});
 				});
 			});
 		});
 
-		// console.log(allGlyphs);
+		console.log(allGlyphs);
 
 		return allGlyphs;
 	}
