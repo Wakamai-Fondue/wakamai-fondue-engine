@@ -655,11 +655,40 @@ export default class Fondue {
 			return cmap.reverse(glyphid).unicode;
 		}
 
+		function glyphToLetter(coverage) {
+			let results = [];
+            let glyphs = coverage.glyphArray;
+
+			if (!glyphs) {
+				// Glyphs in start/end ranges
+				for (const r of coverage.rangeRecords) {
+					for (
+						let g = r.startGlyphID;
+						g < r.endGlyphID + 1;
+						g++
+					) {
+						const char = letterFor(g);
+						if (char) {
+							results.push(char);
+						}
+					}
+				}
+			} else {
+				// Individual glyphs
+				results = glyphs
+					.filter((g) => letterFor(g) !== undefined)
+					.map(letterFor);
+			}
+			return results;
+		}
+
 		function parseLookup(lookup, script, lang, feature, currentAllGlyphs) {
 			if (!(feature.featureTag in currentAllGlyphs)) {
 				currentAllGlyphs[feature.featureTag] = {
 					type: lookup.lookupType,
 					input: [],
+					backtrack: [],
+					lookahead: [],
 					alternateCount: [],
 				};
 			}
@@ -669,29 +698,7 @@ export default class Fondue {
 				lookup.subtableOffsets.forEach((_, i) => {
 					const subtable = lookup.getSubTable(i);
 					const coverage = subtable.getCoverageTable();
-					let glyphs = coverage.glyphArray;
-					let results = [];
-
-					if (!glyphs) {
-						// Glyphs in start/end ranges
-						for (const r of coverage.rangeRecords) {
-							for (
-								let g = r.startGlyphID;
-								g < r.endGlyphID + 1;
-								g++
-							) {
-								const char = letterFor(g);
-								if (char) {
-									results.push(char);
-								}
-							}
-						}
-					} else {
-						// Individual glyphs
-						results = glyphs
-							.filter((g) => letterFor(g) !== undefined)
-							.map(letterFor);
-					}
+	                const results = glyphToLetter(coverage);
 
 					if (results.length > 0) {
 						currentAllGlyphs[feature.featureTag]["input"] = [
@@ -760,6 +767,35 @@ export default class Fondue {
 				});
 			}
 
+			if (lookup.lookupType === 6) {
+				lookup.subtableOffsets.forEach((_, i) => { // Loop through ChainContextSubst subtables
+				  let subtable = lookup.getSubTable(i);
+
+	              if (subtable.inputGlyphCount > 0) {
+		              subtable.inputCoverageOffsets.forEach((offset, id) => {
+		                const coverage = subtable.getCoverageFromOffset(offset);
+		                currentAllGlyphs[feature.featureTag]["input"][i] = glyphToLetter(coverage);
+		              });
+			      }
+
+	              if (subtable.backtrackGlyphCount > 0) {
+		              subtable.backtrackCoverageOffsets.forEach((offset, id) => {
+		                const coverage = subtable.getCoverageFromOffset(offset);
+		                currentAllGlyphs[feature.featureTag]["backtrack"][i] = glyphToLetter(coverage);
+		              });
+	              }
+
+	              if (subtable.lookaheadGlyphCount > 0) {
+		              subtable.lookaheadCoverageOffsets.forEach((offset, id) => {
+		                const coverage = subtable.getCoverageFromOffset(offset);
+		                currentAllGlyphs[feature.featureTag]["lookahead"][i] = glyphToLetter(coverage);
+		              });
+	              }
+				});
+			}
+
+			console.log(currentAllGlyphs);
+
 			return currentAllGlyphs;
 		}
 
@@ -794,6 +830,8 @@ export default class Fondue {
 				});
 			});
 		});
+
+		// console.log(allGlyphs);
 
 		return allGlyphs;
 	}
