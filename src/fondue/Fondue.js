@@ -657,18 +657,14 @@ export default class Fondue {
 
 		function glyphToLetter(coverage) {
 			let results = [];
-            let glyphs = coverage.glyphArray;
+			let glyphs = coverage.glyphArray;
 
 			if (!glyphs) {
 				// Glyphs in start/end ranges
 				for (const r of coverage.rangeRecords) {
-					for (
-						let g = r.startGlyphID;
-						g < r.endGlyphID + 1;
-						g++
-					) {
+					for (let g = r.startGlyphID; g < r.endGlyphID + 1; g++) {
 						const char = letterFor(g);
-						if (char) {
+						if (char !== undefined) {
 							results.push(char);
 						}
 					}
@@ -691,13 +687,12 @@ export default class Fondue {
 				alternateCount: [],
 			};
 
-
 			// Single substitution
 			if (lookup.lookupType === 1) {
 				lookup.subtableOffsets.forEach((_, i) => {
 					const subtable = lookup.getSubTable(i);
 					const coverage = subtable.getCoverageTable();
-	                const results = glyphToLetter(coverage);
+					const results = glyphToLetter(coverage);
 
 					if (results.length > 0) {
 						parsedLookup["input"] = results;
@@ -720,9 +715,9 @@ export default class Fondue {
 						);
 
 						const altset = subtable.getAlternateSet(j);
-						parsedLookup[
-							"alternateCount"
-						].push(altset.alternateGlyphIDs.length);
+						parsedLookup["alternateCount"].push(
+							altset.alternateGlyphIDs.length
+						);
 					});
 				});
 			}
@@ -752,9 +747,9 @@ export default class Fondue {
 
 									// Only keep sequences with glyphs mapped to letters
 									if (!sequence.includes(undefined)) {
-										parsedLookup[
-											"input"
-										].push(sequence.join(""));
+										parsedLookup["input"].push(
+											sequence.join("")
+										);
 									}
 								}
 							);
@@ -766,28 +761,38 @@ export default class Fondue {
 			// Chained context substitution
 			if (lookup.lookupType === 6) {
 				lookup.subtableOffsets.forEach((_, i) => {
-				  let subtable = lookup.getSubTable(i);
+					let subtable = lookup.getSubTable(i);
 
-	              if (subtable.inputGlyphCount > 0) {
-		              subtable.inputCoverageOffsets.forEach((offset, id) => {
-		                const coverage = subtable.getCoverageFromOffset(offset);
-		                parsedLookup["input"][i] = glyphToLetter(coverage);
-		              });
-			      }
+					if (subtable.inputGlyphCount > 0) {
+						subtable.inputCoverageOffsets.forEach((offset) => {
+							const coverage = subtable.getCoverageFromOffset(
+								offset
+							);
+							parsedLookup["input"][i] = glyphToLetter(coverage);
+						});
+					}
 
-	              if (subtable.backtrackGlyphCount > 0) {
-		              subtable.backtrackCoverageOffsets.forEach((offset, id) => {
-		                const coverage = subtable.getCoverageFromOffset(offset);
-		                parsedLookup["backtrack"][i] = glyphToLetter(coverage);
-		              });
-	              }
+					if (subtable.backtrackGlyphCount > 0) {
+						subtable.backtrackCoverageOffsets.forEach((offset) => {
+							const coverage = subtable.getCoverageFromOffset(
+								offset
+							);
+							parsedLookup["backtrack"][i] = glyphToLetter(
+								coverage
+							);
+						});
+					}
 
-	              if (subtable.lookaheadGlyphCount > 0) {
-		              subtable.lookaheadCoverageOffsets.forEach((offset, id) => {
-		                const coverage = subtable.getCoverageFromOffset(offset);
-		                parsedLookup["lookahead"][i] = glyphToLetter(coverage);
-		              });
-	              }
+					if (subtable.lookaheadGlyphCount > 0) {
+						subtable.lookaheadCoverageOffsets.forEach((offset) => {
+							const coverage = subtable.getCoverageFromOffset(
+								offset
+							);
+							parsedLookup["lookahead"][i] = glyphToLetter(
+								coverage
+							);
+						});
+					}
 				});
 			}
 
@@ -814,7 +819,9 @@ export default class Fondue {
 
 					lookupIDs.forEach((id) => {
 						const lookup = GSUB.getLookup(id);
-						allGlyphs[script][lang][feature.featureTag].push(parseLookup(lookup));
+						allGlyphs[script][lang][feature.featureTag].push(
+							parseLookup(lookup)
+						);
 					});
 				});
 			});
