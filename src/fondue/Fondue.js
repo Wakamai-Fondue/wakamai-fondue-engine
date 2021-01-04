@@ -827,7 +827,7 @@ export default class Fondue {
 			});
 		});
 
-		console.log(allGlyphs);
+		// console.log(allGlyphs);
 
 		return allGlyphs;
 	}

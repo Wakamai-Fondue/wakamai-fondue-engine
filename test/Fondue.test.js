@@ -344,11 +344,26 @@ describe("Layout features", () => {
 
 		expect(fondue.featureChars["DFLT"]["dflt"]).toEqual(
 			expect.objectContaining({
-				onum: {
-					type: 1,
-					input: ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"],
-					alternateCount: [],
-				},
+				onum: [
+					{
+						type: 1,
+						lookahead: [],
+						backtrack: [],
+						input: [
+							"0",
+							"1",
+							"2",
+							"3",
+							"4",
+							"5",
+							"6",
+							"7",
+							"8",
+							"9",
+						],
+						alternateCount: [],
+					},
+				],
 			})
 		);
 	});
@@ -358,11 +373,15 @@ describe("Layout features", () => {
 
 		expect(fondue.featureChars["DFLT"]["dflt"]).toEqual(
 			expect.objectContaining({
-				cv01: {
-					type: 3,
-					input: ["Α"], // Note this is U+0391 : GREEK CAPITAL LETTER ALPHA
-					alternateCount: [27],
-				},
+				cv01: [
+					{
+						type: 3,
+						lookahead: [],
+						backtrack: [],
+						input: ["Α"], // Note this is U+0391 : GREEK CAPITAL LETTER ALPHA
+						alternateCount: [27],
+					},
+				],
 			})
 		);
 	});
@@ -372,11 +391,15 @@ describe("Layout features", () => {
 
 		expect(fondue.featureChars["latn"]["dflt"]).toEqual(
 			expect.objectContaining({
-				liga: {
-					alternateCount: [],
-					input: ["ffl", "ffi", "ff", "fl", "fi"],
-					type: 4,
-				},
+				liga: [
+					{
+						alternateCount: [],
+						lookahead: [],
+						backtrack: [],
+						input: ["ffl", "ffi", "ff", "fl", "fi"],
+						type: 4,
+					},
+				],
 			})
 		);
 	});
