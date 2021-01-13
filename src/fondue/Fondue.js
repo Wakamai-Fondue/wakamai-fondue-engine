@@ -649,6 +649,18 @@ export default class Fondue {
 	get featureChars() {
 		const { cmap, GSUB } = this._font.opentype.tables;
 
+		// Human readable names for lookup types
+		const lookupTypes = {
+			1: "Single Substitution",
+			2: "Multiple Substitution",
+			3: "Alternate Substitution",
+			4: "Ligature Substitution",
+			5: "Contextual Substitution",
+			6: "Chained Contexts Substitution",
+			7: "Extension Substitution",
+			8: "Reverse Chaining Contextual Single Substitution",
+		};
+
 		if (!GSUB) return {};
 
 		function letterFor(glyphid) {
@@ -684,6 +696,7 @@ export default class Fondue {
 		function parseLookup(lookup) {
 			const parsedLookup = {
 				type: lookup.lookupType,
+				typeName: lookupTypes[lookup.lookupType],
 				input: [],
 				backtrack: [],
 				lookahead: [],
