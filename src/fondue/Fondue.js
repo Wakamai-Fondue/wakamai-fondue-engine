@@ -713,9 +713,25 @@ export default class Fondue {
 					// inside the same lookup (e.g. 10 alternates for "A", 5 for
 					// "B"), so we keep track of the alternateCount per glyph.
 					subtable.alternateSetOffsets.forEach((_, j) => {
-						parsedLookup["input"].push(
-							letterFor(coverage.glyphArray[j])
-						);
+						if (!coverage.glyphArray) {
+							const range = coverage.rangeRecords[j];
+							if (range) {
+								for (
+									let g = range.startGlyphID;
+									g < range.endGlyphID + 1;
+									g++
+								) {
+									const char = letterFor(g);
+									if (char !== undefined) {
+										parsedLookup["input"].push(char);
+									}
+								}
+							}
+						} else {
+							parsedLookup["input"].push(
+								letterFor(coverage.glyphArray[j])
+							);
+						}
 
 						const altset = subtable.getAlternateSet(j);
 						parsedLookup["alternateCount"].push(
