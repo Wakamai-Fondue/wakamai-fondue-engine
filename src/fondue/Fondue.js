@@ -657,12 +657,15 @@ export default class Fondue {
 
 		function glyphToLetter(coverage) {
 			let results = [];
-			let glyphs = coverage.glyphArray;
 
-			if (!glyphs) {
+			if (!coverage.glyphArray) {
 				// Glyphs in start/end ranges
-				for (const r of coverage.rangeRecords) {
-					for (let g = r.startGlyphID; g < r.endGlyphID + 1; g++) {
+				for (const range of coverage.rangeRecords) {
+					for (
+						let g = range.startGlyphID;
+						g < range.endGlyphID + 1;
+						g++
+					) {
 						const char = letterFor(g);
 						if (char !== undefined) {
 							results.push(char);
@@ -671,7 +674,7 @@ export default class Fondue {
 				}
 			} else {
 				// Individual glyphs
-				results = glyphs
+				results = coverage.glyphArray
 					.filter((g) => letterFor(g) !== undefined)
 					.map(letterFor);
 			}
