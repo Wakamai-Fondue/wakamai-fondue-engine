@@ -798,13 +798,13 @@ export default class Fondue {
 							);
 						}
 
-						if (subtable.inputGlyphCount > 0) {
+						if (subtable.backtrackCoverageOffsets > 0) {
 							parsedLookup["backtrack"][i] = glyphsToCharacters(
 								coverage
 							);
 						}
 
-						if (subtable.inputGlyphCount > 0) {
+						if (subtable.lookaheadCoverageOffsets > 0) {
 							parsedLookup["lookahead"][i] = glyphsToCharacters(
 								coverage
 							);
