@@ -667,12 +667,23 @@ export default class Fondue {
 			return cmap.reverse(glyphid).unicode;
 		}
 
-		function glyphToLetter(coverage) {
+		// Map glyphs to characters for this coverage. If only a
+		// specific rangeRecord needs to be processed, e.g. for
+		// lookup type 3, you can pass the desired index.
+		function glyphsToCharacters(coverage, index) {
 			let results = [];
 
 			if (!coverage.glyphArray) {
+				let records;
+				if (index >= 0) {
+					records = coverage.rangeRecords.filter(
+						(_, i) => index !== i
+					);
+				} else {
+					records = coverage.rangeRecords;
+				}
 				// Glyphs in start/end ranges
-				for (const range of coverage.rangeRecords) {
+				for (const range of records) {
 					for (
 						let g = range.startGlyphID;
 						g < range.endGlyphID + 1;
@@ -709,7 +720,7 @@ export default class Fondue {
 				lookup.subtableOffsets.forEach((_, i) => {
 					const subtable = lookup.getSubTable(i);
 					const coverage = subtable.getCoverageTable();
-					const results = glyphToLetter(coverage);
+					const results = glyphsToCharacters(coverage);
 
 					if (results.length > 0) {
 						parsedLookup["input"] = results;
@@ -727,25 +738,7 @@ export default class Fondue {
 					// inside the same lookup (e.g. 10 alternates for "A", 5 for
 					// "B"), so we keep track of the alternateCount per glyph.
 					subtable.alternateSetOffsets.forEach((_, j) => {
-						if (!coverage.glyphArray) {
-							const range = coverage.rangeRecords[j];
-							if (range) {
-								for (
-									let g = range.startGlyphID;
-									g < range.endGlyphID + 1;
-									g++
-								) {
-									const char = letterFor(g);
-									if (char !== undefined) {
-										parsedLookup["input"].push(char);
-									}
-								}
-							}
-						} else {
-							parsedLookup["input"].push(
-								letterFor(coverage.glyphArray[j])
-							);
-						}
+						parsedLookup["input"] = glyphsToCharacters(coverage, j);
 
 						const altset = subtable.getAlternateSet(j);
 						parsedLookup["alternateCount"].push(
@@ -801,7 +794,9 @@ export default class Fondue {
 							const coverage = subtable.getCoverageFromOffset(
 								offset
 							);
-							parsedLookup["input"][i] = glyphToLetter(coverage);
+							parsedLookup["input"][i] = glyphsToCharacters(
+								coverage
+							);
 						});
 					}
 
@@ -810,7 +805,7 @@ export default class Fondue {
 							const coverage = subtable.getCoverageFromOffset(
 								offset
 							);
-							parsedLookup["backtrack"][i] = glyphToLetter(
+							parsedLookup["backtrack"][i] = glyphsToCharacters(
 								coverage
 							);
 						});
@@ -821,7 +816,7 @@ export default class Fondue {
 							const coverage = subtable.getCoverageFromOffset(
 								offset
 							);
-							parsedLookup["lookahead"][i] = glyphToLetter(
+							parsedLookup["lookahead"][i] = glyphsToCharacters(
 								coverage
 							);
 						});
