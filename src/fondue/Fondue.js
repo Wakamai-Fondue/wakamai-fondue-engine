@@ -793,7 +793,7 @@ export default class Fondue {
 			// Chained context substitution
 			if (lookup.lookupType === 6) {
 				lookup.subtableOffsets.forEach((_, i) => {
-					let subtable = lookup.getSubTable(i);
+					const subtable = lookup.getSubTable(i);
 
 					if (subtable.inputGlyphCount > 0) {
 						subtable.inputCoverageOffsets.forEach((offset) => {
@@ -831,7 +831,7 @@ export default class Fondue {
 			return parsedLookup;
 		}
 
-		let scripts = GSUB.getSupportedScripts();
+		const scripts = GSUB.getSupportedScripts();
 		let allGlyphs = {};
 
 		scripts.forEach((script) => {
