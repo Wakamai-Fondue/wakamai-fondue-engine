@@ -347,6 +347,7 @@ describe("Layout features", () => {
 				onum: [
 					{
 						type: 1,
+						typeName: "Single Substitution",
 						lookahead: [],
 						backtrack: [],
 						input: [
@@ -376,6 +377,7 @@ describe("Layout features", () => {
 				cv01: [
 					{
 						type: 3,
+						typeName: "Alternate Substitution",
 						lookahead: [],
 						backtrack: [],
 						input: ["Α"], // Note this is U+0391 : GREEK CAPITAL LETTER ALPHA
@@ -393,11 +395,12 @@ describe("Layout features", () => {
 			expect.objectContaining({
 				liga: [
 					{
-						alternateCount: [],
+						type: 4,
+						typeName: "Ligature Substitution",
 						lookahead: [],
 						backtrack: [],
 						input: ["ffl", "ffi", "ff", "fl", "fi"],
-						type: 4,
+						alternateCount: [],
 					},
 				],
 			})
