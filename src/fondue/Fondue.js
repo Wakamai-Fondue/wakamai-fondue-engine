@@ -696,7 +696,8 @@ export default class Fondue {
 		function parseLookup(lookup) {
 			const parsedLookup = {
 				type: lookup.lookupType,
-				typeName: lookupTypes[lookup.lookupType],
+				typeName:
+					lookupTypes[lookup.lookupType] || "Unknown lookup type",
 				input: [],
 				backtrack: [],
 				lookahead: [],
