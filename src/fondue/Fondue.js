@@ -794,27 +794,38 @@ export default class Fondue {
 				lookup.subtableOffsets.forEach((_, i) => {
 					const subtable = lookup.getSubTable(i);
 
-					subtable.inputCoverageOffsets.forEach((offset) => {
-						const coverage = subtable.getCoverageFromOffset(offset);
-
-						if (subtable.inputGlyphCount > 0) {
+					if (subtable.inputGlyphCount > 0) {
+						subtable.inputCoverageOffsets.forEach((offset) => {
+							const coverage = subtable.getCoverageFromOffset(
+								offset
+							);
 							parsedLookup["input"][i] = charactersFromGlyphs(
 								coverage
 							);
-						}
+						});
+					}
 
-						if (subtable.backtrackCoverageOffsets > 0) {
+					if (subtable.backtrackGlyphCount > 0) {
+						subtable.backtrackCoverageOffsets.forEach((offset) => {
+							const coverage = subtable.getCoverageFromOffset(
+								offset
+							);
 							parsedLookup["backtrack"][i] = charactersFromGlyphs(
 								coverage
 							);
-						}
+						});
+					}
 
-						if (subtable.lookaheadCoverageOffsets > 0) {
+					if (subtable.lookaheadGlyphCount > 0) {
+						subtable.lookaheadCoverageOffsets.forEach((offset) => {
+							const coverage = subtable.getCoverageFromOffset(
+								offset
+							);
 							parsedLookup["lookahead"][i] = charactersFromGlyphs(
 								coverage
 							);
-						}
-					});
+						});
+					}
 				});
 			}
 
