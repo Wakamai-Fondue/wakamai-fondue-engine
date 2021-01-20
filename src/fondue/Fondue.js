@@ -790,6 +790,14 @@ export default class Fondue {
 			}
 
 			// Chained context substitution
+			// Note that currently if a ChainContextSubst contains multiple coverages,
+			// we merge them all into one and remove duplicates. This is purely to keep
+			// a "data dump" less overwhelming, but isn't a perfect treatment of a type
+			// 6 lookup, as this can suggest character combinations that aren't
+			// possible.
+			// Possible future improvement: add the chars as an array to an array of
+			// input/backtrack/lookahead, then let a front decide whether to merge
+			// them or dump everything as-is.
 			if (lookup.lookupType === 6) {
 				lookup.subtableOffsets.forEach((_, i) => {
 					const subtable = lookup.getSubTable(i);
@@ -799,9 +807,11 @@ export default class Fondue {
 							const coverage = subtable.getCoverageFromOffset(
 								offset
 							);
-							parsedLookup["input"][i] = charactersFromGlyphs(
-								coverage
-							);
+							const chars = charactersFromGlyphs(coverage);
+							parsedLookup["input"][i] = new Set([
+								...(parsedLookup["input"][i] || []),
+								...chars,
+							]);
 						});
 					}
 
@@ -810,9 +820,11 @@ export default class Fondue {
 							const coverage = subtable.getCoverageFromOffset(
 								offset
 							);
-							parsedLookup["backtrack"][i] = charactersFromGlyphs(
-								coverage
-							);
+							const chars = charactersFromGlyphs(coverage);
+							parsedLookup["backtrack"][i] = new Set([
+								...(parsedLookup["backtrack"][i] || []),
+								...chars,
+							]);
 						});
 					}
 
@@ -821,9 +833,11 @@ export default class Fondue {
 							const coverage = subtable.getCoverageFromOffset(
 								offset
 							);
-							parsedLookup["lookahead"][i] = charactersFromGlyphs(
-								coverage
-							);
+							const chars = charactersFromGlyphs(coverage);
+							parsedLookup["lookahead"][i] = new Set([
+								...(parsedLookup["lookahead"][i] || []),
+								...chars,
+							]);
 						});
 					}
 				});
