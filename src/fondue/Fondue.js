@@ -816,15 +816,16 @@ export default class Fondue {
 				lookup.subtableOffsets.forEach((_, i) => {
 					const subtable = lookup.getSubTable(i);
 
+					let inputChars;
+					let backtrackChars;
+					let lookaheadChars;
+
 					if (subtable.inputGlyphCount > 0) {
 						subtable.inputCoverageOffsets.forEach((offset) => {
 							const coverage = subtable.getCoverageFromOffset(
 								offset
 							);
-							parsedLookup["input"][i] = mergeUniqueCoverage(
-								parsedLookup["input"][i],
-								charactersFromGlyphs(coverage)
-							);
+							inputChars = charactersFromGlyphs(coverage);
 						});
 					}
 
@@ -833,10 +834,7 @@ export default class Fondue {
 							const coverage = subtable.getCoverageFromOffset(
 								offset
 							);
-							parsedLookup["backtrack"][i] = mergeUniqueCoverage(
-								parsedLookup["backtrack"][i],
-								charactersFromGlyphs(coverage)
-							);
+							backtrackChars = charactersFromGlyphs(coverage);
 						});
 					}
 
@@ -845,11 +843,47 @@ export default class Fondue {
 							const coverage = subtable.getCoverageFromOffset(
 								offset
 							);
+							lookaheadChars = charactersFromGlyphs(coverage);
+						});
+					}
+
+					// Are there glyphs for each sequence?
+					const preCheck = [
+						subtable.inputGlyphCount > 0,
+						subtable.backtrackGlyphCount > 0,
+						subtable.lookaheadGlyphCount > 0,
+					].join();
+
+					// Are there chars for each sequence?
+					const postCheck = [
+						inputChars.length > 0,
+						backtrackChars && backtrackChars.length > 0,
+						lookaheadChars && lookaheadChars.length > 0,
+					].join();
+
+					// Check if we didn't lose a lookup because it contained only glyphs that
+					// were replaced in a previous lookup (in other words, didn't contain
+					// unicode characters).
+					// Example: backtrack [a, b, c], input [n], lookahead[x.alt, y.alt, z.alt]
+					if (preCheck === postCheck) {
+						parsedLookup["input"][i] = mergeUniqueCoverage(
+							parsedLookup["input"][i],
+							inputChars
+						);
+
+						if (backtrackChars) {
+							parsedLookup["backtrack"][i] = mergeUniqueCoverage(
+								parsedLookup["backtrack"][i],
+								backtrackChars
+							);
+						}
+
+						if (lookaheadChars) {
 							parsedLookup["lookahead"][i] = mergeUniqueCoverage(
 								parsedLookup["lookahead"][i],
-								charactersFromGlyphs(coverage)
+								lookaheadChars
 							);
-						});
+						}
 					}
 				});
 			}
