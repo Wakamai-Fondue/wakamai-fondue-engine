@@ -667,6 +667,11 @@ export default class Fondue {
 			return cmap.reverse(glyphid).unicode;
 		}
 
+		// [1,2,3] + [3,4,5] = [1,2,3,4,5]
+		function mergeUniqueCoverage(existing, addition) {
+			return [...new Set([...(existing || []), ...addition])];
+		}
+
 		// Returns glyphs that are mapped directly to characters for
 		// this coverage. If a glyph maps to another glyph, it's
 		// ignored.
@@ -798,6 +803,15 @@ export default class Fondue {
 			// Possible future improvement: add the chars as an array to an array of
 			// input/backtrack/lookahead, then let a front decide whether to merge
 			// them or dump everything as-is.
+
+			// TODO: When a lookup has a lookahead or backtrack with *only* glyphs (so
+			// no direct characters), we should ignore this lookup. Otherwise it will
+			// result in a lookup that *looks* okay, but isn't.
+			// Example: backtrack [a, b, c], input [n], lookahead[x.alt, y.alt, z.alt]
+			// Since the lookhead contains no chars, it will be reduced to [], and the
+			// lookup with look like this: backtrack [a, b, c], input [n]. This is
+			// wrong, as that only the backtrack+input will not result in any changed
+			// chars
 			if (lookup.lookupType === 6) {
 				lookup.subtableOffsets.forEach((_, i) => {
 					const subtable = lookup.getSubTable(i);
@@ -807,11 +821,10 @@ export default class Fondue {
 							const coverage = subtable.getCoverageFromOffset(
 								offset
 							);
-							const chars = charactersFromGlyphs(coverage);
-							parsedLookup["input"][i] = new Set([
-								...(parsedLookup["input"][i] || []),
-								...chars,
-							]);
+							parsedLookup["input"][i] = mergeUniqueCoverage(
+								parsedLookup["input"][i],
+								charactersFromGlyphs(coverage)
+							);
 						});
 					}
 
@@ -820,11 +833,10 @@ export default class Fondue {
 							const coverage = subtable.getCoverageFromOffset(
 								offset
 							);
-							const chars = charactersFromGlyphs(coverage);
-							parsedLookup["backtrack"][i] = new Set([
-								...(parsedLookup["backtrack"][i] || []),
-								...chars,
-							]);
+							parsedLookup["backtrack"][i] = mergeUniqueCoverage(
+								parsedLookup["backtrack"][i],
+								charactersFromGlyphs(coverage)
+							);
 						});
 					}
 
@@ -833,11 +845,10 @@ export default class Fondue {
 							const coverage = subtable.getCoverageFromOffset(
 								offset
 							);
-							const chars = charactersFromGlyphs(coverage);
-							parsedLookup["lookahead"][i] = new Set([
-								...(parsedLookup["lookahead"][i] || []),
-								...chars,
-							]);
+							parsedLookup["lookahead"][i] = mergeUniqueCoverage(
+								parsedLookup["lookahead"][i],
+								charactersFromGlyphs(coverage)
+							);
 						});
 					}
 				});
@@ -874,6 +885,60 @@ export default class Fondue {
 			});
 		});
 
+		if (window.once) {
+			window.once = false;
+			console.log(createType6Summary(allGlyphs["DFLT"]["dflt"]["frac"]));
+			// console.log(createType6Summary(allGlyphs["DFLT"]["dflt"]["ordn"]));
+		}
+
 		return allGlyphs;
 	}
 }
+
+window.once = true;
+
+const createType6Summary = (feature) => {
+	let allInputs = [];
+	let allBacktracks = [];
+	let allLookaheads = [];
+
+	// Create some kind of "all backtracks" or "all lookaheads"
+	for (const lookup of feature) {
+		if (lookup.type !== 6) continue;
+
+		// Create all possible combinations of input, backtrack and lookahead
+		for (const [key, inputs] of Object.entries(lookup["input"])) {
+			allInputs = [...new Set(allInputs.concat(lookup["input"][key]))];
+
+			if (lookup["backtrack"][key]) {
+				allBacktracks = [
+					...new Set(allBacktracks.concat(lookup["backtrack"][key])),
+				];
+			}
+
+			if (lookup["lookahead"][key]) {
+				allLookaheads = [
+					...new Set(allLookaheads.concat(lookup["lookahead"][key])),
+				];
+			}
+		}
+	}
+
+	let allCombinations = [allInputs];
+
+	if (allBacktracks.length) {
+		allCombinations.unshift(allBacktracks);
+	}
+
+	if (allLookaheads.length) {
+		allCombinations.push(allLookaheads);
+	}
+
+	let summarizedCombinations = allCombinations
+		.reduce((a, b) =>
+			a.reduce((r, v) => r.concat(b.map((w) => [].concat(v, w))), [])
+		)
+		.map((a) => a.join(""));
+
+	return summarizedCombinations;
+};
