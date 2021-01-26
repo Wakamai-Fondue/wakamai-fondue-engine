@@ -857,8 +857,10 @@ export default class Fondue {
 					// Are there chars for each sequence?
 					const postCheck = [
 						inputChars.length > 0,
-						backtrackChars && backtrackChars.length > 0,
-						lookaheadChars && lookaheadChars.length > 0,
+						backtrackChars !== undefined &&
+							backtrackChars.length > 0,
+						lookaheadChars !== undefined &&
+							lookaheadChars.length > 0,
 					].join();
 
 					// Check if we didn't lose a lookup because it contained only glyphs that
@@ -884,6 +886,9 @@ export default class Fondue {
 								lookaheadChars
 							);
 						}
+					} else {
+						// We don't need empty lookups
+						return false;
 					}
 				});
 			}
@@ -907,37 +912,42 @@ export default class Fondue {
 
 				features.forEach((feature) => {
 					const lookupIDs = feature.lookupListIndices;
-					allGlyphs[script][lang][feature.featureTag] = [];
+					allGlyphs[script][lang][feature.featureTag] = {};
+					allGlyphs[script][lang][feature.featureTag]["lookups"] = [];
 
 					lookupIDs.forEach((id) => {
 						const lookup = GSUB.getLookup(id);
-						allGlyphs[script][lang][feature.featureTag].push(
-							parseLookup(lookup)
+						const parsedLookup = parseLookup(lookup);
+
+						if (parsedLookup) {
+							allGlyphs[script][lang][feature.featureTag][
+								"lookups"
+							].push(parsedLookup);
+						}
+
+						allGlyphs[script][lang][feature.featureTag][
+							"summary"
+						] = createType6Summary(
+							allGlyphs[script][lang][feature.featureTag]
 						);
 					});
 				});
 			});
 		});
 
-		if (window.once) {
-			window.once = false;
-			console.log(createType6Summary(allGlyphs["DFLT"]["dflt"]["frac"]));
-			// console.log(createType6Summary(allGlyphs["DFLT"]["dflt"]["ordn"]));
-		}
-
 		return allGlyphs;
 	}
 }
-
-window.once = true;
 
 const createType6Summary = (feature) => {
 	let allInputs = [];
 	let allBacktracks = [];
 	let allLookaheads = [];
 
+	const limit = 20; // Summary will be limited to a max of limit³ (e.g. 20*20*20 = 8000)
+
 	// Create some kind of "all backtracks" or "all lookaheads"
-	for (const lookup of feature) {
+	for (const lookup of feature["lookups"]) {
 		if (lookup.type !== 6) continue;
 
 		// Create all possible combinations of input, backtrack and lookahead
@@ -958,14 +968,14 @@ const createType6Summary = (feature) => {
 		}
 	}
 
-	let allCombinations = [allInputs];
+	let allCombinations = [allInputs.slice(0, limit)];
 
 	if (allBacktracks.length) {
-		allCombinations.unshift(allBacktracks);
+		allCombinations.unshift(allBacktracks.slice(0, limit));
 	}
 
 	if (allLookaheads.length) {
-		allCombinations.push(allLookaheads);
+		allCombinations.push(allLookaheads.slice(0, limit));
 	}
 
 	let summarizedCombinations = allCombinations
