@@ -886,14 +886,17 @@ export default class Fondue {
 								lookaheadChars
 							);
 						}
-					} else {
-						// We don't need empty lookups
-						return false;
 					}
 				});
 			}
 
-			return parsedLookup;
+			// Return lookup if input contains actual characters
+			// (It can be empty if it replaces non-unicode glyphs)
+			if (parsedLookup["input"].length > 0) {
+				return parsedLookup;
+			} else {
+				return false;
+			}
 		}
 
 		const scripts = GSUB.getSupportedScripts();
