@@ -91,6 +91,39 @@ const getVariableCSS = (font) => {
 	return css;
 };
 
+// Linewrap a string of CSS properties divided by ", "
+// Note that the tabSize is doubled for consecutive lines
+const lineWrap = (str, max = 78, tabSize = 4) => {
+	const joiner = ", ";
+	const chunks = str.split(joiner);
+
+	const lines = [];
+	let line = 0;
+	let lineLength = tabSize;
+
+	chunks.forEach((chunk) => {
+		if (lineLength + chunk.length + joiner.length >= max) {
+			line++;
+			lineLength = tabSize * 2;
+		} else {
+			lineLength += joiner.length;
+		}
+		lines[line] = lines[line] || [];
+		lines[line].push(chunk);
+		lineLength += chunk.length;
+	});
+
+	let tab = " ".repeat(tabSize);
+	let newline = "";
+
+	return lines.map((line) => {
+		const formattedLine = `${newline}${tab}${line.join(joiner)}`;
+		newline = "\n";
+		tab = " ".repeat(tabSize * 2);
+		return formattedLine;
+	});
+};
+
 const getFontFace = (font) => {
 	console.log(font);
 	let fontface = "@font-face {\n";
