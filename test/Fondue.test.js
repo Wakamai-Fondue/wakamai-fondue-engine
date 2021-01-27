@@ -74,6 +74,13 @@ describe("The loaded font", () => {
 		);
 	});
 
+	test("returns CSS @font-face information.", async () => {
+		const fondue = await fromPath(
+			"./test/fixtures/SourceCodeVariable-Roman.ttf"
+		);
+		expect(fondue.cssString).toContain("font-weight: 200 900;");
+	});
+
 	test("without variations should return CSS information.", async () => {
 		const fondue = await fromPath(
 			"./test/fixtures/SourceCodePro-Regular.otf"
