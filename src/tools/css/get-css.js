@@ -125,22 +125,29 @@ const lineWrap = (str, max = 78, tabSize = 4) => {
 };
 
 const getFontFace = (font) => {
-	console.log(font);
 	let fontface = "@font-face {\n";
 
-	fontface += `   font-family: "${font.summary["Font name"]}";\n`;
-	fontface += `   src: url("${font.summary["Filename"]}");\n`;
+	fontface += `    font-family: "${font.summary["Font name"]}";\n`;
+	fontface += `    src: url("${font.summary["Filename"]}");\n`;
 
+	// Add variable defaults
 	if (font.isVariable) {
 		const weight = font.variable.axes.find((o) => o.id === "wght");
 		if (weight) {
-			fontface += `    font-weight: ${weight.min} ${weight.max};`;
+			fontface += `    font-weight: ${weight.min} ${weight.max};\n`;
+		}
+
+		const width = font.variable.axes.find((o) => o.id === "wdth");
+		if (width) {
+			fontface += `    font-stretch: ${width.min}% ${width.max}%;\n`;
 		}
 	}
 
-	fontface += "}\n\n";
+	// Add Unicode range
+	const unicodeRange = `unicode-range: ${font.unicodeRange.join(", ")};\n`;
+	fontface += lineWrap(unicodeRange);
 
-	console.log(fontface);
+	fontface += "}\n\n";
 
 	return fontface;
 };
