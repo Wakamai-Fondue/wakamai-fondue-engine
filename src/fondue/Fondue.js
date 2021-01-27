@@ -430,6 +430,29 @@ export default class Fondue {
 		return chars;
 	}
 
+	// Returns an array of all supported Unicode characters
+	// from the "best" cmap as Unicode ranges.
+	get unicodeRange() {
+		let ranges = [],
+			rstart,
+			rend;
+		for (var i = 0; i < this.supportedCharacters.length; i++) {
+			rstart = this.supportedCharacters[i];
+			rend = rstart;
+			while (
+				parseInt(this.supportedCharacters[i + 1], 16) -
+					parseInt(this.supportedCharacters[i], 16) ==
+				1
+			) {
+				rend = this.supportedCharacters[i + 1]; // increment the index if the numbers sequential
+				i++;
+			}
+			ranges.push(rstart == rend ? `U+${rstart}` : `U+${rstart}-${rend}`);
+		}
+
+		return ranges;
+	}
+
 	// Return the "best" unicode cmap dictionary available in the font,
 	// or false, if no unicode cmap subtable is available.
 	// Implementation of the awesome FontTools getBestCmap function.
