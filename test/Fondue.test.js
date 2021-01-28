@@ -342,29 +342,16 @@ describe("Layout features", () => {
 	test("returns lookup 1 layout features", async () => {
 		const fondue = await SourceCodeProOTFFont();
 
-		expect(fondue.featureChars["DFLT"]["dflt"]).toEqual(
+		expect(
+			fondue.featureChars["DFLT"]["dflt"]["onum"]["lookups"][0]
+		).toEqual(
 			expect.objectContaining({
-				onum: [
-					{
-						type: 1,
-						typeName: "Single Substitution",
-						lookahead: [],
-						backtrack: [],
-						input: [
-							"0",
-							"1",
-							"2",
-							"3",
-							"4",
-							"5",
-							"6",
-							"7",
-							"8",
-							"9",
-						],
-						alternateCount: [],
-					},
-				],
+				type: 1,
+				typeName: "Single Substitution",
+				lookahead: [],
+				backtrack: [],
+				input: ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"],
+				alternateCount: [],
 			})
 		);
 	});
@@ -372,18 +359,16 @@ describe("Layout features", () => {
 	test("returns lookup 3 layout features", async () => {
 		const fondue = await AthenaRubyFont();
 
-		expect(fondue.featureChars["DFLT"]["dflt"]).toEqual(
+		expect(
+			fondue.featureChars["DFLT"]["dflt"]["cv01"]["lookups"][0]
+		).toEqual(
 			expect.objectContaining({
-				cv01: [
-					{
-						type: 3,
-						typeName: "Alternate Substitution",
-						lookahead: [],
-						backtrack: [],
-						input: ["Α"], // Note this is U+0391 : GREEK CAPITAL LETTER ALPHA
-						alternateCount: [27],
-					},
-				],
+				type: 3,
+				typeName: "Alternate Substitution",
+				lookahead: [],
+				backtrack: [],
+				input: ["Α"], // Note this is U+0391 : GREEK CAPITAL LETTER ALPHA
+				alternateCount: [27],
 			})
 		);
 	});
@@ -391,18 +376,16 @@ describe("Layout features", () => {
 	test("returns lookup 4 layout features", async () => {
 		const fondue = await OpenSansFont();
 
-		expect(fondue.featureChars["latn"]["dflt"]).toEqual(
+		expect(
+			fondue.featureChars["latn"]["dflt"]["liga"]["lookups"][0]
+		).toEqual(
 			expect.objectContaining({
-				liga: [
-					{
-						type: 4,
-						typeName: "Ligature Substitution",
-						lookahead: [],
-						backtrack: [],
-						input: ["ffl", "ffi", "ff", "fl", "fi"],
-						alternateCount: [],
-					},
-				],
+				type: 4,
+				typeName: "Ligature Substitution",
+				lookahead: [],
+				backtrack: [],
+				input: ["ffl", "ffi", "ff", "fl", "fi"],
+				alternateCount: [],
 			})
 		);
 	});
