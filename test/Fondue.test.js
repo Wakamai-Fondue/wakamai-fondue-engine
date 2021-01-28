@@ -36,6 +36,10 @@ const BreeSerifFont = async () => {
 	return await fromPath("./test/fixtures/BreeSerif-Regular.ttf");
 };
 
+const AbrilFatFaceFont = async () => {
+	return await fromPath("./test/fixtures/AbrilFatface-Regular.ttf");
+};
+
 describe("The loaded font", () => {
 	test("is loaded succesfully.", async () => {
 		const fondue = await fromPath(
@@ -388,6 +392,66 @@ describe("Layout features", () => {
 				alternateCount: [],
 			})
 		);
+	});
+
+	test("returns lookup 6 layout features", async () => {
+		const fondue = await AbrilFatFaceFont();
+
+		expect(
+			// Yes, four empty spaces (artifact of old font editing software)
+			fondue.featureChars["    "]["dflt"]["calt"]["lookups"][0]
+		).toEqual({
+			alternateCount: [],
+			backtrack: [
+				["j"],
+				["g"],
+				["g"],
+				undefined,
+				undefined,
+				undefined,
+				undefined,
+				undefined,
+				["ą"],
+				["("],
+				["["],
+				["{"],
+			],
+			input: [
+				["j"],
+				["j"],
+				["g"],
+				["f"],
+				["f"],
+				["f"],
+				["f"],
+				["f"],
+				["j"],
+				["j"],
+				["j"],
+				["j"],
+			],
+			lookahead: [
+				undefined,
+				undefined,
+				undefined,
+				["b"],
+				["h"],
+				["k"],
+				["l"],
+				["t"],
+			],
+			type: 6,
+			typeName: "Chained Contexts Substitution",
+		});
+	});
+
+	test("returns lookup 6 summary", async () => {
+		const fondue = await AbrilFatFaceFont();
+
+		expect(
+			// Yes, four empty spaces (artifact of old font editing software)
+			fondue.featureChars["    "]["dflt"]["calt"]["summary"].length
+		).toBeGreaterThanOrEqual(1);
 	});
 
 	test("has no GSUB layout features", async () => {
