@@ -931,7 +931,8 @@ export default class Fondue {
 						allGlyphs[script][lang][feature.featureTag][
 							"summary"
 						] = createType6Summary(
-							allGlyphs[script][lang][feature.featureTag]
+							allGlyphs[script][lang][feature.featureTag],
+							true
 						);
 					});
 				});
@@ -942,12 +943,20 @@ export default class Fondue {
 	}
 }
 
-const createType6Summary = (feature) => {
+const createType6Summary = (feature, randomize) => {
 	let allInputs = [];
 	let allBacktracks = [];
 	let allLookaheads = [];
 
-	const limit = 20; // Summary will be limited to a max of limit³ (e.g. 20*20*20 = 8000)
+	const limit = 10; // Summary will be limited to a max of limit³ (e.g. 20*20*20 = 8000)
+
+	const shuffleArray = (array) => {
+		for (let i = array.length - 1; i > 0; i--) {
+			const j = Math.floor(Math.random() * (i + 1));
+			[array[i], array[j]] = [array[j], array[i]];
+		}
+		return array;
+	};
 
 	// Create some kind of "all backtracks" or "all lookaheads"
 	for (const lookup of feature["lookups"]) {
@@ -971,6 +980,18 @@ const createType6Summary = (feature) => {
 		}
 	}
 
+	if (randomize) {
+		allInputs = shuffleArray(allInputs);
+
+		if (allBacktracks.length) {
+			allBacktracks = shuffleArray(allBacktracks);
+		}
+
+		if (allLookaheads.length) {
+			allLookaheads = shuffleArray(allLookaheads);
+		}
+	}
+
 	let allCombinations = [allInputs.slice(0, limit)];
 
 	if (allBacktracks.length) {
@@ -987,5 +1008,5 @@ const createType6Summary = (feature) => {
 		)
 		.map((a) => a.join(""));
 
-	return summarizedCombinations;
+	return summarizedCombinations.sort();
 };
