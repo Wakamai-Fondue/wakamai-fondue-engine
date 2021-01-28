@@ -379,6 +379,9 @@ export default class Fondue {
 		return summary;
 	}
 
+	// Returns a "slug" for the font.
+	// Example:
+	//   Comic Sans → comic-sans
 	get slug() {
 		return slugify(this.summary["Font name"]);
 	}
