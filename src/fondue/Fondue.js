@@ -1,5 +1,6 @@
 import { NAME_TABLE, NAME_RECORD, CMAP_RECORD } from "../tools/variables.js";
 import getCSS, { getCSSAsJSON } from "../tools/css/get-css.js";
+import slugify from "../tools/css/slugify.js";
 import featureMapping from "../tools/features/layout-features.js";
 import languageMapping from "../tools/ot-to-html-lang.js";
 import languageCharSets from "../tools/languageCharSets.js";
@@ -376,6 +377,13 @@ export default class Fondue {
 			}
 		});
 		return summary;
+	}
+
+	// Returns a "slug" for the font.
+	// Example:
+	//   Comic Sans → comic-sans
+	get slug() {
+		return slugify(this.summary["Font name"]);
 	}
 
 	// Gets the parsed CSS as an object, for this font.
