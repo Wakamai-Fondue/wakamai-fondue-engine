@@ -963,7 +963,7 @@ const createType6Summary = (feature, randomize) => {
 		if (lookup.type !== 6) continue;
 
 		// Create all possible combinations of input, backtrack and lookahead
-		for (const [key, inputs] of Object.entries(lookup["input"])) {
+		for (const key in Object.entries(lookup["input"])) {
 			allInputs = [...new Set(allInputs.concat(lookup["input"][key]))];
 
 			if (lookup["backtrack"][key]) {
