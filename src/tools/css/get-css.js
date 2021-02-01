@@ -144,7 +144,10 @@ const getFontFace = (font) => {
 	}
 
 	// Add Unicode range
-	const unicodeRange = `unicode-range: ${font.unicodeRange.join(", ")};\n`;
+	const cssFormattedRanges = font.unicodeRange
+		.map((c) => `U+${c}`)
+		.join(", ");
+	const unicodeRange = `unicode-range: ${cssFormattedRanges};\n`;
 	fontface += lineWrap(unicodeRange);
 
 	fontface += "}\n\n";

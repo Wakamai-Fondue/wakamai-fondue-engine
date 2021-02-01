@@ -447,7 +447,7 @@ export default class Fondue {
 				rend = this.supportedCharacters[i + 1]; // increment the index if the numbers sequential
 				i++;
 			}
-			ranges.push(rstart == rend ? `U+${rstart}` : `U+${rstart}-${rend}`);
+			ranges.push(rstart == rend ? `${rstart}` : `${rstart}-${rend}`);
 		}
 
 		return ranges;
