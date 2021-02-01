@@ -657,60 +657,93 @@ export default class Fondue {
 	get featureChars() {
 		const { cmap, GSUB } = this._font.opentype.tables;
 
+		// Human readable names for lookup types
+		const lookupTypes = {
+			1: "Single Substitution",
+			2: "Multiple Substitution",
+			3: "Alternate Substitution",
+			4: "Ligature Substitution",
+			5: "Contextual Substitution",
+			6: "Chained Contexts Substitution",
+			7: "Extension Substitution",
+			8: "Reverse Chaining Contextual Single Substitution",
+		};
+
 		if (!GSUB) return {};
 
 		function letterFor(glyphid) {
 			return cmap.reverse(glyphid).unicode;
 		}
 
-		function parseLookup(lookup, script, lang, feature, currentAllGlyphs) {
-			if (!(feature.featureTag in currentAllGlyphs)) {
-				currentAllGlyphs[feature.featureTag] = {
-					type: lookup.lookupType,
-					input: [],
-					alternateCount: [],
-				};
+		// [1,2,3] + [3,4,5] = [1,2,3,4,5]
+		function mergeUniqueCoverage(existing, addition) {
+			return [...new Set([...(existing || []), ...addition])];
+		}
+
+		// Returns glyphs that are mapped directly to characters for
+		// this coverage. If a glyph maps to another glyph, it's
+		// ignored.
+		// If only a specific rangeRecord needs to be processed, e.g.
+		// for lookup type 3, you can pass the desired index.
+		function charactersFromGlyphs(coverage, index) {
+			let results = [];
+
+			if (!coverage.glyphArray) {
+				let records;
+				if (index >= 0) {
+					records = coverage.rangeRecords.filter(
+						(_, i) => index !== i
+					);
+				} else {
+					records = coverage.rangeRecords;
+				}
+				// Glyphs in start/end ranges
+				for (const range of records) {
+					for (
+						let g = range.startGlyphID;
+						g < range.endGlyphID + 1;
+						g++
+					) {
+						const char = letterFor(g);
+						if (char !== undefined) {
+							results.push(char);
+						}
+					}
+				}
+			} else {
+				// Individual glyphs
+				results = coverage.glyphArray
+					.filter((g) => letterFor(g) !== undefined)
+					.map(letterFor);
 			}
+			return results;
+		}
+
+		function parseLookup(lookup) {
+			const parsedLookup = {
+				type: lookup.lookupType,
+				typeName:
+					lookupTypes[lookup.lookupType] || "Unknown lookup type",
+				input: [],
+				backtrack: [],
+				lookahead: [],
+				alternateCount: [],
+			};
 
 			// Single substitution
 			if (lookup.lookupType === 1) {
 				lookup.subtableOffsets.forEach((_, i) => {
 					const subtable = lookup.getSubTable(i);
 					const coverage = subtable.getCoverageTable();
-					let glyphs = coverage.glyphArray;
-					let results = [];
-
-					if (!glyphs) {
-						// Glyphs in start/end ranges
-						for (const r of coverage.rangeRecords) {
-							for (
-								let g = r.startGlyphID;
-								g < r.endGlyphID + 1;
-								g++
-							) {
-								const char = letterFor(g);
-								if (char) {
-									results.push(char);
-								}
-							}
-						}
-					} else {
-						// Individual glyphs
-						results = glyphs
-							.filter((g) => letterFor(g) !== undefined)
-							.map(letterFor);
-					}
+					const results = charactersFromGlyphs(coverage);
 
 					if (results.length > 0) {
-						currentAllGlyphs[feature.featureTag]["input"] = [
-							...currentAllGlyphs[feature.featureTag]["input"],
-							...results,
-						];
+						parsedLookup["input"] = results;
 					}
 				});
 			}
 
-			// Alternate Substitution
+			// Alternate substitution
 			if (lookup.lookupType === 3) {
 				lookup.subtableOffsets.forEach((_, i) => {
 					const subtable = lookup.getSubTable(i);
@@ -720,14 +753,15 @@ export default class Fondue {
 					// inside the same lookup (e.g. 10 alternates for "A", 5 for
 					// "B"), so we keep track of the alternateCount per glyph.
 					subtable.alternateSetOffsets.forEach((_, j) => {
-						currentAllGlyphs[feature.featureTag]["input"].push(
-							letterFor(coverage.glyphArray[j])
+						parsedLookup["input"] = charactersFromGlyphs(
+							coverage,
+							j
 						);
 
 						const altset = subtable.getAlternateSet(j);
-						currentAllGlyphs[feature.featureTag][
-							"alternateCount"
-						].push(altset.alternateGlyphIDs.length);
+						parsedLookup["alternateCount"].push(
+							altset.alternateGlyphIDs.length
+						);
 					});
 				});
 			}
@@ -757,9 +791,9 @@ export default class Fondue {
 
 									// Only keep sequences with glyphs mapped to letters
 									if (!sequence.includes(undefined)) {
-										currentAllGlyphs[feature.featureTag][
-											"input"
-										].push(sequence.join(""));
+										parsedLookup["input"].push(
+											sequence.join("")
+										);
 									}
 								}
 							);
@@ -768,10 +802,112 @@ export default class Fondue {
 				});
 			}
 
-			return currentAllGlyphs;
+			// Chained context substitution
+			// Note that currently if a ChainContextSubst contains multiple coverages,
+			// we merge them all into one and remove duplicates. This is purely to keep
+			// a "data dump" less overwhelming, but isn't a perfect treatment of a type
+			// 6 lookup, as this can suggest character combinations that aren't
+			// possible.
+			// Possible future improvement: add the chars as an array to an array of
+			// input/backtrack/lookahead, then let a front decide whether to merge
+			// them or dump everything as-is.
+
+			// TODO: When a lookup has a lookahead or backtrack with *only* glyphs (so
+			// no direct characters), we should ignore this lookup. Otherwise it will
+			// result in a lookup that *looks* okay, but isn't.
+			// Example: backtrack [a, b, c], input [n], lookahead[x.alt, y.alt, z.alt]
+			// Since the lookhead contains no chars, it will be reduced to [], and the
+			// lookup with look like this: backtrack [a, b, c], input [n]. This is
+			// wrong, as that only the backtrack+input will not result in any changed
+			// chars
+			if (lookup.lookupType === 6) {
+				lookup.subtableOffsets.forEach((_, i) => {
+					const subtable = lookup.getSubTable(i);
+
+					let inputChars;
+					let backtrackChars;
+					let lookaheadChars;
+
+					if (subtable.inputGlyphCount > 0) {
+						subtable.inputCoverageOffsets.forEach((offset) => {
+							const coverage = subtable.getCoverageFromOffset(
+								offset
+							);
+							inputChars = charactersFromGlyphs(coverage);
+						});
+					}
+
+					if (subtable.backtrackGlyphCount > 0) {
+						subtable.backtrackCoverageOffsets.forEach((offset) => {
+							const coverage = subtable.getCoverageFromOffset(
+								offset
+							);
+							backtrackChars = charactersFromGlyphs(coverage);
+						});
+					}
+
+					if (subtable.lookaheadGlyphCount > 0) {
+						subtable.lookaheadCoverageOffsets.forEach((offset) => {
+							const coverage = subtable.getCoverageFromOffset(
+								offset
+							);
+							lookaheadChars = charactersFromGlyphs(coverage);
+						});
+					}
+
+					// Are there glyphs for each sequence?
+					const preCheck = [
+						subtable.inputGlyphCount > 0,
+						subtable.backtrackGlyphCount > 0,
+						subtable.lookaheadGlyphCount > 0,
+					].join();
+
+					// Are there chars for each sequence?
+					const postCheck = [
+						inputChars.length > 0,
+						backtrackChars !== undefined &&
+							backtrackChars.length > 0,
+						lookaheadChars !== undefined &&
+							lookaheadChars.length > 0,
+					].join();
+
+					// Check if we didn't lose a lookup because it contained only glyphs that
+					// were replaced in a previous lookup (in other words, didn't contain
+					// unicode characters).
+					// Example: backtrack [a, b, c], input [n], lookahead[x.alt, y.alt, z.alt]
+					if (preCheck === postCheck) {
+						parsedLookup["input"][i] = mergeUniqueCoverage(
+							parsedLookup["input"][i],
+							inputChars
+						);
+
+						if (backtrackChars) {
+							parsedLookup["backtrack"][i] = mergeUniqueCoverage(
+								parsedLookup["backtrack"][i],
+								backtrackChars
+							);
+						}
+
+						if (lookaheadChars) {
+							parsedLookup["lookahead"][i] = mergeUniqueCoverage(
+								parsedLookup["lookahead"][i],
+								lookaheadChars
+							);
+						}
+					}
+				});
+			}
+
+			// Return lookup if input contains actual characters
+			// (It can be empty if it replaces non-unicode glyphs)
+			if (parsedLookup["input"].length > 0) {
+				return parsedLookup;
+			} else {
+				return false;
+			}
 		}
 
-		let scripts = GSUB.getSupportedScripts();
+		const scripts = GSUB.getSupportedScripts();
 		let allGlyphs = {};
 
 		scripts.forEach((script) => {
@@ -787,16 +923,24 @@ export default class Fondue {
 
 				features.forEach((feature) => {
 					const lookupIDs = feature.lookupListIndices;
+					allGlyphs[script][lang][feature.featureTag] = {};
+					allGlyphs[script][lang][feature.featureTag]["lookups"] = [];
 
 					lookupIDs.forEach((id) => {
 						const lookup = GSUB.getLookup(id);
+						const parsedLookup = parseLookup(lookup);
 
-						allGlyphs[script][lang] = parseLookup(
-							lookup,
-							script,
-							lang,
-							feature,
-							allGlyphs[script][lang]
+						if (parsedLookup) {
+							allGlyphs[script][lang][feature.featureTag][
+								"lookups"
+							].push(parsedLookup);
+						}
+
+						allGlyphs[script][lang][feature.featureTag][
+							"summary"
+						] = createType6Summary(
+							allGlyphs[script][lang][feature.featureTag],
+							true
 						);
 					});
 				});
@@ -806,3 +950,76 @@ export default class Fondue {
 		return allGlyphs;
 	}
 }
+
+const createType6Summary = (feature, randomize) => {
+	let allInputs = [];
+	let allBacktracks = [];
+	let allLookaheads = [];
+
+	const limit = 10; // Summary will be limited to a max of limit³ (e.g. 20*20*20 = 8000)
+
+	const shuffleArray = (array) => {
+		for (let i = array.length - 1; i > 0; i--) {
+			const j = Math.floor(Math.random() * (i + 1));
+			[array[i], array[j]] = [array[j], array[i]];
+		}
+		return array;
+	};
+
+	// Create some kind of "all backtracks" or "all lookaheads"
+	for (const lookup of feature["lookups"]) {
+		if (lookup.type !== 6) continue;
+
+		// Create all possible combinations of input, backtrack and lookahead
+		for (const key in Object.entries(lookup["input"])) {
+			allInputs = [...new Set(allInputs.concat(lookup["input"][key]))];
+
+			if (lookup["backtrack"][key]) {
+				allBacktracks = [
+					...new Set(allBacktracks.concat(lookup["backtrack"][key])),
+				];
+			}
+
+			if (lookup["lookahead"][key]) {
+				allLookaheads = [
+					...new Set(allLookaheads.concat(lookup["lookahead"][key])),
+				];
+			}
+		}
+	}
+
+	if (randomize) {
+		allInputs = shuffleArray(allInputs);
+
+		if (allBacktracks.length) {
+			allBacktracks = shuffleArray(allBacktracks);
+		}
+
+		if (allLookaheads.length) {
+			allLookaheads = shuffleArray(allLookaheads);
+		}
+	}
+
+	let allCombinations = [allInputs.slice(0, limit)];
+
+	if (allBacktracks.length) {
+		allCombinations.unshift(allBacktracks.slice(0, limit));
+	}
+
+	if (allLookaheads.length) {
+		allCombinations.push(allLookaheads.slice(0, limit));
+	}
+
+	let summarizedCombinations = allCombinations
+		.reduce((a, b) =>
+			a.reduce((r, v) => r.concat(b.map((w) => [].concat(v, w))), [])
+		)
+		.map((a) => a.join(""));
+
+	return {
+		allInputs: allInputs.sort(),
+		allBacktracks: allBacktracks.sort(),
+		allLookaheads: allLookaheads.sort(),
+		summarizedCombinations: summarizedCombinations.sort(),
+	};
+};

@@ -36,6 +36,10 @@ const BreeSerifFont = async () => {
 	return await fromPath("./test/fixtures/BreeSerif-Regular.ttf");
 };
 
+const AbrilFatFaceFont = async () => {
+	return await fromPath("./test/fixtures/AbrilFatface-Regular.ttf");
+};
+
 describe("The loaded font", () => {
 	test("is loaded succesfully.", async () => {
 		const fondue = await fromPath(
@@ -342,13 +346,16 @@ describe("Layout features", () => {
 	test("returns lookup 1 layout features", async () => {
 		const fondue = await SourceCodeProOTFFont();
 
-		expect(fondue.featureChars["DFLT"]["dflt"]).toEqual(
+		expect(
+			fondue.featureChars["DFLT"]["dflt"]["onum"]["lookups"][0]
+		).toEqual(
 			expect.objectContaining({
-				onum: {
-					type: 1,
-					input: ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"],
-					alternateCount: [],
-				},
+				type: 1,
+				typeName: "Single Substitution",
+				lookahead: [],
+				backtrack: [],
+				input: ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"],
+				alternateCount: [],
 			})
 		);
 	});
@@ -356,13 +363,16 @@ describe("Layout features", () => {
 	test("returns lookup 3 layout features", async () => {
 		const fondue = await AthenaRubyFont();
 
-		expect(fondue.featureChars["DFLT"]["dflt"]).toEqual(
+		expect(
+			fondue.featureChars["DFLT"]["dflt"]["cv01"]["lookups"][0]
+		).toEqual(
 			expect.objectContaining({
-				cv01: {
-					type: 3,
-					input: ["Α"], // Note this is U+0391 : GREEK CAPITAL LETTER ALPHA
-					alternateCount: [27],
-				},
+				type: 3,
+				typeName: "Alternate Substitution",
+				lookahead: [],
+				backtrack: [],
+				input: ["Α"], // Note this is U+0391 : GREEK CAPITAL LETTER ALPHA
+				alternateCount: [27],
 			})
 		);
 	});
@@ -370,15 +380,80 @@ describe("Layout features", () => {
 	test("returns lookup 4 layout features", async () => {
 		const fondue = await OpenSansFont();
 
-		expect(fondue.featureChars["latn"]["dflt"]).toEqual(
+		expect(
+			fondue.featureChars["latn"]["dflt"]["liga"]["lookups"][0]
+		).toEqual(
 			expect.objectContaining({
-				liga: {
-					alternateCount: [],
-					input: ["ffl", "ffi", "ff", "fl", "fi"],
-					type: 4,
-				},
+				type: 4,
+				typeName: "Ligature Substitution",
+				lookahead: [],
+				backtrack: [],
+				input: ["ffl", "ffi", "ff", "fl", "fi"],
+				alternateCount: [],
 			})
 		);
+	});
+
+	test("returns lookup 6 layout features", async () => {
+		const fondue = await AbrilFatFaceFont();
+
+		expect(
+			// Yes, four empty spaces (artifact of old font editing software)
+			fondue.featureChars["    "]["dflt"]["calt"]["lookups"][0]
+		).toEqual({
+			alternateCount: [],
+			backtrack: [
+				["j"],
+				["g"],
+				["g"],
+				undefined,
+				undefined,
+				undefined,
+				undefined,
+				undefined,
+				["ą"],
+				["("],
+				["["],
+				["{"],
+			],
+			input: [
+				["j"],
+				["j"],
+				["g"],
+				["f"],
+				["f"],
+				["f"],
+				["f"],
+				["f"],
+				["j"],
+				["j"],
+				["j"],
+				["j"],
+			],
+			lookahead: [
+				undefined,
+				undefined,
+				undefined,
+				["b"],
+				["h"],
+				["k"],
+				["l"],
+				["t"],
+			],
+			type: 6,
+			typeName: "Chained Contexts Substitution",
+		});
+	});
+
+	test("returns lookup 6 summary", async () => {
+		const fondue = await AbrilFatFaceFont();
+
+		expect(
+			// Yes, four empty spaces (artifact of old font editing software)
+			fondue.featureChars["    "]["dflt"]["calt"]["summary"][
+				"summarizedCombinations"
+			].length
+		).toBeGreaterThanOrEqual(1);
 	});
 
 	test("has no GSUB layout features", async () => {
