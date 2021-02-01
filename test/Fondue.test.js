@@ -450,7 +450,9 @@ describe("Layout features", () => {
 
 		expect(
 			// Yes, four empty spaces (artifact of old font editing software)
-			fondue.featureChars["    "]["dflt"]["calt"]["summary"].length
+			fondue.featureChars["    "]["dflt"]["calt"]["summary"][
+				"summarizedCombinations"
+			].length
 		).toBeGreaterThanOrEqual(1);
 	});
 

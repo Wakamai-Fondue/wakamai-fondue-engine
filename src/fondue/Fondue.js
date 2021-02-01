@@ -1008,5 +1008,10 @@ const createType6Summary = (feature, randomize) => {
 		)
 		.map((a) => a.join(""));
 
-	return summarizedCombinations.sort();
+	return {
+		allInputs: allInputs.sort(),
+		allBacktracks: allBacktracks.sort(),
+		allLookaheads: allLookaheads.sort(),
+		summarizedCombinations: summarizedCombinations.sort(),
+	};
 };
