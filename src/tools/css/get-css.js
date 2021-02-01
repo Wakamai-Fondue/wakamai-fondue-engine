@@ -262,8 +262,6 @@ const getCSS = (fondue) => {
 		stylesheet = stylesheet + varcss;
 	}
 
-	// console.log(stylesheet); ///////////////////////////
-
 	return stylesheet;
 };
 
