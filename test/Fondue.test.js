@@ -128,15 +128,15 @@ describe("fromDataBuffer", () => {
 	});
 });
 
-describe("format", () => {
+describe("outline format", () => {
 	test("OTF font", async () => {
 		const fondue = await SourceCodeProOTFFont();
-		expect(fondue.format).toBe("OpenType/CFF");
+		expect(fondue.outlines).toContain("OpenType CFF");
 	});
 
 	test("TTF font", async () => {
 		const fondue = await WFTestFont();
-		expect(fondue.format).toBe("TrueType");
+		expect(fondue.outlines).toContain("TrueType glyf");
 	});
 });
 
