@@ -131,12 +131,12 @@ describe("fromDataBuffer", () => {
 describe("outline format", () => {
 	test("OTF font", async () => {
 		const fondue = await SourceCodeProOTFFont();
-		expect(fondue.outlines).toContain("OpenType CFF");
+		expect(fondue.outlines).toStrictEqual(["OpenType CFF"]);
 	});
 
 	test("TTF font", async () => {
 		const fondue = await WFTestFont();
-		expect(fondue.outlines).toContain("TrueType glyf");
+		expect(fondue.outlines).toStrictEqual(["TrueType glyf"]);
 	});
 });
 
