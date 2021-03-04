@@ -155,7 +155,7 @@ const getFontFace = (font) => {
 	return fontface;
 };
 
-const getCSS = (fondue) => {
+const getCSS = (fondue, ...exclude) => {
 	// Skip features for now
 	const features = getAvailableFeatures(fondue);
 	// Make a 'slug' of the font name to use throughout CSS
@@ -171,7 +171,10 @@ const getCSS = (fondue) => {
 		" */\n\n";
 
 	stylesheet = stylesheet + stylesheetIntro;
-	stylesheet = stylesheet + getFontFace(fondue);
+
+	if (!exclude.includes("font-face")) {
+		stylesheet = stylesheet + getFontFace(fondue);
+	}
 
 	if (features.length) {
 		// Layout stuff

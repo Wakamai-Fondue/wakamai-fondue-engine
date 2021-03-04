@@ -426,6 +426,11 @@ export default class Fondue {
 		return getCSS(this);
 	}
 
+	// Get CSS as string, but with the option to exclude parts
+	fontCSS(exclude) {
+		return getCSS(this, exclude);
+	}
+
 	// Returns whether a specific character is supported by this font.
 	// Example:
 	//   fondue.supports('A') -> returns whether the character 'A' is supported by this font.
