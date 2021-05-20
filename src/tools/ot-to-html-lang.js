@@ -1,2034 +1,13 @@
-/*
- * Copyright 2021 Google LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 export default [
-	{
-		html: "aa",
-		name: "Afar",
-		ot: "AFR",
-	},
-	{
-		html: "sq",
-		name: "Albanian",
-		ot: "SQI",
-	},
-	{
-		html: "ar",
-		name: "Arabic",
-		ot: "ARA",
-	},
-	{
-		html: "ab",
-		name: "Abkhazian",
-		ot: "ABK",
-	},
 	{
 		html: "abq",
 		name: "Abaza",
 		ot: "ABA",
 	},
 	{
-		html: "acf",
-		name: "French Antillean",
-		ot: "FAN",
-	},
-	{
-		html: "ada",
-		name: "Dangme",
-		ot: "DNG",
-	},
-	{
-		html: "dz",
-		name: "Dzongkha",
-		ot: "DZN",
-	},
-	{
-		html: "af",
-		name: "Afrikaans",
-		ot: "AFK",
-	},
-	{
-		html: "ahg",
-		name: "Agaw",
-		ot: "AGW",
-	},
-	{
-		html: "ath",
-		name: "Athapascan",
-		ot: "ATH",
-	},
-	{
-		html: "aii",
-		name: "Swadaya Aramaic",
-		ot: "SWA",
-	},
-	{
-		html: "syr",
-		name: "Syriac",
-		ot: "SYR",
-	},
-	{
-		html: "aiw",
-		name: "Aari",
-		ot: "ARI",
-	},
-	{
-		html: "ak",
-		name: "Akan",
-		ot: "AKA",
-	},
-	{
-		html: "tw",
-		name: "Twi",
-		ot: "TWI",
-	},
-	{
-		html: "am",
-		name: "Amharic",
-		ot: "AMH",
-	},
-	{
-		html: "amf",
-		name: "Hammer-Banna",
-		ot: "HBN",
-	},
-	{
-		html: "an",
-		name: "Aragonese",
-		ot: "ARG",
-	},
-	{
-		html: "arn",
-		name: "Mapudungun",
-		ot: "MAP",
-	},
-	{
-		html: "ary",
-		name: "Moroccan",
-		ot: "MOR",
-	},
-	{
-		html: "as",
-		name: "Assamese",
-		ot: "ASM",
-	},
-	{
-		html: "atj",
-		name: "R-Cree",
-		ot: "RCR",
-	},
-	{
-		html: "alt",
-		name: "Southern Altai",
-		ot: "ALT",
-	},
-	{
-		html: "av",
-		name: "Avar",
-		ot: "AVR",
-	},
-	{
-		html: "ay",
-		name: "Aymara",
-		ot: "AYM",
-	},
-	{
-		html: "az",
-		name: "Azerbaijani",
-		ot: "AZE",
-	},
-	{
-		html: "ba",
-		name: "Bashkir",
-		ot: "BSH",
-	},
-	{
-		html: "bad",
-		name: "Banda",
-		ot: "BAD0",
-	},
-	{
-		html: "bai",
-		name: "Bamileke",
-		ot: "BML",
-	},
-	{
-		html: "bal",
-		name: "Baluchi",
-		ot: "BLI",
-	},
-	{
-		html: "bci",
-		name: "Baul\u00e9",
-		ot: "BAU",
-	},
-	{
-		html: "bik",
-		name: "Bikol",
-		ot: "BIK",
-	},
-	{
-		html: "bcq",
-		name: "Bench",
-		ot: "BCH",
-	},
-	{
-		html: "be",
-		name: "Belarussian",
-		ot: "BEL",
-	},
-	{
-		html: "beb",
-		name: "Beti",
-		ot: "BTI",
-	},
-	{
-		html: "ber",
-		name: "Berber",
-		ot: "BBR",
-	},
-	{
-		html: "bfq",
-		name: "Badaga",
-		ot: "BAD",
-	},
-	{
-		html: "bft",
-		name: "Balti",
-		ot: "BLT",
-	},
-	{
-		html: "bfu",
-		name: "Lahuli",
-		ot: "LAH",
-	},
-	{
-		html: "bfy",
-		name: "Baghelkhandi",
-		ot: "BAG",
-	},
-	{
-		html: "bg",
-		name: "Bulgarian",
-		ot: "BGR",
-	},
-	{
-		html: "bgr",
-		name: "Chin",
-		ot: "QIN",
-	},
-	{
-		html: "bhb",
-		name: "Bhili",
-		ot: "BHI",
-	},
-	{
-		html: "mg",
-		name: "Malagasy",
-		ot: "MLG",
-	},
-	{
-		html: "bi",
-		name: "Bislama",
-		ot: "BIS",
-	},
-	{
-		html: "bin",
-		name: "Edo",
-		ot: "EDO",
-	},
-	{
-		html: "ms",
-		name: "Malay",
-		ot: "MLY",
-	},
-	{
-		html: "bjt",
-		name: "Balante",
-		ot: "BLN",
-	},
-	{
-		html: "bla",
-		name: "Blackfoot",
-		ot: "BKF",
-	},
-	{
-		html: "bm",
-		name: "Bambara (Bamanankan)",
-		ot: "BMB",
-	},
-	{
-		html: "bn",
-		name: "Bengali",
-		ot: "BEN",
-	},
-	{
-		html: "bo",
-		name: "Tibetan",
-		ot: "TIB",
-	},
-	{
-		html: "bqi",
-		name: "Luri",
-		ot: "LRC",
-	},
-	{
-		html: "br",
-		name: "Breton",
-		ot: "BRE",
-	},
-	{
-		html: "bra",
-		name: "Braj Bhasha",
-		ot: "BRI",
-	},
-	{
-		html: "bs",
-		name: "Bosnian",
-		ot: "BOS",
-	},
-	{
-		html: "luy",
-		name: "Luyia",
-		ot: "LUH",
-	},
-	{
-		html: "bxr",
-		name: "Russian Buriat",
-		ot: "RBU",
-	},
-	{
-		html: "byn",
-		name: "Bilen",
-		ot: "BIL",
-	},
-	{
-		html: "ca",
-		name: "Catalan",
-		ot: "CAT",
-	},
-	{
-		html: "crx",
-		name: "Carrier",
-		ot: "CRR",
-	},
-	{
-		html: "cco",
-		name: "Chinantec",
-		ot: "CCHN",
-	},
-	{
-		html: "rki",
-		name: "Rakhine",
-		ot: "ARK",
-	},
-	{
-		html: "zh-Hans",
-		name: "Chinese; Han (Simplified variant)",
-		ot: "ZHS",
-	},
-	{
-		html: "ce",
-		name: "Chechen",
-		ot: "CHE",
-	},
-	{
-		html: "cfm",
-		name: "Halam (Falam Chin)",
-		ot: "HAL",
-	},
-	{
-		html: "ch",
-		name: "Chamorro",
-		ot: "CHA",
-	},
-	{
-		html: "chk",
-		name: "Chuukese",
-		ot: "CHK0",
-	},
-	{
-		html: "chp",
-		name: "Chipewyan",
-		ot: "CHP",
-	},
-	{
-		html: "chp",
-		name: "Sayisi",
-		ot: "SAY",
-	},
-	{
-		html: "oj",
-		name: "Ojibwa",
-		ot: "OJB",
-	},
-	{
-		html: "ku",
-		name: "Kurdish",
-		ot: "KUR",
-	},
-	{
-		html: "ckt",
-		name: "Chukchi",
-		ot: "CHK",
-	},
-	{
-		html: "co",
-		name: "Corsican",
-		ot: "COS",
-	},
-	{
-		html: "crp",
-		name: "Creoles and pidgins",
-		ot: "CPP",
-	},
-	{
-		html: "hmn",
-		name: "Hmong",
-		ot: "HMN",
-	},
-	{
-		html: "quh",
-		name: "South Bolivian Quechua",
-		ot: "QUH",
-	},
-	{
-		html: "cr",
-		name: "Cree",
-		ot: "CRE",
-	},
-	{
-		html: "cr",
-		name: "Y-Cree",
-		ot: "YCR",
-	},
-	{
-		html: "crh",
-		name: "Crimean Tatar",
-		ot: "CRT",
-	},
-	{
-		html: "crj",
-		name: "Eastern Cree",
-		ot: "ECR",
-	},
-	{
-		html: "crk",
-		name: "West-Cree",
-		ot: "WCR",
-	},
-	{
-		html: "crm",
-		name: "Moose Cree",
-		ot: "MCR",
-	},
-	{
-		html: "crm",
-		name: "L-Cree",
-		ot: "LCR",
-	},
-	{
-		html: "cs",
-		name: "Czech",
-		ot: "CSY",
-	},
-	{
-		html: "csw",
-		name: "N-Cree",
-		ot: "NCR",
-	},
-	{
-		html: "csw",
-		name: "Norway House Cree",
-		ot: "NHC",
-	},
-	{
-		html: "cu",
-		name: "Church Slavonic",
-		ot: "CSL",
-	},
-	{
-		html: "cv",
-		name: "Chuvash",
-		ot: "CHU",
-	},
-	{
-		html: "cwd",
-		name: "Woods Cree",
-		ot: "DCR",
-	},
-	{
-		html: "cwd",
-		name: "TH-Cree",
-		ot: "TCR",
-	},
-	{
-		html: "cy",
-		name: "Welsh",
-		ot: "WEL",
-	},
-	{
-		html: "da",
-		name: "Danish",
-		ot: "DAN",
-	},
-	{
-		html: "njz",
-		name: "Nyishi",
-		ot: "NIS",
-	},
-	{
-		html: "de",
-		name: "German",
-		ot: "DEU",
-	},
-	{
-		html: "den",
-		name: "Slavey",
-		ot: "SLA",
-	},
-	{
-		html: "mwr",
-		name: "Marwari",
-		ot: "MAW",
-	},
-	{
-		html: "din",
-		name: "Dinka",
-		ot: "DNK",
-	},
-	{
-		html: "dje",
-		name: "Zarma",
-		ot: "DJR",
-	},
-	{
-		html: "djr",
-		name: "Djambarrpuyngu",
-		ot: "DJR0",
-	},
-	{
-		html: "dng",
-		name: "Dungan",
-		ot: "DUN",
-	},
-	{
-		html: "doi",
-		name: "Dogri",
-		ot: "DGR",
-	},
-	{
-		html: "mn",
-		name: "Mongolian",
-		ot: "MNG",
-	},
-	{
-		html: "prs",
-		name: "Dari",
-		ot: "DRI",
-	},
-	{
-		html: "dsb",
-		name: "Lower Sorbian",
-		ot: "LSB",
-	},
-	{
-		html: "ne",
-		name: "Nepali",
-		ot: "NEP",
-	},
-	{
-		html: "dv",
-		name: "Divehi (Dhivehi, Maldivian)",
-		ot: "DIV",
-	},
-	{
-		html: "dv",
-		name: "Divehi (Dhivehi, Maldivian)",
-		ot: "DHV",
-	},
-	{
-		html: "uki",
-		name: "Kui (India)",
-		ot: "KUI",
-	},
-	{
-		html: "dwu",
-		name: "Dhuwal",
-		ot: "DUJ",
-	},
-	{
-		html: "dyu",
-		name: "Jula",
-		ot: "JUL",
-	},
-	{
-		html: "ee",
-		name: "Ewe",
-		ot: "EWE",
-	},
-	{
-		html: "et",
-		name: "Estonian",
-		ot: "ETI",
-	},
-	{
-		html: "el",
-		name: "Greek",
-		ot: "ELL",
-	},
-	{
-		html: "emk",
-		name: "Eastern Maninkakan",
-		ot: "EMK",
-	},
-	{
-		html: "emk",
-		name: "Maninka",
-		ot: "MNK",
-	},
-	{
-		html: "en",
-		name: "English",
-		ot: "ENG",
-	},
-	{
-		html: "kln",
-		name: "Kalenjin",
-		ot: "KAL",
-	},
-	{
-		html: "enf",
-		name: "Forest Nenets",
-		ot: "FNE",
-	},
-	{
-		html: "yrk",
-		name: "Nenets",
-		ot: "TNE",
-	},
-	{
-		html: "eo",
-		name: "Esperanto",
-		ot: "NTO",
-	},
-	{
-		html: "es",
-		name: "Spanish",
-		ot: "ESP",
-	},
-	{
-		html: "gon",
-		name: "Gondi",
-		ot: "GON",
-	},
-	{
-		html: "ik",
-		name: "Inupiaq",
-		ot: "IPK",
-	},
-	{
-		html: "eu",
-		name: "Basque",
-		ot: "EUQ",
-	},
-	{
-		html: "eve",
-		name: "Even",
-		ot: "EVN",
-	},
-	{
-		html: "evn",
-		name: "Evenki",
-		ot: "EVK",
-	},
-	{
-		html: "fa",
-		name: "Persian",
-		ot: "FAR",
-	},
-	{
-		html: "fan",
-		name: "Fang (Equatorial Guinea)",
-		ot: "FAN0",
-	},
-	{
-		html: "ff",
-		name: "Fulah",
-		ot: "FUL",
-	},
-	{
-		html: "fi",
-		name: "Finnish",
-		ot: "FIN",
-	},
-	{
-		html: "fil",
-		name: "Filipino",
-		ot: "PIL",
-	},
-	{
-		html: "fj",
-		name: "Fijian",
-		ot: "FJI",
-	},
-	{
-		html: "fo",
-		name: "Faroese",
-		ot: "FOS",
-	},
-	{
-		html: "fr",
-		name: "French",
-		ot: "FRA",
-	},
-	{
-		html: "fuf",
-		name: "Futa",
-		ot: "FTA",
-	},
-	{
-		html: "fur",
-		name: "Friulian",
-		ot: "FRL",
-	},
-	{
-		html: "fy",
-		name: "Frisian",
-		ot: "FRI",
-	},
-	{
-		html: "ga",
-		name: "Irish",
-		ot: "IRI",
-	},
-	{
-		html: "gaa",
-		name: "Ga",
-		ot: "GAD",
-	},
-	{
-		html: "om",
-		name: "Oromo",
-		ot: "ORO",
-	},
-	{
-		html: "gbm",
-		name: "Garhwali",
-		ot: "GAW",
-	},
-	{
-		html: "gd",
-		name: "Scottish Gaelic (Gaelic)",
-		ot: "GAE",
-	},
-	{
-		html: "raj",
-		name: "Rajasthani",
-		ot: "RAJ",
-	},
-	{
-		html: "gil",
-		name: "Kiribati (Gilbertese)",
-		ot: "GIL0",
-	},
-	{
-		html: "gl",
-		name: "Galician",
-		ot: "GAL",
-	},
-	{
-		html: "gld",
-		name: "Nanai",
-		ot: "NAN",
-	},
-	{
-		html: "gn",
-		name: "Guarani",
-		ot: "GUA",
-	},
-	{
-		html: "kok",
-		name: "Konkani",
-		ot: "KOK",
-	},
-	{
-		html: "grt",
-		name: "Garo",
-		ot: "GRO",
-	},
-	{
-		html: "gru",
-		name: "Sodo Gurage",
-		ot: "SOG",
-	},
-	{
-		html: "gsw",
-		name: "Alsatian",
-		ot: "ALS",
-	},
-	{
-		html: "gu",
-		name: "Gujarati",
-		ot: "GUJ",
-	},
-	{
-		html: "guk",
-		name: "Gumuz",
-		ot: "GMZ",
-	},
-	{
-		html: "gv",
-		name: "Manx",
-		ot: "MNX",
-	},
-	{
-		html: "ha",
-		name: "Hausa",
-		ot: "HAU",
-	},
-	{
-		html: "har",
-		name: "Harari",
-		ot: "HRI",
-	},
-	{
-		html: "he",
-		name: "Hebrew",
-		ot: "IWR",
-	},
-	{
-		html: "hi",
-		name: "Hindi",
-		ot: "HIN",
-	},
-	{
-		html: "hne",
-		name: "Chattisgarhi",
-		ot: "CHH",
-	},
-	{
-		html: "hnd",
-		name: "Southern Hindko",
-		ot: "HND",
-	},
-	{
-		html: "ho",
-		name: "Hiri Motu",
-		ot: "HMO",
-	},
-	{
-		html: "hoc",
-		name: "Ho",
-		ot: "HO",
-	},
-	{
-		html: "hoj",
-		name: "Harauti",
-		ot: "HAR",
-	},
-	{
-		html: "hr",
-		name: "Croatian",
-		ot: "HRV",
-	},
-	{
-		html: "hsb",
-		name: "Upper Sorbian",
-		ot: "USB",
-	},
-	{
-		html: "ht",
-		name: "Haitian (Haitian Creole)",
-		ot: "HAI",
-	},
-	{
-		html: "hu",
-		name: "Hungarian",
-		ot: "HUN",
-	},
-	{
-		html: "hy",
-		name: "Armenian East",
-		ot: "HYE0",
-	},
-	{
-		html: "hyw",
-		name: "Western Armenian",
-		ot: "HYE",
-	},
-	{
-		html: "hz",
-		name: "Herero",
-		ot: "HER",
-	},
-	{
-		html: "ia",
-		name: "Interlingua (International Auxiliary Language Association)",
-		ot: "INA",
-	},
-	{
-		html: "id",
-		name: "Indonesian",
-		ot: "IND",
-	},
-	{
-		html: "ie",
-		name: "Interlingue",
-		ot: "ILE",
-	},
-	{
-		html: "ig",
-		name: "Igbo",
-		ot: "IBO",
-	},
-	{
-		html: "igb",
-		name: "Ebira",
-		ot: "EBI",
-	},
-	{
-		html: "ii",
-		name: "Yi Modern",
-		ot: "YIM",
-	},
-	{
-		html: "ijo",
-		name: "Ijo",
-		ot: "IJO",
-	},
-	{
-		html: "iu",
-		name: "Inuktitut",
-		ot: "INU",
-	},
-	{
-		html: "inh",
-		name: "Ingush",
-		ot: "ING",
-	},
-	{
-		html: "io",
-		name: "Ido",
-		ot: "IDO",
-	},
-	{
-		html: "is",
-		name: "Icelandic",
-		ot: "ISL",
-	},
-	{
-		html: "it",
-		name: "Italian",
-		ot: "ITA",
-	},
-	{
-		html: "ja",
-		name: "Japanese",
-		ot: "JAN",
-	},
-	{
-		html: "yi",
-		name: "Yiddish",
-		ot: "JII",
-	},
-	{
-		html: "jv",
-		name: "Javanese",
-		ot: "JAV",
-	},
-	{
-		html: "ka",
-		name: "Georgian",
-		ot: "KAT",
-	},
-	{
-		html: "kaa",
-		name: "Karakalpak",
-		ot: "KRK",
-	},
-	{
-		html: "kab",
-		name: "Kabyle",
-		ot: "KAB0",
-	},
-	{
-		html: "kam",
-		name: "Kamba (Kenya)",
-		ot: "KMB",
-	},
-	{
-		html: "kar",
-		name: "Karen",
-		ot: "KRN",
-	},
-	{
-		html: "kbd",
-		name: "Kabardian",
-		ot: "KAB",
-	},
-	{
-		html: "kr",
-		name: "Kanuri",
-		ot: "KNR",
-	},
-	{
-		html: "kca",
-		name: "Khanty-Kazim",
-		ot: "KHK",
-	},
-	{
-		html: "kca",
-		name: "Khanty-Shurishkar",
-		ot: "KHS",
-	},
-	{
-		html: "kca",
-		name: "Khanty-Vakhi",
-		ot: "KHV",
-	},
-	{
-		html: "kdr",
-		name: "Karaim",
-		ot: "KRM",
-	},
-	{
-		html: "kdt",
-		name: "Kuy",
-		ot: "KUY",
-	},
-	{
-		html: "kex",
-		name: "Kokni",
-		ot: "KKN",
-	},
-	{
-		html: "kfa",
-		name: "Kodagu",
-		ot: "KOD",
-	},
-	{
-		html: "kfr",
-		name: "Kachchi",
-		ot: "KAC",
-	},
-	{
-		html: "kfx",
-		name: "Kulvi",
-		ot: "KUL",
-	},
-	{
-		html: "kfy",
-		name: "Kumaoni",
-		ot: "KMN",
-	},
-	{
-		html: "kg",
-		name: "Kongo",
-		ot: "KON0",
-	},
-	{
-		html: "kha",
-		name: "Khasi",
-		ot: "KSI",
-	},
-	{
-		html: "khb",
-		name: "L\u00fc",
-		ot: "XBD",
-	},
-	{
-		html: "kht",
-		name: "Khamti Shan",
-		ot: "KHT",
-	},
-	{
-		html: "kht",
-		name: "Khamti Shan (Microsoft fonts)",
-		ot: "KHN",
-	},
-	{
-		html: "ki",
-		name: "Kikuyu (Gikuyu)",
-		ot: "KIK",
-	},
-	{
-		html: "kj",
-		name: "Kuanyama",
-		ot: "KUA",
-	},
-	{
-		html: "kjh",
-		name: "Khakass",
-		ot: "KHA",
-	},
-	{
-		html: "kk",
-		name: "Kazakh",
-		ot: "KAZ",
-	},
-	{
-		html: "kl",
-		name: "Greenlandic",
-		ot: "GRN",
-	},
-	{
-		html: "km",
-		name: "Khmer",
-		ot: "KHM",
-	},
-	{
-		html: "kmb",
-		name: "Mbundu",
-		ot: "MBN",
-	},
-	{
-		html: "kmw",
-		name: "Komo (Democratic Republic of Congo)",
-		ot: "KMO",
-	},
-	{
-		html: "kn",
-		name: "Kannada",
-		ot: "KAN",
-	},
-	{
-		html: "ko",
-		name: "Korean",
-		ot: "KOR",
-	},
-	{
-		html: "koi",
-		name: "Komi-Permyak",
-		ot: "KOP",
-	},
-	{
-		html: "kpe",
-		name: "Kpelle",
-		ot: "KPL",
-	},
-	{
-		html: "kpv",
-		name: "Komi-Zyrian",
-		ot: "KOZ",
-	},
-	{
-		html: "kpy",
-		name: "Koryak",
-		ot: "KYK",
-	},
-	{
-		html: "kqs",
-		name: "Kisii",
-		ot: "KIS",
-	},
-	{
-		html: "kqy",
-		name: "Koorete",
-		ot: "KRT",
-	},
-	{
-		html: "krc",
-		name: "Karachay",
-		ot: "KAR",
-	},
-	{
-		html: "krc",
-		name: "Balkar",
-		ot: "BAL",
-	},
-	{
-		html: "kru",
-		name: "Kurukh",
-		ot: "KUU",
-	},
-	{
-		html: "ks",
-		name: "Kashmiri",
-		ot: "KSH",
-	},
-	{
-		html: "ksh",
-		name: "Ripuarian",
-		ot: "KSH0",
-	},
-	{
-		html: "ktb",
-		name: "Kebena",
-		ot: "KEB",
-	},
-	{
-		html: "ktu",
-		name: "Kikongo",
-		ot: "KON",
-	},
-	{
-		html: "kv",
-		name: "Komi",
-		ot: "KOM",
-	},
-	{
-		html: "kw",
-		name: "Cornish",
-		ot: "COR",
-	},
-	{
-		html: "kxc",
-		name: "Komso",
-		ot: "KMS",
-	},
-	{
-		html: "ky",
-		name: "Kirghiz (Kyrgyz)",
-		ot: "KIR",
-	},
-	{
-		html: "la",
-		name: "Latin",
-		ot: "LAT",
-	},
-	{
-		html: "lad",
-		name: "Ladino",
-		ot: "JUD",
-	},
-	{
-		html: "lb",
-		name: "Luxembourgish",
-		ot: "LTZ",
-	},
-	{
-		html: "lbe",
-		name: "Lak",
-		ot: "LAK",
-	},
-	{
-		html: "lbj",
-		name: "Ladakhi",
-		ot: "LDK",
-	},
-	{
-		html: "lg",
-		name: "Ganda",
-		ot: "LUG",
-	},
-	{
-		html: "li",
-		name: "Limburgish",
-		ot: "LIM",
-	},
-	{
-		html: "lif",
-		name: "Limbu",
-		ot: "LMB",
-	},
-	{
-		html: "lld",
-		name: "Ladin",
-		ot: "LAD",
-	},
-	{
-		html: "lmn",
-		name: "Lambani",
-		ot: "LAM",
-	},
-	{
-		html: "ln",
-		name: "Lingala",
-		ot: "LIN",
-	},
-	{
-		html: "lo",
-		name: "Lao",
-		ot: "LAO",
-	},
-	{
-		html: "lt",
-		name: "Lithuanian",
-		ot: "LTH",
-	},
-	{
-		html: "lv",
-		name: "Latvian",
-		ot: "LVI",
-	},
-	{
-		html: "lu",
-		name: "Luba-Katanga",
-		ot: "LUB",
-	},
-	{
-		html: "lus",
-		name: "Mizo",
-		ot: "MIZ",
-	},
-	{
-		html: "zh-Hant",
-		name: "Chinese; Han (Traditional variant)",
-		ot: "ZHT",
-	},
-	{
-		html: "lzz",
-		name: "Laz",
-		ot: "LAZ",
-	},
-	{
-		html: "mai",
-		name: "Maithili",
-		ot: "MTH",
-	},
-	{
-		html: "mak",
-		name: "Makasar",
-		ot: "MKR",
-	},
-	{
-		html: "mdf",
-		name: "Moksha",
-		ot: "MOK",
-	},
-	{
-		html: "mdy",
-		name: "Male (Ethiopia)",
-		ot: "MLE",
-	},
-	{
-		html: "men",
-		name: "Mende (Sierra Leone)",
-		ot: "MDE",
-	},
-	{
-		html: "mh",
-		name: "Marshallese",
-		ot: "MAH",
-	},
-	{
-		html: "mhr",
-		name: "Low Mari",
-		ot: "LMA",
-	},
-	{
-		html: "mi",
-		name: "Maori",
-		ot: "MRI",
-	},
-	{
-		html: "mk",
-		name: "Macedonian",
-		ot: "MKD",
-	},
-	{
-		html: "ml",
-		name: "Malayalam Traditional",
-		ot: "MAL",
-	},
-	{
-		html: "ml",
-		name: "Malayalam Reformed",
-		ot: "MLR",
-	},
-	{
-		html: "mlq",
-		name: "Malinke",
-		ot: "MLN",
-	},
-	{
-		html: "mnc",
-		name: "Manchu",
-		ot: "MCH",
-	},
-	{
-		html: "mnk",
-		name: "Mandinka",
-		ot: "MND",
-	},
-	{
-		html: "mns",
-		name: "Mansi",
-		ot: "MAN",
-	},
-	{
-		html: "mnw",
-		name: "Mon",
-		ot: "MON",
-	},
-	{
-		html: "ro-MD",
-		name: "Romanian; Moldova",
-		ot: "MOL",
-	},
-	{
-		html: "mpe",
-		name: "Majang",
-		ot: "MAJ",
-	},
-	{
-		html: "mr",
-		name: "Marathi",
-		ot: "MAR",
-	},
-	{
-		html: "mrj",
-		name: "High Mari",
-		ot: "HMA",
-	},
-	{
-		html: "mt",
-		name: "Maltese",
-		ot: "MTS",
-	},
-	{
-		html: "my",
-		name: "Burmese",
-		ot: "BRM",
-	},
-	{
-		html: "mym",
-		name: "Me\u2019en",
-		ot: "MEN",
-	},
-	{
-		html: "myv",
-		name: "Erzya",
-		ot: "ERZ",
-	},
-	{
-		html: "na",
-		name: "Nauruan",
-		ot: "NAU",
-	},
-	{
-		html: "no",
-		name: "Norwegian",
-		ot: "NOR",
-	},
-	{
-		html: "nd",
-		name: "Ndebele",
-		ot: "NDB",
-	},
-	{
-		html: "ng",
-		name: "Ndonga",
-		ot: "NDG",
-	},
-	{
-		html: "ngl",
-		name: "Lomwe",
-		ot: "LMW",
-	},
-	{
-		html: "ngo",
-		name: "Sutu",
-		ot: "SXT",
-	},
-	{
-		html: "niv",
-		name: "Gilyak",
-		ot: "GIL",
-	},
-	{
-		html: "nl",
-		name: "Dutch",
-		ot: "NLD",
-	},
-	{
-		html: "nn",
-		name: "Norwegian Nynorsk (Nynorsk, Norwegian)",
-		ot: "NYN",
-	},
-	{
-		html: "nod",
-		name: "Northern Tai",
-		ot: "NTA",
-	},
-	{
-		html: "nqo",
-		name: "N\u2019Ko",
-		ot: "NKO",
-	},
-	{
-		html: "nsk",
-		name: "Naskapi",
-		ot: "NAS",
-	},
-	{
-		html: "nv",
-		name: "Navajo",
-		ot: "NAV",
-	},
-	{
-		html: "ny",
-		name: "Chichewa (Chewa, Nyanja)",
-		ot: "CHI",
-	},
-	{
-		html: "nyn",
-		name: "Nyankole",
-		ot: "NKL",
-	},
-	{
-		html: "oc",
-		name: "Occitan (post 1500)",
-		ot: "OCI",
-	},
-	{
-		html: "ojs",
-		name: "Oji-Cree",
-		ot: "OCR",
-	},
-	{
-		html: "okm",
-		name: "Korean Old Hangul",
-		ot: "KOH",
-	},
-	{
-		html: "or",
-		name: "Odia (formerly Oriya)",
-		ot: "ORI",
-	},
-	{
-		html: "os",
-		name: "Ossetian",
-		ot: "OSS",
-	},
-	{
-		html: "pa",
-		name: "Punjabi",
-		ot: "PAN",
-	},
-	{
-		html: "pap",
-		name: "Papiamentu",
-		ot: "PAP0",
-	},
-	{
-		html: "ps",
-		name: "Pashto",
-		ot: "PAS",
-	},
-	{
-		html: "pce",
-		name: "Palaung",
-		ot: "PLG",
-	},
-	{
-		html: "pi",
-		name: "Pali",
-		ot: "PAL",
-	},
-	{
-		html: "pl",
-		name: "Polish",
-		ot: "PLK",
-	},
-	{
-		html: "plp",
-		name: "Palpa",
-		ot: "PAP",
-	},
-	{
-		html: "pt",
-		name: "Portuguese",
-		ot: "PTG",
-	},
-	{
-		html: "qu",
-		name: "Quechua",
-		ot: "QUZ",
-	},
-	{
-		html: "qwh",
-		name: "Huaylas Ancash Quechua",
-		ot: "QWH",
-	},
-	{
-		html: "qvi",
-		name: "Imbabura Highland Quichua",
-		ot: "QVI",
-	},
-	{
-		html: "rm",
-		name: "Romansh",
-		ot: "RMS",
-	},
-	{
-		html: "rom",
-		name: "Romany",
-		ot: "ROY",
-	},
-	{
-		html: "rn",
-		name: "Rundi",
-		ot: "RUN",
-	},
-	{
-		html: "ro",
-		name: "Romanian",
-		ot: "ROM",
-	},
-	{
-		html: "ru",
-		name: "Russian",
-		ot: "RUS",
-	},
-	{
-		html: "rue",
-		name: "Rusyn",
-		ot: "RSY",
-	},
-	{
-		html: "rw",
-		name: "Kinyarwanda",
-		ot: "RUA",
-	},
-	{
-		html: "sa",
-		name: "Sanskrit",
-		ot: "SAN",
-	},
-	{
-		html: "sah",
-		name: "Sakha",
-		ot: "YAK",
-	},
-	{
-		html: "sam",
-		name: "Palestinian Aramaic",
-		ot: "PAA",
-	},
-	{
-		html: "sc",
-		name: "Sardinian",
-		ot: "SRD",
-	},
-	{
-		html: "sck",
-		name: "Sadri",
-		ot: "SAD",
-	},
-	{
-		html: "scs",
-		name: "North Slavey",
-		ot: "SCS",
-	},
-	{
-		html: "sd",
-		name: "Sindhi",
-		ot: "SND",
-	},
-	{
-		html: "se",
-		name: "Northern Sami",
-		ot: "NSM",
-	},
-	{
-		html: "seh",
-		name: "Sena",
-		ot: "SNA",
-	},
-	{
-		html: "sg",
-		name: "Sango",
-		ot: "SGO",
-	},
-	{
-		html: "sgw",
-		name: "Chaha Gurage",
-		ot: "CHG",
-	},
-	{
-		html: "si",
-		name: "Sinhala (Sinhalese)",
-		ot: "SNH",
-	},
-	{
-		html: "sjd",
-		name: "Kildin Sami",
-		ot: "KSM",
-	},
-	{
-		html: "sjo",
-		name: "Sibe",
-		ot: "SIB",
-	},
-	{
-		html: "sk",
-		name: "Slovak",
-		ot: "SKY",
-	},
-	{
-		html: "skr",
-		name: "Saraiki",
-		ot: "SRK",
-	},
-	{
-		html: "sl",
-		name: "Slovenian",
-		ot: "SLV",
-	},
-	{
-		html: "sm",
-		name: "Samoan",
-		ot: "SMO",
-	},
-	{
-		html: "sma",
-		name: "Southern Sami",
-		ot: "SSM",
-	},
-	{
-		html: "smj",
-		name: "Lule Sami",
-		ot: "LSM",
-	},
-	{
-		html: "smn",
-		name: "Inari Sami",
-		ot: "ISM",
-	},
-	{
-		html: "sms",
-		name: "Skolt Sami",
-		ot: "SKS",
-	},
-	{
-		html: "sn",
-		name: "Shona",
-		ot: "SNA0",
-	},
-	{
-		html: "so",
-		name: "Somali",
-		ot: "SML",
-	},
-	{
-		html: "sr",
-		name: "Serbian",
-		ot: "SRB",
-	},
-	{
-		html: "ss",
-		name: "Swati",
-		ot: "SWZ",
-	},
-	{
-		html: "st",
-		name: "Southern Sotho",
-		ot: "SOT",
-	},
-	{
-		html: "stv",
-		name: "Silte Gurage",
-		ot: "SIG",
-	},
-	{
-		html: "su",
-		name: "Sundanese",
-		ot: "SUN",
-	},
-	{
-		html: "suq",
-		name: "Suri",
-		ot: "SUR",
-	},
-	{
-		html: "sv",
-		name: "Swedish",
-		ot: "SVE",
-	},
-	{
-		html: "sw",
-		name: "Swahili",
-		ot: "SWK",
-	},
-	{
-		html: "swb",
-		name: "Comorian",
-		ot: "CMR",
-	},
-	{
-		html: "ta",
-		name: "Tamil",
-		ot: "TAM",
-	},
-	{
-		html: "tmh",
-		name: "Tamashek",
-		ot: "TMH",
-	},
-	{
-		html: "tcy",
-		name: "Tumbuka",
-		ot: "TUL",
-	},
-	{
-		html: "te",
-		name: "Telugu",
-		ot: "TEL",
-	},
-	{
-		html: "tem",
-		name: "Temne",
-		ot: "TMN",
-	},
-	{
-		html: "tg",
-		name: "Tajiki",
-		ot: "TAJ",
-	},
-	{
-		html: "th",
-		name: "Thai",
-		ot: "THA",
-	},
-	{
-		html: "ti",
-		name: "Tigrinya",
-		ot: "TGY",
-	},
-	{
-		html: "tig",
-		name: "Tigre",
-		ot: "TGR",
-	},
-	{
-		html: "tk",
-		name: "Turkmen",
-		ot: "TKM",
-	},
-	{
-		html: "tl",
-		name: "Tagalog",
-		ot: "TGL",
-	},
-	{
-		html: "tn",
-		name: "Tswana",
-		ot: "TNA",
-	},
-	{
-		html: "to",
-		name: "Tongan",
-		ot: "TGN",
-	},
-	{
-		html: "tod",
-		name: "Toma",
-		ot: "TOD0",
-	},
-	{
-		html: "toi",
-		name: "Tonga (Zambia)",
-		ot: "TNG",
-	},
-	{
-		html: "tr",
-		name: "Turkish",
-		ot: "TRK",
-	},
-	{
-		html: "tru",
-		name: "Turoyo Aramaic",
-		ot: "TUA",
-	},
-	{
-		html: "ts",
-		name: "Tsonga",
-		ot: "TSG",
-	},
-	{
-		html: "tt",
-		name: "Tatar",
-		ot: "TAT",
-	},
-	{
-		html: "ty",
-		name: "Tahitian",
-		ot: "THT",
-	},
-	{
-		html: "tyv",
-		name: "Tuvin",
-		ot: "TUV",
-	},
-	{
-		html: "ug",
-		name: "Uyghur",
-		ot: "UYG",
-	},
-	{
-		html: "uk",
-		name: "Ukrainian",
-		ot: "UKR",
-	},
-	{
-		html: "unr",
-		name: "Mundari",
-		ot: "MUN",
-	},
-	{
-		html: "ur",
-		name: "Urdu",
-		ot: "URD",
-	},
-	{
-		html: "uz",
-		name: "Uzbek",
-		ot: "UZB",
-	},
-	{
-		html: "ve",
-		name: "Venda",
-		ot: "VEN",
-	},
-	{
-		html: "vi",
-		name: "Vietnamese",
-		ot: "VIT",
-	},
-	{
-		html: "vls",
-		name: "Dutch (Flemish)",
-		ot: "FLE",
-	},
-	{
-		html: "vmw",
-		name: "Makhuwa",
-		ot: "MAK",
-	},
-	{
-		html: "vo",
-		name: "Volap\u00fck",
-		ot: "VOL",
-	},
-	{
-		html: "wa",
-		name: "Walloon",
-		ot: "WLN",
-	},
-	{
-		html: "wbm",
-		name: "Wa",
-		ot: "WA",
-	},
-	{
-		html: "wbr",
-		name: "Wagdi",
-		ot: "WAG",
-	},
-	{
-		html: "wo",
-		name: "Wolof",
-		ot: "WLF",
-	},
-	{
-		html: "xal",
-		name: "Kalmyk",
-		ot: "KLM",
-	},
-	{
-		html: "xwo",
-		name: "Written Oirat",
-		ot: "TOD",
-	},
-	{
-		html: "xan",
-		name: "Sekota",
-		ot: "SEK",
-	},
-	{
-		html: "xh",
-		name: "Xhosa",
-		ot: "XHS",
-	},
-	{
-		html: "xsl",
-		name: "South Slavey",
-		ot: "SSL",
-	},
-	{
-		html: "yo",
-		name: "Yoruba",
-		ot: "YBA",
-	},
-	{
-		html: "zh-HK",
-		name: "Chinese; Hong Kong",
-		ot: "ZHH",
-	},
-	{
-		html: "za",
-		name: "Zhuang",
-		ot: "ZHA",
-	},
-	{
-		html: "zne",
-		name: "Zande",
-		ot: "ZND",
-	},
-	{
-		html: "zu",
-		name: "Zulu",
-		ot: "ZUL",
-	},
-	{
-		html: "und-fonnapa",
-		name: "Undetermined; North American Phonetic Alphabet",
-		ot: "APPH",
-	},
-	{
-		html: "und-fonipa",
-		name: "Undetermined; International Phonetic Alphabet",
-		ot: "IPPH",
-	},
-	{
-		html: "ga-Latg",
-		name: "Irish; Latin (Gaelic variant)",
-		ot: "IRT",
-	},
-	{
-		html: "und-Geok",
-		name: "Undetermined; Khutsuri (Asomtavruli and Nuskhuri)",
-		ot: "KGE",
-	},
-	{
-		html: "el-polyton",
-		name: "Modern Greek (1453-); Polytonic Greek",
-		ot: "PGR",
-	},
-	{
-		html: "pro",
-		name: "Old Proven\u00e7al (to 1500)",
-		ot: "PRO",
-	},
-	{
-		html: "und-Syre",
-		name: "Undetermined; Syriac (Estrangelo variant)",
-		ot: "SYRE",
-	},
-	{
-		html: "und-Syrj",
-		name: "Undetermined; Syriac (Western variant)",
-		ot: "SYRJ",
-	},
-	{
-		html: "und-Syrn",
-		name: "Undetermined; Syriac (Eastern variant)",
-		ot: "SYRN",
+		html: "ab",
+		name: "Abkhazian",
+		ot: "ABK",
 	},
 	{
 		html: "ach",
@@ -2046,9 +25,49 @@ export default [
 		ot: "ADY",
 	},
 	{
+		html: "af",
+		name: "Afrikaans",
+		ot: "AFK",
+	},
+	{
+		html: "aa",
+		name: "Afar",
+		ot: "AFR",
+	},
+	{
+		html: "ahg",
+		name: "Agaw",
+		ot: "AGW",
+	},
+	{
 		html: "aio",
 		name: "Aiton",
 		ot: "AIO",
+	},
+	{
+		html: "ak",
+		name: "Akan",
+		ot: "AKA",
+	},
+	{
+		html: "akb",
+		name: "Batak Angkola",
+		ot: "AKB",
+	},
+	{
+		html: "gsw",
+		name: "Alsatian",
+		ot: "ALS",
+	},
+	{
+		html: "alt",
+		name: "Southern Altai",
+		ot: "ALT",
+	},
+	{
+		html: "am",
+		name: "Amharic",
+		ot: "AMH",
 	},
 	{
 		html: "ang",
@@ -2056,9 +75,49 @@ export default [
 		ot: "ANG",
 	},
 	{
+		html: "und-fonnapa",
+		name: "Undetermined; North American Phonetic Alphabet",
+		ot: "APPH",
+	},
+	{
+		html: "ar",
+		name: "Arabic",
+		ot: "ARA",
+	},
+	{
+		html: "an",
+		name: "Aragonese",
+		ot: "ARG",
+	},
+	{
+		html: "aiw",
+		name: "Aari",
+		ot: "ARI",
+	},
+	{
+		html: "rki",
+		name: "Rakhine",
+		ot: "ARK",
+	},
+	{
+		html: "as",
+		name: "Assamese",
+		ot: "ASM",
+	},
+	{
 		html: "ast",
 		name: "Asturian",
 		ot: "AST",
+	},
+	{
+		html: "ath",
+		name: "Athapascan",
+		ot: "ATH",
+	},
+	{
+		html: "av",
+		name: "Avar",
+		ot: "AVR",
 	},
 	{
 		html: "awa",
@@ -2066,9 +125,39 @@ export default [
 		ot: "AWA",
 	},
 	{
+		html: "ay",
+		name: "Aymara",
+		ot: "AYM",
+	},
+	{
 		html: "azb",
 		name: "Torki",
 		ot: "AZB",
+	},
+	{
+		html: "az",
+		name: "Azerbaijani",
+		ot: "AZE",
+	},
+	{
+		html: "bfq",
+		name: "Badaga",
+		ot: "BAD",
+	},
+	{
+		html: "bad",
+		name: "Banda",
+		ot: "BAD0",
+	},
+	{
+		html: "bfy",
+		name: "Baghelkhandi",
+		ot: "BAG",
+	},
+	{
+		html: "krc",
+		name: "Balkar",
+		ot: "BAL",
 	},
 	{
 		html: "ban",
@@ -2081,9 +170,24 @@ export default [
 		ot: "BAR",
 	},
 	{
+		html: "bci",
+		name: "Baul\u00e9",
+		ot: "BAU",
+	},
+	{
 		html: "bbc",
 		name: "Batak Toba",
 		ot: "BBC",
+	},
+	{
+		html: "ber",
+		name: "Berber",
+		ot: "BBR",
+	},
+	{
+		html: "bcq",
+		name: "Bench",
+		ot: "BCH",
 	},
 	{
 		html: "bdy",
@@ -2091,9 +195,19 @@ export default [
 		ot: "BDY",
 	},
 	{
+		html: "be",
+		name: "Belarussian",
+		ot: "BEL",
+	},
+	{
 		html: "bem",
 		name: "Bemba (Zambia)",
 		ot: "BEM",
+	},
+	{
+		html: "bn",
+		name: "Bengali",
+		ot: "BEN",
 	},
 	{
 		html: "bgc",
@@ -2106,9 +220,34 @@ export default [
 		ot: "BGQ",
 	},
 	{
+		html: "bg",
+		name: "Bulgarian",
+		ot: "BGR",
+	},
+	{
+		html: "bhb",
+		name: "Bhili",
+		ot: "BHI",
+	},
+	{
 		html: "bho",
 		name: "Bhojpuri",
 		ot: "BHO",
+	},
+	{
+		html: "bik",
+		name: "Bikol",
+		ot: "BIK",
+	},
+	{
+		html: "byn",
+		name: "Bilen",
+		ot: "BIL",
+	},
+	{
+		html: "bi",
+		name: "Bislama",
+		ot: "BIS",
 	},
 	{
 		html: "bjj",
@@ -2116,9 +255,44 @@ export default [
 		ot: "BJJ",
 	},
 	{
+		html: "bla",
+		name: "Blackfoot",
+		ot: "BKF",
+	},
+	{
+		html: "bal",
+		name: "Baluchi",
+		ot: "BLI",
+	},
+	{
 		html: "blk",
 		name: "Pa\u2019o Karen",
 		ot: "BLK",
+	},
+	{
+		html: "bjt",
+		name: "Balante",
+		ot: "BLN",
+	},
+	{
+		html: "bft",
+		name: "Balti",
+		ot: "BLT",
+	},
+	{
+		html: "bm",
+		name: "Bambara (Bamanankan)",
+		ot: "BMB",
+	},
+	{
+		html: "bai",
+		name: "Bamileke",
+		ot: "BML",
+	},
+	{
+		html: "bs",
+		name: "Bosnian",
+		ot: "BOS",
 	},
 	{
 		html: "bpy",
@@ -2126,9 +300,24 @@ export default [
 		ot: "BPY",
 	},
 	{
+		html: "br",
+		name: "Breton",
+		ot: "BRE",
+	},
+	{
 		html: "brh",
 		name: "Brahui",
 		ot: "BRH",
+	},
+	{
+		html: "bra",
+		name: "Braj Bhasha",
+		ot: "BRI",
+	},
+	{
+		html: "my",
+		name: "Burmese",
+		ot: "BRM",
 	},
 	{
 		html: "brx",
@@ -2136,14 +325,49 @@ export default [
 		ot: "BRX",
 	},
 	{
+		html: "ba",
+		name: "Bashkir",
+		ot: "BSH",
+	},
+	{
 		html: "bsk",
 		name: "Burushaski",
 		ot: "BSK",
 	},
 	{
+		html: "btd",
+		name: "Batak Dairi (Pakpak)",
+		ot: "BTD",
+	},
+	{
+		html: "beb",
+		name: "Beti",
+		ot: "BTI",
+	},
+	{
+		html: "btk",
+		name: "Batak",
+		ot: "BTK",
+	},
+	{
+		html: "btm",
+		name: "Batak Mandailing",
+		ot: "BTM",
+	},
+	{
 		html: "bts",
 		name: "Batak Simalungun",
 		ot: "BTS",
+	},
+	{
+		html: "btx",
+		name: "Batak Karo",
+		ot: "BTX",
+	},
+	{
+		html: "btz",
+		name: "Batak Alas-Kluet",
+		ot: "BTZ",
 	},
 	{
 		html: "bug",
@@ -2161,9 +385,19 @@ export default [
 		ot: "CAK",
 	},
 	{
+		html: "ca",
+		name: "Catalan",
+		ot: "CAT",
+	},
+	{
 		html: "cbk",
 		name: "Zamboanga Chavacano",
 		ot: "CBK",
+	},
+	{
+		html: "cco",
+		name: "Chinantec",
+		ot: "CCHN",
 	},
 	{
 		html: "ceb",
@@ -2176,14 +410,59 @@ export default [
 		ot: "CGG",
 	},
 	{
+		html: "ch",
+		name: "Chamorro",
+		ot: "CHA",
+	},
+	{
+		html: "ce",
+		name: "Chechen",
+		ot: "CHE",
+	},
+	{
+		html: "sgw",
+		name: "Chaha Gurage",
+		ot: "CHG",
+	},
+	{
+		html: "hne",
+		name: "Chattisgarhi",
+		ot: "CHH",
+	},
+	{
+		html: "ny",
+		name: "Chichewa (Chewa, Nyanja)",
+		ot: "CHI",
+	},
+	{
+		html: "ckt",
+		name: "Chukchi",
+		ot: "CHK",
+	},
+	{
+		html: "chk",
+		name: "Chuukese",
+		ot: "CHK0",
+	},
+	{
 		html: "cho",
 		name: "Choctaw",
 		ot: "CHO",
 	},
 	{
+		html: "chp",
+		name: "Chipewyan",
+		ot: "CHP",
+	},
+	{
 		html: "chr",
 		name: "Cherokee",
 		ot: "CHR",
+	},
+	{
+		html: "cv",
+		name: "Chuvash",
+		ot: "CHU",
 	},
 	{
 		html: "chy",
@@ -2201,14 +480,59 @@ export default [
 		ot: "CJM",
 	},
 	{
+		html: "swb",
+		name: "Comorian",
+		ot: "CMR",
+	},
+	{
 		html: "cop",
 		name: "Coptic",
 		ot: "COP",
 	},
 	{
+		html: "kw",
+		name: "Cornish",
+		ot: "COR",
+	},
+	{
+		html: "co",
+		name: "Corsican",
+		ot: "COS",
+	},
+	{
+		html: "crp",
+		name: "Creoles and pidgins",
+		ot: "CPP",
+	},
+	{
+		html: "cr",
+		name: "Cree",
+		ot: "CRE",
+	},
+	{
+		html: "crx",
+		name: "Carrier",
+		ot: "CRR",
+	},
+	{
+		html: "crh",
+		name: "Crimean Tatar",
+		ot: "CRT",
+	},
+	{
 		html: "csb",
 		name: "Kashubian",
 		ot: "CSB",
+	},
+	{
+		html: "cu",
+		name: "Church Slavonic",
+		ot: "CSL",
+	},
+	{
+		html: "cs",
+		name: "Czech",
+		ot: "CSY",
 	},
 	{
 		html: "ctg",
@@ -2221,6 +545,16 @@ export default [
 		ot: "CUK",
 	},
 	{
+		html: "dag",
+		name: "Dagbani",
+		ot: "DAG",
+	},
+	{
+		html: "da",
+		name: "Danish",
+		ot: "DAN",
+	},
+	{
 		html: "dar",
 		name: "Dargwa",
 		ot: "DAR",
@@ -2231,9 +565,24 @@ export default [
 		ot: "DAX",
 	},
 	{
+		html: "cwd",
+		name: "Woods Cree",
+		ot: "DCR",
+	},
+	{
+		html: "de",
+		name: "German",
+		ot: "DEU",
+	},
+	{
 		html: "dgo",
-		name: "Dogri",
+		name: "Dogri (individual language)",
 		ot: "DGO",
+	},
+	{
+		html: "doi",
+		name: "Dogri",
+		ot: "DGR",
 	},
 	{
 		html: "dhg",
@@ -2241,9 +590,34 @@ export default [
 		ot: "DHG",
 	},
 	{
+		html: "dv",
+		name: "Divehi (Dhivehi, Maldivian)",
+		ot: "DHV",
+	},
+	{
 		html: "diq",
 		name: "Dimli",
 		ot: "DIQ",
+	},
+	{
+		html: "dv",
+		name: "Divehi (Dhivehi, Maldivian)",
+		ot: "DIV",
+	},
+	{
+		html: "dje",
+		name: "Zarma",
+		ot: "DJR",
+	},
+	{
+		html: "djr",
+		name: "Djambarrpuyngu",
+		ot: "DJR0",
+	},
+	{
+		html: "ada",
+		name: "Dangme",
+		ot: "DNG",
 	},
 	{
 		html: "dnj",
@@ -2251,9 +625,74 @@ export default [
 		ot: "DNJ",
 	},
 	{
+		html: "din",
+		name: "Dinka",
+		ot: "DNK",
+	},
+	{
+		html: "prs",
+		name: "Dari",
+		ot: "DRI",
+	},
+	{
+		html: "dwu",
+		name: "Dhuwal",
+		ot: "DUJ",
+	},
+	{
+		html: "dng",
+		name: "Dungan",
+		ot: "DUN",
+	},
+	{
+		html: "dz",
+		name: "Dzongkha",
+		ot: "DZN",
+	},
+	{
+		html: "igb",
+		name: "Ebira",
+		ot: "EBI",
+	},
+	{
+		html: "crj",
+		name: "Eastern Cree",
+		ot: "ECR",
+	},
+	{
+		html: "bin",
+		name: "Edo",
+		ot: "EDO",
+	},
+	{
 		html: "efi",
 		name: "Efik",
 		ot: "EFI",
+	},
+	{
+		html: "el",
+		name: "Greek",
+		ot: "ELL",
+	},
+	{
+		html: "emk",
+		name: "Eastern Maninkakan",
+		ot: "EMK",
+	},
+	{
+		html: "en",
+		name: "English",
+		ot: "ENG",
+	},
+	{
+		html: "myv",
+		name: "Erzya",
+		ot: "ERZ",
+	},
+	{
+		html: "es",
+		name: "Spanish",
+		ot: "ESP",
 	},
 	{
 		html: "esu",
@@ -2261,9 +700,64 @@ export default [
 		ot: "ESU",
 	},
 	{
+		html: "et",
+		name: "Estonian",
+		ot: "ETI",
+	},
+	{
+		html: "eu",
+		name: "Basque",
+		ot: "EUQ",
+	},
+	{
+		html: "evn",
+		name: "Evenki",
+		ot: "EVK",
+	},
+	{
+		html: "eve",
+		name: "Even",
+		ot: "EVN",
+	},
+	{
+		html: "ee",
+		name: "Ewe",
+		ot: "EWE",
+	},
+	{
+		html: "acf",
+		name: "French Antillean",
+		ot: "FAN",
+	},
+	{
+		html: "fan",
+		name: "Fang (Equatorial Guinea)",
+		ot: "FAN0",
+	},
+	{
+		html: "fa",
+		name: "Persian",
+		ot: "FAR",
+	},
+	{
 		html: "fat",
 		name: "Fanti",
 		ot: "FAT",
+	},
+	{
+		html: "fi",
+		name: "Finnish",
+		ot: "FIN",
+	},
+	{
+		html: "fj",
+		name: "Fijian",
+		ot: "FJI",
+	},
+	{
+		html: "vls",
+		name: "Dutch (Flemish)",
+		ot: "FLE",
 	},
 	{
 		html: "fmp",
@@ -2271,9 +765,24 @@ export default [
 		ot: "FMP",
 	},
 	{
+		html: "enf",
+		name: "Forest Enets",
+		ot: "FNE",
+	},
+	{
 		html: "fon",
 		name: "Fon",
 		ot: "FON",
+	},
+	{
+		html: "fo",
+		name: "Faroese",
+		ot: "FOS",
+	},
+	{
+		html: "fr",
+		name: "French",
+		ot: "FRA",
 	},
 	{
 		html: "frc",
@@ -2281,9 +790,29 @@ export default [
 		ot: "FRC",
 	},
 	{
+		html: "fy",
+		name: "Frisian",
+		ot: "FRI",
+	},
+	{
+		html: "fur",
+		name: "Friulian",
+		ot: "FRL",
+	},
+	{
 		html: "frp",
 		name: "Arpitan",
 		ot: "FRP",
+	},
+	{
+		html: "fuf",
+		name: "Futa",
+		ot: "FTA",
+	},
+	{
+		html: "ff",
+		name: "Fulah",
+		ot: "FUL",
 	},
 	{
 		html: "fuv",
@@ -2291,9 +820,29 @@ export default [
 		ot: "FUV",
 	},
 	{
+		html: "gaa",
+		name: "Ga",
+		ot: "GAD",
+	},
+	{
+		html: "gd",
+		name: "Scottish Gaelic (Gaelic)",
+		ot: "GAE",
+	},
+	{
 		html: "gag",
 		name: "Gagauz",
 		ot: "GAG",
+	},
+	{
+		html: "gl",
+		name: "Galician",
+		ot: "GAL",
+	},
+	{
+		html: "gbm",
+		name: "Garhwali",
+		ot: "GAW",
 	},
 	{
 		html: "gez",
@@ -2306,6 +855,16 @@ export default [
 		ot: "GIH",
 	},
 	{
+		html: "niv",
+		name: "Gilyak",
+		ot: "GIL",
+	},
+	{
+		html: "gil",
+		name: "Kiribati (Gilbertese)",
+		ot: "GIL0",
+	},
+	{
 		html: "gkp",
 		name: "Kpelle (Guinea)",
 		ot: "GKP",
@@ -2314,6 +873,11 @@ export default [
 		html: "glk",
 		name: "Gilaki",
 		ot: "GLK",
+	},
+	{
+		html: "guk",
+		name: "Gumuz",
+		ot: "GMZ",
 	},
 	{
 		html: "gnn",
@@ -2326,6 +890,26 @@ export default [
 		ot: "GOG",
 	},
 	{
+		html: "gon",
+		name: "Gondi",
+		ot: "GON",
+	},
+	{
+		html: "kl",
+		name: "Greenlandic",
+		ot: "GRN",
+	},
+	{
+		html: "grt",
+		name: "Garo",
+		ot: "GRO",
+	},
+	{
+		html: "gn",
+		name: "Guarani",
+		ot: "GUA",
+	},
+	{
 		html: "guc",
 		name: "Wayuu",
 		ot: "GUC",
@@ -2336,9 +920,34 @@ export default [
 		ot: "GUF",
 	},
 	{
+		html: "gu",
+		name: "Gujarati",
+		ot: "GUJ",
+	},
+	{
 		html: "guz",
 		name: "Gusii",
 		ot: "GUZ",
+	},
+	{
+		html: "ht",
+		name: "Haitian (Haitian Creole)",
+		ot: "HAI",
+	},
+	{
+		html: "cfm",
+		name: "Halam (Falam Chin)",
+		ot: "HAL",
+	},
+	{
+		html: "hoj",
+		name: "Harauti",
+		ot: "HAR",
+	},
+	{
+		html: "ha",
+		name: "Hausa",
+		ot: "HAU",
 	},
 	{
 		html: "haw",
@@ -2356,9 +965,74 @@ export default [
 		ot: "HAZ",
 	},
 	{
+		html: "amf",
+		name: "Hammer-Banna",
+		ot: "HBN",
+	},
+	{
+		html: "hz",
+		name: "Herero",
+		ot: "HER",
+	},
+	{
 		html: "hil",
 		name: "Hiligaynon",
 		ot: "HIL",
+	},
+	{
+		html: "hi",
+		name: "Hindi",
+		ot: "HIN",
+	},
+	{
+		html: "mrj",
+		name: "High Mari",
+		ot: "HMA",
+	},
+	{
+		html: "hmn",
+		name: "Hmong",
+		ot: "HMN",
+	},
+	{
+		html: "ho",
+		name: "Hiri Motu",
+		ot: "HMO",
+	},
+	{
+		html: "hnd",
+		name: "Southern Hindko",
+		ot: "HND",
+	},
+	{
+		html: "hoc",
+		name: "Ho",
+		ot: "HO",
+	},
+	{
+		html: "har",
+		name: "Harari",
+		ot: "HRI",
+	},
+	{
+		html: "hr",
+		name: "Croatian",
+		ot: "HRV",
+	},
+	{
+		html: "hu",
+		name: "Hungarian",
+		ot: "HUN",
+	},
+	{
+		html: "hyw",
+		name: "Western Armenian",
+		ot: "HYE",
+	},
+	{
+		html: "hy",
+		name: "Armenian East",
+		ot: "HYE0",
 	},
 	{
 		html: "iba",
@@ -2371,14 +1045,104 @@ export default [
 		ot: "IBB",
 	},
 	{
+		html: "ig",
+		name: "Igbo",
+		ot: "IBO",
+	},
+	{
+		html: "io",
+		name: "Ido",
+		ot: "IDO",
+	},
+	{
+		html: "ijo",
+		name: "Ijo",
+		ot: "IJO",
+	},
+	{
+		html: "ie",
+		name: "Interlingue",
+		ot: "ILE",
+	},
+	{
 		html: "ilo",
 		name: "Ilokano",
 		ot: "ILO",
 	},
 	{
+		html: "ia",
+		name: "Interlingua (International Auxiliary Language Association)",
+		ot: "INA",
+	},
+	{
+		html: "id",
+		name: "Indonesian",
+		ot: "IND",
+	},
+	{
+		html: "inh",
+		name: "Ingush",
+		ot: "ING",
+	},
+	{
+		html: "iu",
+		name: "Inuktitut",
+		ot: "INU",
+	},
+	{
+		html: "ik",
+		name: "Inupiaq",
+		ot: "IPK",
+	},
+	{
+		html: "und-fonipa",
+		name: "Undetermined; International Phonetic Alphabet",
+		ot: "IPPH",
+	},
+	{
+		html: "ga",
+		name: "Irish",
+		ot: "IRI",
+	},
+	{
+		html: "ga-Latg",
+		name: "Irish; Latin (Gaelic variant)",
+		ot: "IRT",
+	},
+	{
+		html: "is",
+		name: "Icelandic",
+		ot: "ISL",
+	},
+	{
+		html: "smn",
+		name: "Inari Sami",
+		ot: "ISM",
+	},
+	{
+		html: "it",
+		name: "Italian",
+		ot: "ITA",
+	},
+	{
+		html: "he",
+		name: "Hebrew",
+		ot: "IWR",
+	},
+	{
 		html: "jam",
 		name: "Jamaican Creole",
 		ot: "JAM",
+	},
+	{
+		html: "ja",
+		name: "Japanese",
+		ot: "JAN",
+	},
+	{
+		html: "jv",
+		name: "Javanese",
+		ot: "JAV",
 	},
 	{
 		html: "jbo",
@@ -2391,6 +1155,61 @@ export default [
 		ot: "JCT",
 	},
 	{
+		html: "yi",
+		name: "Yiddish",
+		ot: "JII",
+	},
+	{
+		html: "lad",
+		name: "Ladino",
+		ot: "JUD",
+	},
+	{
+		html: "dyu",
+		name: "Jula",
+		ot: "JUL",
+	},
+	{
+		html: "kbd",
+		name: "Kabardian",
+		ot: "KAB",
+	},
+	{
+		html: "kab",
+		name: "Kabyle",
+		ot: "KAB0",
+	},
+	{
+		html: "kfr",
+		name: "Kachchi",
+		ot: "KAC",
+	},
+	{
+		html: "kln",
+		name: "Kalenjin",
+		ot: "KAL",
+	},
+	{
+		html: "kn",
+		name: "Kannada",
+		ot: "KAN",
+	},
+	{
+		html: "krc",
+		name: "Karachay",
+		ot: "KAR",
+	},
+	{
+		html: "ka",
+		name: "Georgian",
+		ot: "KAT",
+	},
+	{
+		html: "kk",
+		name: "Kazakh",
+		ot: "KAZ",
+	},
+	{
 		html: "kde",
 		name: "Makonde",
 		ot: "KDE",
@@ -2401,14 +1220,74 @@ export default [
 		ot: "KEA",
 	},
 	{
+		html: "ktb",
+		name: "Kebena",
+		ot: "KEB",
+	},
+	{
 		html: "kek",
 		name: "Kekchi",
 		ot: "KEK",
 	},
 	{
+		html: "und-Geok",
+		name: "Undetermined; Khutsuri (Asomtavruli and Nuskhuri)",
+		ot: "KGE",
+	},
+	{
+		html: "kjh",
+		name: "Khakass",
+		ot: "KHA",
+	},
+	{
+		html: "kca",
+		name: "Khanty-Kazim",
+		ot: "KHK",
+	},
+	{
+		html: "km",
+		name: "Khmer",
+		ot: "KHM",
+	},
+	{
+		html: "kht",
+		name: "Khamti Shan (Microsoft fonts)",
+		ot: "KHN",
+	},
+	{
+		html: "kca",
+		name: "Khanty-Shurishkar",
+		ot: "KHS",
+	},
+	{
+		html: "kht",
+		name: "Khamti Shan",
+		ot: "KHT",
+	},
+	{
+		html: "kca",
+		name: "Khanty-Vakhi",
+		ot: "KHV",
+	},
+	{
 		html: "khw",
 		name: "Khowar",
 		ot: "KHW",
+	},
+	{
+		html: "ki",
+		name: "Kikuyu (Gikuyu)",
+		ot: "KIK",
+	},
+	{
+		html: "ky",
+		name: "Kirghiz (Kyrgyz)",
+		ot: "KIR",
+	},
+	{
+		html: "kqs",
+		name: "Kisii",
+		ot: "KIS",
 	},
 	{
 		html: "kiu",
@@ -2431,9 +1310,84 @@ export default [
 		ot: "KJZ",
 	},
 	{
+		html: "kex",
+		name: "Kokni",
+		ot: "KKN",
+	},
+	{
+		html: "xal",
+		name: "Kalmyk",
+		ot: "KLM",
+	},
+	{
+		html: "kam",
+		name: "Kamba (Kenya)",
+		ot: "KMB",
+	},
+	{
+		html: "kfy",
+		name: "Kumaoni",
+		ot: "KMN",
+	},
+	{
+		html: "kmw",
+		name: "Komo (Democratic Republic of Congo)",
+		ot: "KMO",
+	},
+	{
+		html: "kxc",
+		name: "Komso",
+		ot: "KMS",
+	},
+	{
 		html: "kmz",
 		name: "Khorasani Turkic",
 		ot: "KMZ",
+	},
+	{
+		html: "kr",
+		name: "Kanuri",
+		ot: "KNR",
+	},
+	{
+		html: "kfa",
+		name: "Kodagu",
+		ot: "KOD",
+	},
+	{
+		html: "okm",
+		name: "Middle Korean (10th-16th cent.)",
+		ot: "KOH",
+	},
+	{
+		html: "kok",
+		name: "Konkani",
+		ot: "KOK",
+	},
+	{
+		html: "kv",
+		name: "Komi",
+		ot: "KOM",
+	},
+	{
+		html: "ktu",
+		name: "Kikongo",
+		ot: "KON",
+	},
+	{
+		html: "kg",
+		name: "Kongo",
+		ot: "KON0",
+	},
+	{
+		html: "koi",
+		name: "Komi-Permyak",
+		ot: "KOP",
+	},
+	{
+		html: "ko",
+		name: "Korean",
+		ot: "KOR",
 	},
 	{
 		html: "kos",
@@ -2441,9 +1395,24 @@ export default [
 		ot: "KOS",
 	},
 	{
+		html: "kpv",
+		name: "Komi-Zyrian",
+		ot: "KOZ",
+	},
+	{
+		html: "kpe",
+		name: "Kpelle",
+		ot: "KPL",
+	},
+	{
 		html: "kri",
 		name: "Krio",
 		ot: "KRI",
+	},
+	{
+		html: "kaa",
+		name: "Karakalpak",
+		ot: "KRK",
 	},
 	{
 		html: "krl",
@@ -2451,9 +1420,59 @@ export default [
 		ot: "KRL",
 	},
 	{
+		html: "kdr",
+		name: "Karaim",
+		ot: "KRM",
+	},
+	{
+		html: "kar",
+		name: "Karen",
+		ot: "KRN",
+	},
+	{
+		html: "kqy",
+		name: "Koorete",
+		ot: "KRT",
+	},
+	{
+		html: "ks",
+		name: "Kashmiri",
+		ot: "KSH",
+	},
+	{
+		html: "ksh",
+		name: "Ripuarian",
+		ot: "KSH0",
+	},
+	{
+		html: "kha",
+		name: "Khasi",
+		ot: "KSI",
+	},
+	{
+		html: "sjd",
+		name: "Kildin Sami",
+		ot: "KSM",
+	},
+	{
 		html: "ksw",
 		name: "S\u2019gaw Karen",
 		ot: "KSW",
+	},
+	{
+		html: "kj",
+		name: "Kuanyama",
+		ot: "KUA",
+	},
+	{
+		html: "uki",
+		name: "Kui (India)",
+		ot: "KUI",
+	},
+	{
+		html: "kfx",
+		name: "Kulvi",
+		ot: "KUL",
 	},
 	{
 		html: "kum",
@@ -2461,9 +1480,74 @@ export default [
 		ot: "KUM",
 	},
 	{
+		html: "ku",
+		name: "Kurdish",
+		ot: "KUR",
+	},
+	{
+		html: "kru",
+		name: "Kurukh",
+		ot: "KUU",
+	},
+	{
+		html: "kdt",
+		name: "Kuy",
+		ot: "KUY",
+	},
+	{
+		html: "kpy",
+		name: "Koryak",
+		ot: "KYK",
+	},
+	{
 		html: "kyu",
 		name: "Western Kayah",
 		ot: "KYU",
+	},
+	{
+		html: "lld",
+		name: "Ladin",
+		ot: "LAD",
+	},
+	{
+		html: "bfu",
+		name: "Lahuli",
+		ot: "LAH",
+	},
+	{
+		html: "lbe",
+		name: "Lak",
+		ot: "LAK",
+	},
+	{
+		html: "lmn",
+		name: "Lambani",
+		ot: "LAM",
+	},
+	{
+		html: "lo",
+		name: "Lao",
+		ot: "LAO",
+	},
+	{
+		html: "la",
+		name: "Latin",
+		ot: "LAT",
+	},
+	{
+		html: "lzz",
+		name: "Laz",
+		ot: "LAZ",
+	},
+	{
+		html: "crm",
+		name: "L-Cree",
+		ot: "LCR",
+	},
+	{
+		html: "lbj",
+		name: "Ladakhi",
+		ot: "LDK",
 	},
 	{
 		html: "lez",
@@ -2474,6 +1558,16 @@ export default [
 		html: "lij",
 		name: "Ligurian",
 		ot: "LIJ",
+	},
+	{
+		html: "li",
+		name: "Limburgish",
+		ot: "LIM",
+	},
+	{
+		html: "ln",
+		name: "Lingala",
+		ot: "LIN",
 	},
 	{
 		html: "lis",
@@ -2491,9 +1585,24 @@ export default [
 		ot: "LKI",
 	},
 	{
+		html: "mhr",
+		name: "Low Mari",
+		ot: "LMA",
+	},
+	{
+		html: "lif",
+		name: "Limbu",
+		ot: "LMB",
+	},
+	{
 		html: "lmo",
 		name: "Lombard",
 		ot: "LMO",
+	},
+	{
+		html: "ngl",
+		name: "Lomwe",
+		ot: "LMW",
 	},
 	{
 		html: "lom",
@@ -2501,14 +1610,59 @@ export default [
 		ot: "LOM",
 	},
 	{
+		html: "bqi",
+		name: "Luri",
+		ot: "LRC",
+	},
+	{
+		html: "dsb",
+		name: "Lower Sorbian",
+		ot: "LSB",
+	},
+	{
+		html: "smj",
+		name: "Lule Sami",
+		ot: "LSM",
+	},
+	{
+		html: "lt",
+		name: "Lithuanian",
+		ot: "LTH",
+	},
+	{
+		html: "lb",
+		name: "Luxembourgish",
+		ot: "LTZ",
+	},
+	{
 		html: "lua",
 		name: "Luba-Lulua",
 		ot: "LUA",
 	},
 	{
+		html: "lu",
+		name: "Luba-Katanga",
+		ot: "LUB",
+	},
+	{
+		html: "lg",
+		name: "Ganda",
+		ot: "LUG",
+	},
+	{
+		html: "luy",
+		name: "Luyia",
+		ot: "LUH",
+	},
+	{
 		html: "luo",
 		name: "Luo (Kenya and Tanzania)",
 		ot: "LUO",
+	},
+	{
+		html: "lv",
+		name: "Latvian",
+		ot: "LVI",
 	},
 	{
 		html: "mad",
@@ -2521,9 +1675,54 @@ export default [
 		ot: "MAG",
 	},
 	{
+		html: "mh",
+		name: "Marshallese",
+		ot: "MAH",
+	},
+	{
+		html: "mpe",
+		name: "Majang",
+		ot: "MAJ",
+	},
+	{
+		html: "vmw",
+		name: "Makhuwa",
+		ot: "MAK",
+	},
+	{
+		html: "ml",
+		name: "Malayalam Traditional",
+		ot: "MAL",
+	},
+	{
 		html: "mam",
 		name: "Mam",
 		ot: "MAM",
+	},
+	{
+		html: "mns",
+		name: "Mansi",
+		ot: "MAN",
+	},
+	{
+		html: "arn",
+		name: "Mapudungun",
+		ot: "MAP",
+	},
+	{
+		html: "mr",
+		name: "Marathi",
+		ot: "MAR",
+	},
+	{
+		html: "mwr",
+		name: "Marwari",
+		ot: "MAW",
+	},
+	{
+		html: "kmb",
+		name: "Mbundu",
+		ot: "MBN",
 	},
 	{
 		html: "mbo",
@@ -2531,9 +1730,29 @@ export default [
 		ot: "MBO",
 	},
 	{
+		html: "mnc",
+		name: "Manchu",
+		ot: "MCH",
+	},
+	{
+		html: "crm",
+		name: "Moose Cree",
+		ot: "MCR",
+	},
+	{
+		html: "men",
+		name: "Mende (Sierra Leone)",
+		ot: "MDE",
+	},
+	{
 		html: "mdr",
 		name: "Mandar",
 		ot: "MDR",
+	},
+	{
+		html: "mym",
+		name: "Me\u2019en",
+		ot: "MEN",
 	},
 	{
 		html: "mer",
@@ -2556,9 +1775,59 @@ export default [
 		ot: "MIN",
 	},
 	{
+		html: "lus",
+		name: "Mizo",
+		ot: "MIZ",
+	},
+	{
+		html: "mk",
+		name: "Macedonian",
+		ot: "MKD",
+	},
+	{
+		html: "mak",
+		name: "Makasar",
+		ot: "MKR",
+	},
+	{
 		html: "mkw",
 		name: "Kituba (Congo)",
 		ot: "MKW",
+	},
+	{
+		html: "mdy",
+		name: "Male (Ethiopia)",
+		ot: "MLE",
+	},
+	{
+		html: "mg",
+		name: "Malagasy",
+		ot: "MLG",
+	},
+	{
+		html: "mlq",
+		name: "Malinke",
+		ot: "MLN",
+	},
+	{
+		html: "ml",
+		name: "Malayalam Reformed",
+		ot: "MLR",
+	},
+	{
+		html: "ms",
+		name: "Malay",
+		ot: "MLY",
+	},
+	{
+		html: "mnk",
+		name: "Mandinka",
+		ot: "MND",
+	},
+	{
+		html: "mn",
+		name: "Mongolian",
+		ot: "MNG",
 	},
 	{
 		html: "mni",
@@ -2566,14 +1835,64 @@ export default [
 		ot: "MNI",
 	},
 	{
+		html: "man",
+		name: "Mandingo",
+		ot: "MNK",
+	},
+	{
+		html: "gv",
+		name: "Manx",
+		ot: "MNX",
+	},
+	{
 		html: "moh",
 		name: "Mohawk",
 		ot: "MOH",
 	},
 	{
+		html: "mdf",
+		name: "Moksha",
+		ot: "MOK",
+	},
+	{
+		html: "ro-MD",
+		name: "Romanian; Moldova",
+		ot: "MOL",
+	},
+	{
+		html: "mnw",
+		name: "Mon",
+		ot: "MON",
+	},
+	{
+		html: "ary",
+		name: "Moroccan",
+		ot: "MOR",
+	},
+	{
 		html: "mos",
 		name: "Mossi",
 		ot: "MOS",
+	},
+	{
+		html: "mi",
+		name: "Maori",
+		ot: "MRI",
+	},
+	{
+		html: "mai",
+		name: "Maithili",
+		ot: "MTH",
+	},
+	{
+		html: "mt",
+		name: "Maltese",
+		ot: "MTS",
+	},
+	{
+		html: "unr",
+		name: "Mundari",
+		ot: "MUN",
 	},
 	{
 		html: "mus",
@@ -2611,9 +1930,39 @@ export default [
 		ot: "NAH",
 	},
 	{
+		html: "gld",
+		name: "Nanai",
+		ot: "NAN",
+	},
+	{
 		html: "nap",
 		name: "Neapolitan",
 		ot: "NAP",
+	},
+	{
+		html: "nsk",
+		name: "Naskapi",
+		ot: "NAS",
+	},
+	{
+		html: "na",
+		name: "Nauruan",
+		ot: "NAU",
+	},
+	{
+		html: "nv",
+		name: "Navajo",
+		ot: "NAV",
+	},
+	{
+		html: "csw",
+		name: "N-Cree",
+		ot: "NCR",
+	},
+	{
+		html: "nd",
+		name: "Ndebele",
+		ot: "NDB",
 	},
 	{
 		html: "ndc",
@@ -2621,9 +1970,19 @@ export default [
 		ot: "NDC",
 	},
 	{
+		html: "ng",
+		name: "Ndonga",
+		ot: "NDG",
+	},
+	{
 		html: "nds",
 		name: "Low Saxon",
 		ot: "NDS",
+	},
+	{
+		html: "ne",
+		name: "Nepali",
+		ot: "NEP",
 	},
 	{
 		html: "new",
@@ -2636,9 +1995,34 @@ export default [
 		ot: "NGA",
 	},
 	{
+		html: "csw",
+		name: "Norway House Cree",
+		ot: "NHC",
+	},
+	{
+		html: "njz",
+		name: "Nyishi",
+		ot: "NIS",
+	},
+	{
 		html: "niu",
 		name: "Niuean",
 		ot: "NIU",
+	},
+	{
+		html: "nyn",
+		name: "Nyankole",
+		ot: "NKL",
+	},
+	{
+		html: "nqo",
+		name: "N\u2019Ko",
+		ot: "NKO",
+	},
+	{
+		html: "nl",
+		name: "Dutch",
+		ot: "NLD",
 	},
 	{
 		html: "noe",
@@ -2651,9 +2035,19 @@ export default [
 		ot: "NOG",
 	},
 	{
+		html: "no",
+		name: "Norwegian",
+		ot: "NOR",
+	},
+	{
 		html: "nov",
 		name: "Novial",
 		ot: "NOV",
+	},
+	{
+		html: "se",
+		name: "Northern Sami",
+		ot: "NSM",
 	},
 	{
 		html: "nso",
@@ -2661,9 +2055,24 @@ export default [
 		ot: "NSO",
 	},
 	{
+		html: "nod",
+		name: "Northern Tai",
+		ot: "NTA",
+	},
+	{
+		html: "eo",
+		name: "Esperanto",
+		ot: "NTO",
+	},
+	{
 		html: "nym",
 		name: "Nyamwezi",
 		ot: "NYM",
+	},
+	{
+		html: "nn",
+		name: "Norwegian Nynorsk (Nynorsk, Norwegian)",
+		ot: "NYN",
 	},
 	{
 		html: "nza",
@@ -2671,14 +2080,74 @@ export default [
 		ot: "NZA",
 	},
 	{
+		html: "oc",
+		name: "Occitan (post 1500)",
+		ot: "OCI",
+	},
+	{
+		html: "ojs",
+		name: "Oji-Cree",
+		ot: "OCR",
+	},
+	{
+		html: "oj",
+		name: "Ojibwa",
+		ot: "OJB",
+	},
+	{
+		html: "or",
+		name: "Odia (formerly Oriya)",
+		ot: "ORI",
+	},
+	{
+		html: "om",
+		name: "Oromo",
+		ot: "ORO",
+	},
+	{
+		html: "os",
+		name: "Ossetian",
+		ot: "OSS",
+	},
+	{
+		html: "sam",
+		name: "Palestinian Aramaic",
+		ot: "PAA",
+	},
+	{
 		html: "pag",
 		name: "Pangasinan",
 		ot: "PAG",
 	},
 	{
+		html: "pi",
+		name: "Pali",
+		ot: "PAL",
+	},
+	{
 		html: "pam",
 		name: "Pampangan",
 		ot: "PAM",
+	},
+	{
+		html: "pa",
+		name: "Punjabi",
+		ot: "PAN",
+	},
+	{
+		html: "plp",
+		name: "Palpa",
+		ot: "PAP",
+	},
+	{
+		html: "pap",
+		name: "Papiamentu",
+		ot: "PAP0",
+	},
+	{
+		html: "ps",
+		name: "Pashto",
+		ot: "PAS",
 	},
 	{
 		html: "pau",
@@ -2701,6 +2170,11 @@ export default [
 		ot: "PDC",
 	},
 	{
+		html: "el-polyton",
+		name: "Modern Greek (1453-); Polytonic Greek",
+		ot: "PGR",
+	},
+	{
 		html: "phk",
 		name: "Phake",
 		ot: "PHK",
@@ -2709,6 +2183,21 @@ export default [
 		html: "pih",
 		name: "Norfolk",
 		ot: "PIH",
+	},
+	{
+		html: "fil",
+		name: "Filipino",
+		ot: "PIL",
+	},
+	{
+		html: "pce",
+		name: "Palaung",
+		ot: "PLG",
+	},
+	{
+		html: "pl",
+		name: "Polish",
+		ot: "PLK",
 	},
 	{
 		html: "pms",
@@ -2731,9 +2220,24 @@ export default [
 		ot: "PON",
 	},
 	{
+		html: "pro",
+		name: "Old Proven\u00e7al (to 1500)",
+		ot: "PRO",
+	},
+	{
+		html: "pt",
+		name: "Portuguese",
+		ot: "PTG",
+	},
+	{
 		html: "pwo",
 		name: "Western Pwo Karen",
 		ot: "PWO",
+	},
+	{
+		html: "bgr",
+		name: "Chin",
+		ot: "QIN",
 	},
 	{
 		html: "quc",
@@ -2741,9 +2245,44 @@ export default [
 		ot: "QUC",
 	},
 	{
+		html: "quh",
+		name: "South Bolivian Quechua",
+		ot: "QUH",
+	},
+	{
+		html: "qu",
+		name: "Quechua",
+		ot: "QUZ",
+	},
+	{
+		html: "qvi",
+		name: "Imbabura Highland Quichua",
+		ot: "QVI",
+	},
+	{
+		html: "qwh",
+		name: "Huaylas Ancash Quechua",
+		ot: "QWH",
+	},
+	{
+		html: "raj",
+		name: "Rajasthani",
+		ot: "RAJ",
+	},
+	{
 		html: "rar",
 		name: "Rarotongan",
 		ot: "RAR",
+	},
+	{
+		html: "bxr",
+		name: "Russian Buriat",
+		ot: "RBU",
+	},
+	{
+		html: "atj",
+		name: "R-Cree",
+		ot: "RCR",
 	},
 	{
 		html: "rej",
@@ -2771,9 +2310,29 @@ export default [
 		ot: "RKW",
 	},
 	{
+		html: "rm",
+		name: "Romansh",
+		ot: "RMS",
+	},
+	{
 		html: "rmy",
 		name: "Vlax Romani",
 		ot: "RMY",
+	},
+	{
+		html: "ro",
+		name: "Romanian",
+		ot: "ROM",
+	},
+	{
+		html: "rom",
+		name: "Romany",
+		ot: "ROY",
+	},
+	{
+		html: "rue",
+		name: "Rusyn",
+		ot: "RSY",
 	},
 	{
 		html: "rtm",
@@ -2781,9 +2340,34 @@ export default [
 		ot: "RTM",
 	},
 	{
+		html: "rw",
+		name: "Kinyarwanda",
+		ot: "RUA",
+	},
+	{
+		html: "rn",
+		name: "Rundi",
+		ot: "RUN",
+	},
+	{
 		html: "rup",
 		name: "Aromanian",
 		ot: "RUP",
+	},
+	{
+		html: "ru",
+		name: "Russian",
+		ot: "RUS",
+	},
+	{
+		html: "sck",
+		name: "Sadri",
+		ot: "SAD",
+	},
+	{
+		html: "sa",
+		name: "Sanskrit",
+		ot: "SAN",
 	},
 	{
 		html: "sas",
@@ -2796,6 +2380,11 @@ export default [
 		ot: "SAT",
 	},
 	{
+		html: "chp",
+		name: "Sayisi",
+		ot: "SAY",
+	},
+	{
 		html: "scn",
 		name: "Sicilian",
 		ot: "SCN",
@@ -2806,6 +2395,16 @@ export default [
 		ot: "SCO",
 	},
 	{
+		html: "scs",
+		name: "North Slavey",
+		ot: "SCS",
+	},
+	{
+		html: "xan",
+		name: "Sekota",
+		ot: "SEK",
+	},
+	{
 		html: "sel",
 		name: "Selkup",
 		ot: "SEL",
@@ -2814,6 +2413,11 @@ export default [
 		html: "sga",
 		name: "Old Irish (to 900)",
 		ot: "SGA",
+	},
+	{
+		html: "sg",
+		name: "Sango",
+		ot: "SGO",
 	},
 	{
 		html: "sgs",
@@ -2831,9 +2435,69 @@ export default [
 		ot: "SHN",
 	},
 	{
+		html: "sjo",
+		name: "Sibe",
+		ot: "SIB",
+	},
+	{
 		html: "sid",
 		name: "Sidamo",
 		ot: "SID",
+	},
+	{
+		html: "stv",
+		name: "Silte Gurage",
+		ot: "SIG",
+	},
+	{
+		html: "sms",
+		name: "Skolt Sami",
+		ot: "SKS",
+	},
+	{
+		html: "sk",
+		name: "Slovak",
+		ot: "SKY",
+	},
+	{
+		html: "den",
+		name: "Slavey",
+		ot: "SLA",
+	},
+	{
+		html: "sl",
+		name: "Slovenian",
+		ot: "SLV",
+	},
+	{
+		html: "so",
+		name: "Somali",
+		ot: "SML",
+	},
+	{
+		html: "sm",
+		name: "Samoan",
+		ot: "SMO",
+	},
+	{
+		html: "seh",
+		name: "Sena",
+		ot: "SNA",
+	},
+	{
+		html: "sn",
+		name: "Shona",
+		ot: "SNA0",
+	},
+	{
+		html: "sd",
+		name: "Sindhi",
+		ot: "SND",
+	},
+	{
+		html: "si",
+		name: "Sinhala (Sinhalese)",
+		ot: "SNH",
 	},
 	{
 		html: "snk",
@@ -2841,14 +2505,54 @@ export default [
 		ot: "SNK",
 	},
 	{
+		html: "gru",
+		name: "Sodo Gurage",
+		ot: "SOG",
+	},
+	{
 		html: "sop",
 		name: "Songe",
 		ot: "SOP",
 	},
 	{
+		html: "st",
+		name: "Southern Sotho",
+		ot: "SOT",
+	},
+	{
+		html: "sq",
+		name: "Albanian",
+		ot: "SQI",
+	},
+	{
+		html: "sr",
+		name: "Serbian",
+		ot: "SRB",
+	},
+	{
+		html: "sc",
+		name: "Sardinian",
+		ot: "SRD",
+	},
+	{
+		html: "skr",
+		name: "Saraiki",
+		ot: "SRK",
+	},
+	{
 		html: "srr",
 		name: "Serer",
 		ot: "SRR",
+	},
+	{
+		html: "xsl",
+		name: "South Slavey",
+		ot: "SSL",
+	},
+	{
+		html: "sma",
+		name: "Southern Sami",
+		ot: "SSM",
 	},
 	{
 		html: "stq",
@@ -2861,9 +2565,44 @@ export default [
 		ot: "SUK",
 	},
 	{
+		html: "su",
+		name: "Sundanese",
+		ot: "SUN",
+	},
+	{
+		html: "suq",
+		name: "Suri",
+		ot: "SUR",
+	},
+	{
 		html: "sva",
 		name: "Svan",
 		ot: "SVA",
+	},
+	{
+		html: "sv",
+		name: "Swedish",
+		ot: "SVE",
+	},
+	{
+		html: "aii",
+		name: "Swadaya Aramaic",
+		ot: "SWA",
+	},
+	{
+		html: "sw",
+		name: "Swahili",
+		ot: "SWK",
+	},
+	{
+		html: "ss",
+		name: "Swati",
+		ot: "SWZ",
+	},
+	{
+		html: "xnj",
+		name: "Ngoni (Tanzania)",
+		ot: "SXT",
 	},
 	{
 		html: "sxu",
@@ -2876,6 +2615,26 @@ export default [
 		ot: "SYL",
 	},
 	{
+		html: "syr",
+		name: "Syriac",
+		ot: "SYR",
+	},
+	{
+		html: "und-Syre",
+		name: "Undetermined; Syriac (Estrangelo variant)",
+		ot: "SYRE",
+	},
+	{
+		html: "und-Syrj",
+		name: "Undetermined; Syriac (Western variant)",
+		ot: "SYRJ",
+	},
+	{
+		html: "und-Syrn",
+		name: "Undetermined; Syriac (Eastern variant)",
+		ot: "SYRN",
+	},
+	{
 		html: "szl",
 		name: "Silesian",
 		ot: "SZL",
@@ -2886,9 +2645,34 @@ export default [
 		ot: "TAB",
 	},
 	{
+		html: "tg",
+		name: "Tajiki",
+		ot: "TAJ",
+	},
+	{
+		html: "ta",
+		name: "Tamil",
+		ot: "TAM",
+	},
+	{
+		html: "tt",
+		name: "Tatar",
+		ot: "TAT",
+	},
+	{
+		html: "cwd",
+		name: "TH-Cree",
+		ot: "TCR",
+	},
+	{
 		html: "tdd",
 		name: "Dehong Dai",
 		ot: "TDD",
+	},
+	{
+		html: "te",
+		name: "Telugu",
+		ot: "TEL",
 	},
 	{
 		html: "tet",
@@ -2896,9 +2680,84 @@ export default [
 		ot: "TET",
 	},
 	{
+		html: "tl",
+		name: "Tagalog",
+		ot: "TGL",
+	},
+	{
+		html: "to",
+		name: "Tongan",
+		ot: "TGN",
+	},
+	{
+		html: "tig",
+		name: "Tigre",
+		ot: "TGR",
+	},
+	{
+		html: "ti",
+		name: "Tigrinya",
+		ot: "TGY",
+	},
+	{
+		html: "th",
+		name: "Thai",
+		ot: "THA",
+	},
+	{
+		html: "ty",
+		name: "Tahitian",
+		ot: "THT",
+	},
+	{
+		html: "bo",
+		name: "Tibetan",
+		ot: "TIB",
+	},
+	{
 		html: "tiv",
 		name: "Tiv",
 		ot: "TIV",
+	},
+	{
+		html: "tk",
+		name: "Turkmen",
+		ot: "TKM",
+	},
+	{
+		html: "tmh",
+		name: "Tamashek",
+		ot: "TMH",
+	},
+	{
+		html: "tem",
+		name: "Temne",
+		ot: "TMN",
+	},
+	{
+		html: "tn",
+		name: "Tswana",
+		ot: "TNA",
+	},
+	{
+		html: "enh",
+		name: "Tundra Enets",
+		ot: "TNE",
+	},
+	{
+		html: "toi",
+		name: "Tonga (Zambia)",
+		ot: "TNG",
+	},
+	{
+		html: "xwo",
+		name: "Written Oirat",
+		ot: "TOD",
+	},
+	{
+		html: "tod",
+		name: "Toma",
+		ot: "TOD0",
 	},
 	{
 		html: "tpi",
@@ -2906,9 +2765,29 @@ export default [
 		ot: "TPI",
 	},
 	{
+		html: "tr",
+		name: "Turkish",
+		ot: "TRK",
+	},
+	{
+		html: "ts",
+		name: "Tsonga",
+		ot: "TSG",
+	},
+	{
 		html: "tsj",
 		name: "Tshangla",
 		ot: "TSJ",
+	},
+	{
+		html: "tru",
+		name: "Turoyo Aramaic",
+		ot: "TUA",
+	},
+	{
+		html: "tcy",
+		name: "Tumbuka",
+		ot: "TUL",
 	},
 	{
 		html: "tum",
@@ -2916,9 +2795,19 @@ export default [
 		ot: "TUM",
 	},
 	{
+		html: "tyv",
+		name: "Tuvin",
+		ot: "TUV",
+	},
+	{
 		html: "tvl",
 		name: "Tuvalu",
 		ot: "TVL",
+	},
+	{
+		html: "tw",
+		name: "Twi",
+		ot: "TWI",
 	},
 	{
 		html: "tyz",
@@ -2941,9 +2830,34 @@ export default [
 		ot: "UDM",
 	},
 	{
+		html: "uk",
+		name: "Ukrainian",
+		ot: "UKR",
+	},
+	{
 		html: "umb",
 		name: "Umbundu",
 		ot: "UMB",
+	},
+	{
+		html: "ur",
+		name: "Urdu",
+		ot: "URD",
+	},
+	{
+		html: "hsb",
+		name: "Upper Sorbian",
+		ot: "USB",
+	},
+	{
+		html: "ug",
+		name: "Uyghur",
+		ot: "UYG",
+	},
+	{
+		html: "uz",
+		name: "Uzbek",
+		ot: "UZB",
 	},
 	{
 		html: "vec",
@@ -2951,9 +2865,34 @@ export default [
 		ot: "VEC",
 	},
 	{
+		html: "ve",
+		name: "Venda",
+		ot: "VEN",
+	},
+	{
+		html: "vi",
+		name: "Vietnamese",
+		ot: "VIT",
+	},
+	{
+		html: "vo",
+		name: "Volap\u00fck",
+		ot: "VOL",
+	},
+	{
 		html: "vro",
 		name: "V\u00f5ro",
 		ot: "VRO",
+	},
+	{
+		html: "wbm",
+		name: "Wa",
+		ot: "WA",
+	},
+	{
+		html: "wbr",
+		name: "Wagdi",
+		ot: "WAG",
 	},
 	{
 		html: "war",
@@ -2961,9 +2900,39 @@ export default [
 		ot: "WAR",
 	},
 	{
+		html: "crk",
+		name: "West-Cree",
+		ot: "WCR",
+	},
+	{
+		html: "cy",
+		name: "Welsh",
+		ot: "WEL",
+	},
+	{
+		html: "wo",
+		name: "Wolof",
+		ot: "WLF",
+	},
+	{
+		html: "wa",
+		name: "Walloon",
+		ot: "WLN",
+	},
+	{
 		html: "wtm",
 		name: "Mewati",
 		ot: "WTM",
+	},
+	{
+		html: "khb",
+		name: "L\u00fc",
+		ot: "XBD",
+	},
+	{
+		html: "xh",
+		name: "Xhosa",
+		ot: "XHS",
 	},
 	{
 		html: "xjb",
@@ -2986,6 +2955,11 @@ export default [
 		ot: "XPE",
 	},
 	{
+		html: "sah",
+		name: "Sakha",
+		ot: "YAK",
+	},
+	{
 		html: "yao",
 		name: "Yao",
 		ot: "YAO",
@@ -2996,6 +2970,21 @@ export default [
 		ot: "YAP",
 	},
 	{
+		html: "yo",
+		name: "Yoruba",
+		ot: "YBA",
+	},
+	{
+		html: "crj",
+		name: "Y-Cree",
+		ot: "YCR",
+	},
+	{
+		html: "ii",
+		name: "Yi Modern",
+		ot: "YIM",
+	},
+	{
 		html: "zea",
 		name: "Zealandic",
 		ot: "ZEA",
@@ -3004,6 +2993,41 @@ export default [
 		html: "zgh",
 		name: "Standard Moroccan Tamazight",
 		ot: "ZGH",
+	},
+	{
+		html: "za",
+		name: "Zhuang",
+		ot: "ZHA",
+	},
+	{
+		html: "zh-HK",
+		name: "Chinese ; Hong Kong",
+		ot: "ZHH",
+	},
+	{
+		html: "zh-Hans",
+		name: "Chinese ; Han (Simplified variant)",
+		ot: "ZHS",
+	},
+	{
+		html: "zh-Hant",
+		name: "Chinese ; Han (Traditional variant)",
+		ot: "ZHT",
+	},
+	{
+		html: "zh-MO",
+		name: "Chinese ; Macao",
+		ot: "ZHTM",
+	},
+	{
+		html: "zne",
+		name: "Zande",
+		ot: "ZND",
+	},
+	{
+		html: "zu",
+		name: "Zulu",
+		ot: "ZUL",
 	},
 	{
 		html: "zza",
