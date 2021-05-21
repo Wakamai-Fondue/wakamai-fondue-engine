@@ -27,6 +27,9 @@
 # Wakamai Fondue to map OpenType LangSys tags to their
 # corresponding BCP 47 value, to be used in the `lang`
 # attribute.
+#
+# Format the resulting ot-to-html-lang.js file by running:
+# eslint --fix  ../src/tools/ot-to-html-lang.js
 
 import sys
 import json
@@ -45,8 +48,11 @@ def extract_languages(content):
     # This will be fixed by the "ambiguous languages"
     # further on
     for language in languages:
+        if "HB_TAG_NONE" in language:
+            continue
+
         # Commented-out languages can be added at the end
-        # when no other langiages match
+        # when no other languages match
         last_resort = language.startswith("/*")
 
         # Clean up some noise
@@ -75,16 +81,6 @@ def extract_languages(content):
             lang_name = tmp[1]
         else:
             lang_name = tmp[0]
-        # No need to communicate this
-        lang_name = (
-            lang_name.replace("[macrolanguage]", "")
-            .replace("[family]", "")
-            .replace("(retired code)", "")
-        )
-        # This indicates a deprectaed OT tag, but we don't want
-        # this information to be added to the langiage name
-        lang_name = lang_name.replace("(deprecated)", "")
-        lang_name = lang_name.strip()
 
         # BCP47 and OT tag
         tmp = parts[0].split(",")
@@ -92,12 +88,16 @@ def extract_languages(content):
         lang_ot = tmp[1].strip()
 
         if not lang_ot in langdict and not last_resort:
-            langdict[lang_ot] = {"ot": lang_ot, "html": lang_bcp, "name": lang_name}
+            langdict[lang_ot] = {
+                "ot": lang_ot,
+                "html": lang_bcp,
+                "name": cleanlang(lang_name),
+            }
         if not lang_ot in last_resort_langdict and last_resort:
             last_resort_langdict[lang_ot] = {
                 "ot": lang_ot,
                 "html": lang_bcp,
-                "name": lang_name,
+                "name": cleanlang(lang_name),
             }
 
     # Ambiguous languages
@@ -124,7 +124,7 @@ def extract_languages(content):
             langdict[am_lang_ot] = {
                 "ot": am_lang_ot,
                 "html": am_lang_bcp,
-                "name": am_lang_name,
+                "name": cleanlang(am_lang_name),
             }
 
     for lr_lang in last_resort_langdict:
@@ -135,13 +135,28 @@ def extract_languages(content):
     return list(langdict.values())
 
 
+def cleanlang(lang_name):
+    # No need to communicate this
+    lang_name = (
+        lang_name.replace("[macrolanguage]", "")
+        .replace("[family]", "")
+        .replace("(retired code)", "")
+    )
+
+    # This indicates a deprectaed OT tag, but we don't want
+    # this information to be added to the language name
+    lang_name = lang_name.replace("(deprecated)", "")
+    lang_name = lang_name.strip()
+    return lang_name
+
+
 def main():
     if len(sys.argv) > 1:
         with open(sys.argv[1]) as f:
             content = f.read()
 
-        languages = extract_languages(content)
-        languages = json.dumps(languages, indent=4, sort_keys=True)
+        languages = sorted(extract_languages(content), key=lambda x: x["ot"])
+        languages = json.dumps(languages, indent="\t", sort_keys=True)
 
         languages_js = "export default " + languages + ";"
 

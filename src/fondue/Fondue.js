@@ -43,8 +43,18 @@ export default class Fondue {
 		this._font = font;
 	}
 
-	get format() {
-		return this._font.opentype.tables.CFF ? "OpenType/CFF" : "TrueType";
+	get outlines() {
+		let outlines = [];
+		if (this._font.opentype.tables.CFF) {
+			outlines.push("OpenType CFF");
+		}
+		if (this._font.opentype.tables.CFF2) {
+			outlines.push("OpenType CFF2");
+		}
+		if (this._font.opentype.tables.glyf) {
+			outlines.push("TrueType glyf");
+		}
+		return outlines;
 	}
 
 	get isVariable() {
