@@ -81,6 +81,6 @@
 		"node": ">=12"
 	},
 	"dependencies": {
-		"lib-font": "^2.0.5"
+		"lib-font": "^2.3.2"
 	}
 }
