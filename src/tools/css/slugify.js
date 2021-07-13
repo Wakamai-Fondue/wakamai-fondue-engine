@@ -1,4 +1,5 @@
 export default function slugify(text) {
+	text = text || "";
 	return text
 		.toLowerCase()
 		.replace(/ /g, "-")

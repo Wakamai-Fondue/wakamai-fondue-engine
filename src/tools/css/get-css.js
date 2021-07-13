@@ -2,9 +2,19 @@ import slugify from "./slugify.js";
 import featureMapping from "../features/layout-features.js";
 import CssJson from "./css-json.js";
 
+const unnamedFontName = "UNNAMED FONT";
+
 // Get indexed version, e.g. ss03 → ss##
 const getFeatureIndex = (feature) => {
 	return feature.replace(/^(ss|cv).*?$/, "$1##");
+};
+
+const getSafeName = (name) => {
+	if (typeof name === "string" && name.length > 0) {
+		return name;
+	} else {
+		return unnamedFontName;
+	}
 };
 
 // Return CSS with custom CSS properties
@@ -52,7 +62,7 @@ const getAvailableFeatures = (font) => {
 const getVariableCSS = (font) => {
 	let css = "";
 	let maxProps = 6;
-	const name = slugify(font.summary["Font name"]);
+	const name = slugify(getSafeName(font.summary["Font name"]));
 	const fvar = font.get("fvar");
 	const variations = fvar ? fvar.instances : [];
 	for (const v in variations) {
@@ -127,7 +137,9 @@ const lineWrap = (str, max = 78, tabSize = 4) => {
 const getFontFace = (font) => {
 	let fontface = "@font-face {\n";
 
-	fontface += `    font-family: "${font.summary["Font name"]}";\n`;
+	fontface += `    font-family: "${getSafeName(
+		font.summary["Font name"]
+	)}";\n`;
 	fontface += `    src: url("${font.summary["Filename"]}");\n`;
 
 	// Add variable defaults
@@ -159,7 +171,7 @@ const getCSS = (fondue, ...exclude) => {
 	// Skip features for now
 	const features = getAvailableFeatures(fondue);
 	// Make a 'slug' of the font name to use throughout CSS
-	const realName = fondue.summary["Font name"];
+	const realName = getSafeName(fondue.summary["Font name"]);
 	const name = slugify(realName);
 
 	let stylesheet = "";
