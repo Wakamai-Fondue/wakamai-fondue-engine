@@ -12,7 +12,7 @@ export default function getFormat(fondue) {
 		sig ||
 		(
 			((fondue._font.name.indexOf("data:") !== 0 &&
-				fondue._font.name.match(/[^\.\\/:\*"<>|]+?$/)) ||
+				fondue._font.name.match(/[^.\\/:*"<>|]+?$/)) ||
 				[])[0] || ""
 		).toUpperCase();
 	return sig;
