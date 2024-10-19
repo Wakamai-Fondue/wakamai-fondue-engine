@@ -9,8 +9,14 @@
 		"test": "test"
 	},
 	"scripts": {
-		"test": "jest",
-		"lint": "eslint .",
+		"coverage": "vitest --coverage --run",
+		"test": "vitest --run",
+		"lint": "npm-run-all lint:**",
+		"lint:eslint": "eslint .",
+		"lint:prettier": "prettier --check .",
+		"lint-fix": "npm-run-all --sequential lint-fix:** prettier",
+		"lint-fix:eslint": "eslint --fix .",
+		"prettier": "prettier --write .",
 		"build": "rollup -c",
 		"watch": "rollup -c -w",
 		"prepare": "husky"
@@ -39,33 +45,23 @@
 	"homepage": "https://wakamaifondue.com/",
 	"devDependencies": {
 		"@babel/preset-env": "7.25.8",
-		"@rollup/plugin-commonjs": "14.0.0",
-		"@rollup/plugin-json": "4.1.0",
-		"@rollup/plugin-node-resolve": "11.2.1",
-		"babel-jest": "26.6.3",
-		"eslint": "7.32.0",
-		"eslint-plugin-jest": "23.20.0",
+		"@eslint/js": "9.13.0",
+		"@rollup/plugin-commonjs": "28.0.1",
+		"@rollup/plugin-json": "6.1.0",
+		"@rollup/plugin-node-resolve": "15.3.0",
+		"@vitest/coverage-v8": "2.1.3",
+		"babel-jest": "29.7.0",
+		"eslint": "9.13.0",
+		"eslint-plugin-jest": "28.8.3",
 		"eslint-plugin-node": "11.1.0",
-		"eslint-plugin-prettier": "3.4.1",
-		"husky": "4.3.8",
-		"jest": "26.6.3",
-		"lint-staged": "10.5.4",
-		"prettier": "2.8.8",
-		"rollup": "2.79.2"
-	},
-	"jest": {
-		"verbose": true,
-		"moduleDirectories": [
-			"src",
-			"node_modules"
-		],
-		"transformIgnorePatterns": [
-			"node_modules/(?!lib-font)"
-		],
-		"collectCoverage": true,
-		"collectCoverageFrom": [
-			"src/*.{js,jsx}"
-		]
+		"eslint-plugin-prettier": "5.2.1",
+		"globals": "15.11.0",
+		"husky": "9.1.6",
+		"lint-staged": "15.2.10",
+		"npm-run-all": "4.1.5",
+		"prettier": "3.3.3",
+		"rollup": "4.24.0",
+		"vitest": "2.1.3"
 	},
 	"lint-staged": {
 		"*.{js,cjs,mjs,json,md}": [
