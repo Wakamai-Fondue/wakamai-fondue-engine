@@ -1,6 +1,6 @@
-import slugify from "./slugify.js";
-import featureMapping from "../features/layout-features.js";
-import CssJson from "./css-json.js";
+import slugify from "./slugify.mjs";
+import featureMapping from "../features/layout-features.mjs";
+import CssJson from "./css-json.mjs";
 
 const unnamedFontName = "UNNAMED FONT";
 
@@ -138,7 +138,7 @@ const getFontFace = (font) => {
 	let fontface = "@font-face {\n";
 
 	fontface += `    font-family: "${getSafeName(
-		font.summary["Font name"]
+		font.summary["Font name"],
 	)}";\n`;
 	fontface += `    src: url("${font.summary["Filename"]}");\n`;
 

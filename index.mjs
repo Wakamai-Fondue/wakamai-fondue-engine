@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import { Font } from "./src/lib-font/lib-font-wrapper";
-import Fondue from "./src/fondue/Fondue.js";
+import { Font } from "./src/lib-font/lib-font-wrapper.mjs";
+import Fondue from "./src/fondue/Fondue.mjs";
 
 export function fromPath(fontPath) {
 	return new Promise((resolve, reject) => {

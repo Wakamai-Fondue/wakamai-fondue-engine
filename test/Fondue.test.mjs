@@ -1,8 +1,8 @@
-import { fromPath, fromDataBuffer } from "../index";
-import { toArrayBuffer } from "./support/utils";
+import { fromPath, fromDataBuffer } from "../index.mjs";
+import { toArrayBuffer } from "./support/utils.mjs";
+import { describe, expect, it, test } from "vitest";
 
-import fs from "fs";
-const readFile = fs.promises.readFile;
+import { readFile } from "node:fs/promises";
 
 const WFTestFont = async () => {
 	return await fromPath("./test/fixtures/WFTestFont/WFTestFont.ttf");
@@ -43,27 +43,27 @@ const AbrilFatFaceFont = async () => {
 describe("The loaded font", () => {
 	test("is loaded succesfully.", async () => {
 		const fondue = await fromPath(
-			"./test/fixtures/SourceCodeVariable-Roman.ttf"
+			"./test/fixtures/SourceCodeVariable-Roman.ttf",
 		);
 		expect(fondue._font).toBeDefined();
 	});
 
 	test("throws an error when it doesn't exist.", async () => {
 		await expect(() => fromPath("./fonts/foo.ttf")).rejects.toEqual(
-			"ENOENT: no such file or directory, open './fonts/foo.ttf'"
+			"ENOENT: no such file or directory, open './fonts/foo.ttf'",
 		);
 	});
 
 	test("returns data from the name table.", async () => {
 		const fondue = await fromPath(
-			"./test/fixtures/SourceCodeVariable-Roman.ttf"
+			"./test/fixtures/SourceCodeVariable-Roman.ttf",
 		);
 		expect(fondue.name(1)).toContain("Source Code Variable");
 	});
 
 	test("returns empty data from an empty name table.", async () => {
 		const fondue = await fromPath(
-			"./test/fixtures/SourceCodeVariable-Roman.ttf"
+			"./test/fixtures/SourceCodeVariable-Roman.ttf",
 		);
 		const subfamily = fondue.name("sample");
 		expect(subfamily).toContain("");
@@ -71,32 +71,32 @@ describe("The loaded font", () => {
 
 	test("returns CSS information.", async () => {
 		const fondue = await fromPath(
-			"./test/fixtures/SourceCodeVariable-Roman.ttf"
+			"./test/fixtures/SourceCodeVariable-Roman.ttf",
 		);
 		expect(fondue.cssString).toContain(
-			'font-variation-settings: "wght" 900;'
+			'font-variation-settings: "wght" 900;',
 		);
 	});
 
 	test("returns CSS @font-face information.", async () => {
 		const fondue = await fromPath(
-			"./test/fixtures/SourceCodeVariable-Roman.ttf"
+			"./test/fixtures/SourceCodeVariable-Roman.ttf",
 		);
 		expect(fondue.cssString).toContain("font-weight: 200 900;");
 	});
 
 	test("without variations should return CSS information.", async () => {
 		const fondue = await fromPath(
-			"./test/fixtures/SourceCodePro-Regular.otf"
+			"./test/fixtures/SourceCodePro-Regular.otf",
 		);
 		expect(fondue.cssString).toContain(
-			"font-feature-settings: var(--source-code-pro-case)"
+			"font-feature-settings: var(--source-code-pro-case)",
 		);
 	});
 
 	test("supports WOFF", async () => {
 		const fondue = await fromPath(
-			"./test/fixtures/SourceCodePro-Regular.ttf.woff"
+			"./test/fixtures/SourceCodePro-Regular.ttf.woff",
 		);
 
 		/* Need to access an actual table here, because gzip decoding happens lazily */
@@ -105,7 +105,7 @@ describe("The loaded font", () => {
 
 	test("supports WOFF2", async () => {
 		const fondue = await fromPath(
-			"./test/fixtures/SourceCodePro-Regular.ttf.woff2"
+			"./test/fixtures/SourceCodePro-Regular.ttf.woff2",
 		);
 
 		expect(fondue).toBeDefined();
@@ -115,13 +115,13 @@ describe("The loaded font", () => {
 describe("fromDataBuffer", () => {
 	it("loads a font from an ArrayBuffer", async () => {
 		const buf = await readFile(
-			"./test/fixtures/SourceCodeVariable-Roman.ttf"
+			"./test/fixtures/SourceCodeVariable-Roman.ttf",
 		);
 		const arrayBuf = toArrayBuffer(buf);
 
 		const fondue = await fromDataBuffer(
 			arrayBuf,
-			"SourceCodeVariable-Roman.ttf"
+			"SourceCodeVariable-Roman.ttf",
 		);
 		expect(fondue._font).toBeDefined();
 		expect(fondue._font.opentype).toBeDefined();
@@ -207,7 +207,7 @@ describe("hasAxes", () => {
 				expect.objectContaining({
 					id: "wght",
 				}),
-			])
+			]),
 		);
 	});
 
@@ -216,7 +216,7 @@ describe("hasAxes", () => {
 		expect(fondue.variable.instances).toEqual(
 			expect.objectContaining({
 				ExtraLight: { wght: 200 },
-			})
+			}),
 		);
 	});
 
@@ -252,14 +252,14 @@ describe("supportedCharacters", () => {
 	test("returns characters of best cmap", async () => {
 		const fondue = await WFTestFont();
 		expect(fondue.supportedCharacters).toEqual(
-			expect.arrayContaining(["0041"]) // 0x41 = letter Z
+			expect.arrayContaining(["0041"]), // 0x41 = letter Z
 		);
 	});
 
 	test("does not return non-unicode char", async () => {
 		const fondue = await WFTestFont();
 		expect(fondue.supportedCharacters).not.toEqual(
-			expect.arrayContaining(["ffff"]) // 0x41 = letter Z
+			expect.arrayContaining(["ffff"]), // 0x41 = letter Z
 		);
 	});
 });
@@ -270,7 +270,7 @@ describe("supportedLanguages", () => {
 		expect(fondue.languageSystems).toEqual(
 			expect.arrayContaining([
 				{ ot: "ATH", html: "ath", name: "Athapascan" },
-			])
+			]),
 		);
 	});
 });
@@ -306,7 +306,7 @@ describe("Language support", () => {
 	test("supports various languages", async () => {
 		const fondue = await SourceCodeVariableTTFFont();
 		expect(fondue.languageSupport).toEqual(
-			expect.arrayContaining(["English", "Dutch"])
+			expect.arrayContaining(["English", "Dutch"]),
 		);
 	});
 });
@@ -344,7 +344,7 @@ describe("Detect charset support", () => {
 					script: null,
 					subCategory: null,
 				},
-			])
+			]),
 		);
 	});
 });
@@ -354,7 +354,7 @@ describe("Layout features", () => {
 		const fondue = await SourceCodeProOTFFont();
 
 		expect(
-			fondue.featureChars["DFLT"]["dflt"]["onum"]["lookups"][0]
+			fondue.featureChars["DFLT"]["dflt"]["onum"]["lookups"][0],
 		).toEqual(
 			expect.objectContaining({
 				type: 1,
@@ -363,7 +363,7 @@ describe("Layout features", () => {
 				backtrack: [],
 				input: ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"],
 				alternateCount: [],
-			})
+			}),
 		);
 	});
 
@@ -371,7 +371,7 @@ describe("Layout features", () => {
 		const fondue = await AthenaRubyFont();
 
 		expect(
-			fondue.featureChars["DFLT"]["dflt"]["cv01"]["lookups"][0]
+			fondue.featureChars["DFLT"]["dflt"]["cv01"]["lookups"][0],
 		).toEqual(
 			expect.objectContaining({
 				type: 3,
@@ -380,7 +380,7 @@ describe("Layout features", () => {
 				backtrack: [],
 				input: ["Α"], // Note this is U+0391 : GREEK CAPITAL LETTER ALPHA
 				alternateCount: [27],
-			})
+			}),
 		);
 	});
 
@@ -388,7 +388,7 @@ describe("Layout features", () => {
 		const fondue = await OpenSansFont();
 
 		expect(
-			fondue.featureChars["latn"]["dflt"]["liga"]["lookups"][0]
+			fondue.featureChars["latn"]["dflt"]["liga"]["lookups"][0],
 		).toEqual(
 			expect.objectContaining({
 				type: 4,
@@ -397,7 +397,7 @@ describe("Layout features", () => {
 				backtrack: [],
 				input: ["ffl", "ffi", "ff", "fl", "fi"],
 				alternateCount: [],
-			})
+			}),
 		);
 	});
 
@@ -406,7 +406,7 @@ describe("Layout features", () => {
 
 		expect(
 			// Yes, four empty spaces (artifact of old font editing software)
-			fondue.featureChars["    "]["dflt"]["calt"]["lookups"][0]
+			fondue.featureChars["    "]["dflt"]["calt"]["lookups"][0],
 		).toEqual({
 			alternateCount: [],
 			backtrack: [
@@ -459,7 +459,7 @@ describe("Layout features", () => {
 			// Yes, four empty spaces (artifact of old font editing software)
 			fondue.featureChars["    "]["dflt"]["calt"]["summary"][
 				"summarizedCombinations"
-			].length
+			].length,
 		).toBeGreaterThanOrEqual(1);
 	});
 
