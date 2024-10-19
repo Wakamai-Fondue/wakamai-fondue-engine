@@ -38,20 +38,20 @@
 	},
 	"homepage": "https://wakamaifondue.com/",
 	"devDependencies": {
-		"@babel/preset-env": "^7.10.2",
-		"@rollup/plugin-commonjs": "^14.0.0",
-		"@rollup/plugin-json": "^4.1.0",
-		"@rollup/plugin-node-resolve": "^11.0.1",
-		"babel-jest": "^26.0.1",
-		"eslint": "^7.4.0",
-		"eslint-plugin-jest": "^23.18.0",
-		"eslint-plugin-node": "^11.1.0",
-		"eslint-plugin-prettier": "^3.1.4",
-		"husky": "^4.2.5",
-		"jest": "^26.0.1",
-		"lint-staged": "^10.2.11",
-		"prettier": "^2.0.5",
-		"rollup": "^2.21.0"
+		"@babel/preset-env": "7.10.2",
+		"@rollup/plugin-commonjs": "14.0.0",
+		"@rollup/plugin-json": "4.1.0",
+		"@rollup/plugin-node-resolve": "11.0.1",
+		"babel-jest": "26.0.1",
+		"eslint": "7.4.0",
+		"eslint-plugin-jest": "23.18.0",
+		"eslint-plugin-node": "11.1.0",
+		"eslint-plugin-prettier": "3.1.4",
+		"husky": "4.2.5",
+		"jest": "26.0.1",
+		"lint-staged": "10.2.11",
+		"prettier": "2.0.5",
+		"rollup": "2.21.0"
 	},
 	"jest": {
 		"verbose": true,
@@ -81,6 +81,6 @@
 		"node": ">=18"
 	},
 	"dependencies": {
-		"lib-font": "^2.4.2"
+		"lib-font": "2.4.2"
 	}
 }
