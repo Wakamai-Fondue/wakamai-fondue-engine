@@ -507,10 +507,11 @@ export default class Fondue {
 			[0, 0],
 		];
 		for (const [platformID, platEncID] of cmapPreferences) {
-			const cmapSubtable = this._font.opentype.tables.cmap.getSupportedCharCodes(
-				platformID,
-				platEncID
-			);
+			const cmapSubtable =
+				this._font.opentype.tables.cmap.getSupportedCharCodes(
+					platformID,
+					platEncID
+				);
 			if (cmapSubtable) {
 				return cmapSubtable;
 			}
@@ -828,15 +829,13 @@ export default class Fondue {
 
 					if (coverage.glyphArray !== undefined) {
 						subtable.ligatureSetOffsets.forEach((_, setIndex) => {
-							const ligatureSet = subtable.getLigatureSet(
-								setIndex
-							);
+							const ligatureSet =
+								subtable.getLigatureSet(setIndex);
 
 							ligatureSet.ligatureOffsets.forEach(
 								(_, ligIndex) => {
-									const ligatureTable = ligatureSet.getLigature(
-										ligIndex
-									);
+									const ligatureTable =
+										ligatureSet.getLigature(ligIndex);
 
 									const sequence = [
 										coverage.glyphArray[setIndex],
@@ -884,27 +883,24 @@ export default class Fondue {
 
 					if (subtable.inputGlyphCount > 0) {
 						subtable.inputCoverageOffsets.forEach((offset) => {
-							const coverage = subtable.getCoverageFromOffset(
-								offset
-							);
+							const coverage =
+								subtable.getCoverageFromOffset(offset);
 							inputChars = charactersFromGlyphs(coverage);
 						});
 					}
 
 					if (subtable.backtrackGlyphCount > 0) {
 						subtable.backtrackCoverageOffsets.forEach((offset) => {
-							const coverage = subtable.getCoverageFromOffset(
-								offset
-							);
+							const coverage =
+								subtable.getCoverageFromOffset(offset);
 							backtrackChars = charactersFromGlyphs(coverage);
 						});
 					}
 
 					if (subtable.lookaheadGlyphCount > 0) {
 						subtable.lookaheadCoverageOffsets.forEach((offset) => {
-							const coverage = subtable.getCoverageFromOffset(
-								offset
-							);
+							const coverage =
+								subtable.getCoverageFromOffset(offset);
 							lookaheadChars = charactersFromGlyphs(coverage);
 						});
 					}
@@ -990,12 +986,11 @@ export default class Fondue {
 							].push(parsedLookup);
 						}
 
-						allGlyphs[script][lang][feature.featureTag][
-							"summary"
-						] = createType6Summary(
-							allGlyphs[script][lang][feature.featureTag],
-							true
-						);
+						allGlyphs[script][lang][feature.featureTag]["summary"] =
+							createType6Summary(
+								allGlyphs[script][lang][feature.featureTag],
+								true
+							);
 					});
 				});
 			});
