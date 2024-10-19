@@ -17,13 +17,22 @@
 import { Font } from "./src/lib-font/lib-font-wrapper.mjs";
 import Fondue from "./src/fondue/Fondue.mjs";
 
-export function fromPath(fontPath) {
+export async function fromPath(fontPath) {
+	const { readFile } = await import("node:fs/promises");
+
 	return new Promise((resolve, reject) => {
 		const font = new Font(fontPath);
 		font.onload = () => resolve(new Fondue(font));
 		font.onerror = (e) => reject(e.detail.message);
 
-		font.src = fontPath;
+		(async () => {
+			try {
+				const file = await readFile(fontPath);
+				font.fromDataBuffer(file.buffer, fontPath).catch(reject);
+			} catch (e) {
+				reject(e);
+			}
+		})();
 	});
 }
 
