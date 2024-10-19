@@ -13,7 +13,7 @@
 		"lint": "eslint .",
 		"build": "rollup -c",
 		"watch": "rollup -c -w",
-		"prepare": "npm run --silent build"
+		"prepare": "husky"
 	},
 	"repository": {
 		"type": "git",
@@ -71,11 +71,6 @@
 		"*.{js,cjs,mjs,json,md}": [
 			"prettier --write"
 		]
-	},
-	"husky": {
-		"hooks": {
-			"pre-commit": "lint-staged"
-		}
 	},
 	"engines": {
 		"node": ">=18"
