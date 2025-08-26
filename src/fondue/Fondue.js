@@ -878,9 +878,9 @@ export default class Fondue {
 				lookup.subtableOffsets.forEach((_, i) => {
 					const subtable = lookup.getSubTable(i);
 
-					let inputChars;
-					let backtrackChars;
-					let lookaheadChars;
+					let inputChars = [];
+					let backtrackChars = [];
+					let lookaheadChars = [];
 
 					if (subtable.inputGlyphCount > 0) {
 						subtable.inputCoverageOffsets.forEach((offset) => {
