@@ -878,9 +878,9 @@ export default class Fondue {
 				lookup.subtableOffsets.forEach((_, i) => {
 					const subtable = lookup.getSubTable(i);
 
-					let inputChars;
-					let backtrackChars;
-					let lookaheadChars;
+					let inputChars = [];
+					let backtrackChars = [];
+					let lookaheadChars = [];
 
 					if (subtable.inputGlyphCount > 0) {
 						subtable.inputCoverageOffsets.forEach((offset) => {
@@ -1068,7 +1068,13 @@ const createType6Summary = (feature, randomize) => {
 		.reduce((a, b) =>
 			a.reduce((r, v) => r.concat(b.map((w) => [].concat(v, w))), [])
 		)
-		.map((a) => a.join(""));
+		.map((a) => {
+			if (Array.isArray(a)) {
+				return a.join("");
+			} else {
+				return a;
+			}
+		});
 
 	return {
 		allInputs: allInputs.sort(),
