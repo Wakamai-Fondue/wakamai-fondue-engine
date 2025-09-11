@@ -730,8 +730,15 @@ export default class Fondue {
 
 		if (!GSUB) return {};
 
+		const letterForCache = new Map();
+
 		function letterFor(glyphid) {
-			return cmap.reverse(glyphid).unicode;
+			if (letterForCache.has(glyphid)) {
+				return letterForCache.get(glyphid);
+			}
+			const result = cmap.reverse(glyphid).unicode;
+			letterForCache.set(glyphid, result);
+			return result;
 		}
 
 		// [1,2,3] + [3,4,5] = [1,2,3,4,5]
