@@ -41,6 +41,8 @@ export default class Fondue {
 
 	constructor(font) {
 		this._font = font;
+		this._supportedCharactersCache = null;
+		this._unicodeRangeCache = null;
 	}
 
 	get outlines() {
@@ -453,6 +455,9 @@ export default class Fondue {
 	// Returns an array of all supported Unicode characters
 	// from the "best" cmap.
 	get supportedCharacters() {
+		if (this._supportedCharactersCache !== null) {
+			return this._supportedCharactersCache;
+		}
 		const chars = new Set();
 		const cmap = this.getBestCmap();
 		if (cmap) {
@@ -462,12 +467,16 @@ export default class Fondue {
 				}
 			}
 		}
-		return Array.from(chars);
+		this._supportedCharactersCache = Array.from(chars);
+		return this._supportedCharactersCache;
 	}
 
 	// Returns an array of all supported Unicode characters
 	// from the "best" cmap as Unicode ranges.
 	get unicodeRange() {
+		if (this._unicodeRangeCache !== null) {
+			return this._unicodeRangeCache;
+		}
 		let ranges = [],
 			rstart,
 			rend;
@@ -484,8 +493,8 @@ export default class Fondue {
 			}
 			ranges.push(rstart == rend ? `${rstart}` : `${rstart}-${rend}`);
 		}
-
-		return ranges;
+		this._unicodeRangeCache = ranges;
+		return this._unicodeRangeCache;
 	}
 
 	// Return the "best" unicode cmap dictionary available in the font,
