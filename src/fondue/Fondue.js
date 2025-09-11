@@ -453,20 +453,16 @@ export default class Fondue {
 	// Returns an array of all supported Unicode characters
 	// from the "best" cmap.
 	get supportedCharacters() {
-		let chars = [];
+		const chars = new Set();
 		const cmap = this.getBestCmap();
 		if (cmap) {
 			for (const chunk of cmap) {
-				for (let i = chunk.start; i < chunk.end + 1; i++) {
-					// Skip 0xFFFF, lib-font currently reports this
-					// as a supported character
-					// https://github.com/Pomax/lib-font/issues/68
-					if (i == 65535) continue;
-					chars.push(this._toUnicodeValue(i));
+				for (let i = chunk.start; i <= chunk.end; i++) {
+					chars.add(this._toUnicodeValue(i));
 				}
 			}
 		}
-		return chars;
+		return Array.from(chars);
 	}
 
 	// Returns an array of all supported Unicode characters
