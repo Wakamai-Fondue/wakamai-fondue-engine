@@ -122,3 +122,12 @@ lib/index.js
 
 # External data
 tools/hb-ot-tag-table.hh
+
+# Editor directories and files
+.idea
+.vscode
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
