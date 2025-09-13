@@ -888,78 +888,82 @@ export default class Fondue {
 			// chars
 			if (lookup.lookupType === 6) {
 				lookup.subtableOffsets.forEach((_, i) => {
-					const subtable = lookup.getSubTable(i);
+					try {
+						const subtable = lookup.getSubTable(i);
 
-					let inputChars = [];
-					let backtrackChars = [];
-					let lookaheadChars = [];
+						let inputChars = [];
+						let backtrackChars = [];
+						let lookaheadChars = [];
 
-					if (subtable.inputGlyphCount > 0) {
-						subtable.inputCoverageOffsets.forEach((offset) => {
-							const coverage = subtable.getCoverageFromOffset(
-								offset
-							);
-							inputChars = charactersFromGlyphs(coverage);
-						});
-					}
-
-					if (subtable.backtrackGlyphCount > 0) {
-						subtable.backtrackCoverageOffsets.forEach((offset) => {
-							const coverage = subtable.getCoverageFromOffset(
-								offset
-							);
-							backtrackChars = charactersFromGlyphs(coverage);
-						});
-					}
-
-					if (subtable.lookaheadGlyphCount > 0) {
-						subtable.lookaheadCoverageOffsets.forEach((offset) => {
-							const coverage = subtable.getCoverageFromOffset(
-								offset
-							);
-							lookaheadChars = charactersFromGlyphs(coverage);
-						});
-					}
-
-					// Are there glyphs for each sequence?
-					const preCheck = [
-						subtable.inputGlyphCount > 0,
-						subtable.backtrackGlyphCount > 0,
-						subtable.lookaheadGlyphCount > 0,
-					].join();
-
-					// Are there chars for each sequence?
-					const postCheck = [
-						inputChars.length > 0,
-						backtrackChars !== undefined &&
-							backtrackChars.length > 0,
-						lookaheadChars !== undefined &&
-							lookaheadChars.length > 0,
-					].join();
-
-					// Check if we didn't lose a lookup because it contained only glyphs that
-					// were replaced in a previous lookup (in other words, didn't contain
-					// unicode characters).
-					// Example: backtrack [a, b, c], input [n], lookahead[x.alt, y.alt, z.alt]
-					if (preCheck === postCheck) {
-						parsedLookup["input"][i] = mergeUniqueCoverage(
-							parsedLookup["input"][i],
-							inputChars
-						);
-
-						if (backtrackChars) {
-							parsedLookup["backtrack"][i] = mergeUniqueCoverage(
-								parsedLookup["backtrack"][i],
-								backtrackChars
-							);
+						if (subtable.inputGlyphCount > 0) {
+							subtable.inputCoverageOffsets.forEach((offset) => {
+								const coverage = subtable.getCoverageFromOffset(
+									offset
+								);
+								inputChars = charactersFromGlyphs(coverage);
+							});
 						}
 
-						if (lookaheadChars) {
-							parsedLookup["lookahead"][i] = mergeUniqueCoverage(
-								parsedLookup["lookahead"][i],
-								lookaheadChars
-							);
+						if (subtable.backtrackGlyphCount > 0) {
+							subtable.backtrackCoverageOffsets.forEach((offset) => {
+								const coverage = subtable.getCoverageFromOffset(
+									offset
+								);
+								backtrackChars = charactersFromGlyphs(coverage);
+							});
 						}
+
+						if (subtable.lookaheadGlyphCount > 0) {
+							subtable.lookaheadCoverageOffsets.forEach((offset) => {
+								const coverage = subtable.getCoverageFromOffset(
+									offset
+								);
+								lookaheadChars = charactersFromGlyphs(coverage);
+							});
+						}
+
+						// Are there glyphs for each sequence?
+						const preCheck = [
+							subtable.inputGlyphCount > 0,
+							subtable.backtrackGlyphCount > 0,
+							subtable.lookaheadGlyphCount > 0,
+						].join();
+
+						// Are there chars for each sequence?
+						const postCheck = [
+							inputChars.length > 0,
+							backtrackChars !== undefined &&
+								backtrackChars.length > 0,
+							lookaheadChars !== undefined &&
+								lookaheadChars.length > 0,
+						].join();
+
+						// Check if we didn't lose a lookup because it contained only glyphs that
+						// were replaced in a previous lookup (in other words, didn't contain
+						// unicode characters).
+						// Example: backtrack [a, b, c], input [n], lookahead[x.alt, y.alt, z.alt]
+						if (preCheck === postCheck) {
+							parsedLookup["input"][i] = mergeUniqueCoverage(
+								parsedLookup["input"][i],
+								inputChars
+							);
+
+							if (backtrackChars) {
+								parsedLookup["backtrack"][i] = mergeUniqueCoverage(
+									parsedLookup["backtrack"][i],
+									backtrackChars
+								);
+							}
+
+							if (lookaheadChars) {
+								parsedLookup["lookahead"][i] = mergeUniqueCoverage(
+									parsedLookup["lookahead"][i],
+									lookaheadChars
+								);
+							}
+						}
+					} catch (error) {
+						console.warn(`Failed to parse GSUB lookup type 6.${i}:`, error.message);
 					}
 				});
 			}
