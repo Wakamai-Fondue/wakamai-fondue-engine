@@ -890,36 +890,65 @@ export default class Fondue {
 				lookup.subtableOffsets.forEach((_, i) => {
 					try {
 						const subtable = lookup.getSubTable(i);
+						const substFormat = subtable.substFormat;
 
 						let inputChars = [];
 						let backtrackChars = [];
 						let lookaheadChars = [];
 
-						if (subtable.inputGlyphCount > 0) {
-							subtable.inputCoverageOffsets.forEach((offset) => {
-								const coverage = subtable.getCoverageFromOffset(
-									offset
-								);
-								inputChars = charactersFromGlyphs(coverage);
-							});
-						}
+						if (substFormat === 1) {
+							// format 1: nested in chainSubRules
+							for (let setIndex = 0; setIndex < subtable.chainSubRuleSetCount; setIndex++) {
+								const chainSubRuleSet = subtable.getChainSubRuleSet(setIndex);
+								for (let ruleIndex = 0; ruleIndex < chainSubRuleSet.chainSubRuleCount; ruleIndex++) {
+									const chainSubRule = chainSubRuleSet.getSubRule(ruleIndex);
 
-						if (subtable.backtrackGlyphCount > 0) {
-							subtable.backtrackCoverageOffsets.forEach((offset) => {
-								const coverage = subtable.getCoverageFromOffset(
-									offset
-								);
-								backtrackChars = charactersFromGlyphs(coverage);
-							});
-						}
+									if (chainSubRule.inputGlyphCount > 0 && chainSubRule.inputSequence) {
+										const inputGlyphs = chainSubRule.inputSequence.filter((g) => letterFor(g) !== undefined).map(letterFor);
+										inputChars = mergeUniqueCoverage(inputChars, inputGlyphs);
+									}
 
-						if (subtable.lookaheadGlyphCount > 0) {
-							subtable.lookaheadCoverageOffsets.forEach((offset) => {
-								const coverage = subtable.getCoverageFromOffset(
-									offset
-								);
-								lookaheadChars = charactersFromGlyphs(coverage);
-							});
+									if (chainSubRule.backtrackGlyphCount > 0 && chainSubRule.backtrackSequence) {
+										const backtrackGlyphs = chainSubRule.backtrackSequence.filter((g) => letterFor(g) !== undefined).map(letterFor);
+										backtrackChars = mergeUniqueCoverage(backtrackChars, backtrackGlyphs);
+									}
+
+									if (chainSubRule.lookaheadGlyphCount > 0 && chainSubRule.lookAheadSequence) {
+										const lookaheadGlyphs = chainSubRule.lookAheadSequence.filter((g) => letterFor(g) !== undefined).map(letterFor);
+										lookaheadChars = mergeUniqueCoverage(lookaheadChars, lookaheadGlyphs);
+									}
+								}
+							}
+						} else if (substFormat === 3) {
+							// format 3: direct access
+							if (subtable.inputGlyphCount > 0) {
+								subtable.inputCoverageOffsets.forEach((offset) => {
+									const coverage = subtable.getCoverageFromOffset(
+										offset
+									);
+									inputChars = charactersFromGlyphs(coverage);
+								});
+							}
+
+							if (subtable.backtrackGlyphCount > 0) {
+								subtable.backtrackCoverageOffsets.forEach((offset) => {
+									const coverage = subtable.getCoverageFromOffset(
+										offset
+									);
+									backtrackChars = charactersFromGlyphs(coverage);
+								});
+							}
+
+							if (subtable.lookaheadGlyphCount > 0) {
+								subtable.lookaheadCoverageOffsets.forEach((offset) => {
+									const coverage = subtable.getCoverageFromOffset(
+										offset
+									);
+									lookaheadChars = charactersFromGlyphs(coverage);
+								});
+							}
+						} else {
+							// Yeah, now what?
 						}
 
 						// Are there glyphs for each sequence?
@@ -932,10 +961,8 @@ export default class Fondue {
 						// Are there chars for each sequence?
 						const postCheck = [
 							inputChars.length > 0,
-							backtrackChars !== undefined &&
-								backtrackChars.length > 0,
-							lookaheadChars !== undefined &&
-								lookaheadChars.length > 0,
+							backtrackChars.length > 0,
+							lookaheadChars.length > 0,
 						].join();
 
 						// Check if we didn't lose a lookup because it contained only glyphs that
