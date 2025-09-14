@@ -877,15 +877,6 @@ export default class Fondue {
 			// Possible future improvement: add the chars as an array to an array of
 			// input/backtrack/lookahead, then let a front decide whether to merge
 			// them or dump everything as-is.
-
-			// TODO: When a lookup has a lookahead or backtrack with *only* glyphs (so
-			// no direct characters), we should ignore this lookup. Otherwise it will
-			// result in a lookup that *looks* okay, but isn't.
-			// Example: backtrack [a, b, c], input [n], lookahead[x.alt, y.alt, z.alt]
-			// Since the lookhead contains no chars, it will be reduced to [], and the
-			// lookup with look like this: backtrack [a, b, c], input [n]. This is
-			// wrong, as that only the backtrack+input will not result in any changed
-			// chars
 			if (lookup.lookupType === 6) {
 				lookup.subtableOffsets.forEach((_, i) => {
 					try {
@@ -951,25 +942,45 @@ export default class Fondue {
 							// Yeah, now what?
 						}
 
-						// Are there glyphs for each sequence?
-						const preCheck = [
-							subtable.inputGlyphCount > 0,
-							subtable.backtrackGlyphCount > 0,
-							subtable.lookaheadGlyphCount > 0,
-						].join();
-
-						// Are there chars for each sequence?
-						const postCheck = [
-							inputChars.length > 0,
-							backtrackChars.length > 0,
-							lookaheadChars.length > 0,
-						].join();
-
-						// Check if we didn't lose a lookup because it contained only glyphs that
-						// were replaced in a previous lookup (in other words, didn't contain
-						// unicode characters).
+						// When a lookup has a lookahead or backtrack with *only* glyphs (so
+						// no direct characters), we should ignore this lookup. Otherwise it will
+						// result in a lookup that *looks* okay, but isn't.
 						// Example: backtrack [a, b, c], input [n], lookahead[x.alt, y.alt, z.alt]
-						if (preCheck === postCheck) {
+						// Since the lookhead contains no chars, it will be reduced to [], and the
+						// lookup with look like this: backtrack [a, b, c], input [n]. This is
+						// wrong, as that only the backtrack+input will not result in any changed
+						// chars
+						const hasBacktrackData = backtrackChars.length > 0;
+						const hasLookaheadData = lookaheadChars.length > 0;
+
+						let shouldIncludeLookup = true;
+
+						if (substFormat === 1) {
+							// Check if any chainSubRule has backtrack/lookahead with only unmappable glyphs
+							for (let setIndex = 0; setIndex < subtable.chainSubRuleSetCount && shouldIncludeLookup; setIndex++) {
+								const chainSubRuleSet = subtable.getChainSubRuleSet(setIndex);
+
+								for (let ruleIndex = 0; ruleIndex < chainSubRuleSet.chainSubRuleCount && shouldIncludeLookup; ruleIndex++) {
+									const chainSubRule = chainSubRuleSet.getSubRule(ruleIndex);
+
+									if (chainSubRule.backtrackGlyphCount > 0 && !hasBacktrackData) {
+										shouldIncludeLookup = false;
+									}
+									if (chainSubRule.lookaheadGlyphCount > 0 && !hasLookaheadData) {
+										shouldIncludeLookup = false;
+									}
+								}
+							}
+						} else if (substFormat === 3) {
+							if (subtable.backtrackGlyphCount > 0 && !hasBacktrackData) {
+								shouldIncludeLookup = false;
+							}
+							if (subtable.lookaheadGlyphCount > 0 && !hasLookaheadData) {
+								shouldIncludeLookup = false;
+							}
+						}
+
+						if (shouldIncludeLookup) {
 							parsedLookup["input"][i] = mergeUniqueCoverage(
 								parsedLookup["input"][i],
 								inputChars
