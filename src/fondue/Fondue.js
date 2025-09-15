@@ -24,6 +24,11 @@ import getFormat from "../tools/summary/format.js";
 import getFileSize from "../tools/summary/file-size.js";
 import getFilename from "../tools/summary/filename.js";
 import glyphData from "../tools/GlyphData.json";
+import {
+	createGlyphToCharMapper,
+	mergeUniqueCoverage,
+	charactersFromGlyphs,
+} from "./utils/lookup-utils.js";
 
 export default class Fondue {
 	_removeNullBytes(value) {
@@ -730,60 +735,7 @@ export default class Fondue {
 
 		if (!GSUB) return {};
 
-		const letterForCache = new Map();
-
-		function letterFor(glyphid) {
-			if (letterForCache.has(glyphid)) {
-				return letterForCache.get(glyphid);
-			}
-			const result = cmap.reverse(glyphid).unicode;
-			letterForCache.set(glyphid, result);
-			return result;
-		}
-
-		// [1,2,3] + [3,4,5] = [1,2,3,4,5]
-		function mergeUniqueCoverage(existing, addition) {
-			return [...new Set([...(existing || []), ...addition])];
-		}
-
-		// Returns glyphs that are mapped directly to characters for
-		// this coverage. If a glyph maps to another glyph, it's
-		// ignored.
-		// If only a specific rangeRecord needs to be processed, e.g.
-		// for lookup type 3, you can pass the desired index.
-		function charactersFromGlyphs(coverage, index) {
-			let results = [];
-
-			if (!coverage.glyphArray) {
-				let records;
-				if (index >= 0) {
-					records = coverage.rangeRecords.filter(
-						(_, i) => index !== i
-					);
-				} else {
-					records = coverage.rangeRecords;
-				}
-				// Glyphs in start/end ranges
-				for (const range of records) {
-					for (
-						let g = range.startGlyphID;
-						g < range.endGlyphID + 1;
-						g++
-					) {
-						const char = letterFor(g);
-						if (char !== undefined) {
-							results.push(char);
-						}
-					}
-				}
-			} else {
-				// Individual glyphs
-				results = coverage.glyphArray
-					.filter((g) => letterFor(g) !== undefined)
-					.map(letterFor);
-			}
-			return results;
-		}
+		const charFor = createGlyphToCharMapper(cmap);
 
 		function parseLookup(lookup) {
 			const parsedLookup = {
@@ -801,7 +753,7 @@ export default class Fondue {
 				lookup.subtableOffsets.forEach((_, i) => {
 					const subtable = lookup.getSubTable(i);
 					const coverage = subtable.getCoverageTable();
-					const results = charactersFromGlyphs(coverage);
+					const results = charactersFromGlyphs(coverage, charFor);
 
 					if (results.length > 0) {
 						parsedLookup["input"] = results;
@@ -821,6 +773,7 @@ export default class Fondue {
 					subtable.alternateSetOffsets.forEach((_, j) => {
 						parsedLookup["input"] = charactersFromGlyphs(
 							coverage,
+							charFor,
 							j
 						);
 
@@ -853,7 +806,7 @@ export default class Fondue {
 									const sequence = [
 										coverage.glyphArray[setIndex],
 										...ligatureTable.componentGlyphIDs,
-									].map(letterFor);
+									].map(charFor);
 
 									// Only keep sequences with glyphs mapped to letters
 									if (!sequence.includes(undefined)) {
@@ -895,17 +848,17 @@ export default class Fondue {
 									const chainSubRule = chainSubRuleSet.getSubRule(ruleIndex);
 
 									if (chainSubRule.inputGlyphCount > 0 && chainSubRule.inputSequence) {
-										const inputGlyphs = chainSubRule.inputSequence.filter((g) => letterFor(g) !== undefined).map(letterFor);
+										const inputGlyphs = chainSubRule.inputSequence.filter((g) => charFor(g) !== undefined).map(charFor);
 										inputChars = mergeUniqueCoverage(inputChars, inputGlyphs);
 									}
 
 									if (chainSubRule.backtrackGlyphCount > 0 && chainSubRule.backtrackSequence) {
-										const backtrackGlyphs = chainSubRule.backtrackSequence.filter((g) => letterFor(g) !== undefined).map(letterFor);
+										const backtrackGlyphs = chainSubRule.backtrackSequence.filter((g) => charFor(g) !== undefined).map(charFor);
 										backtrackChars = mergeUniqueCoverage(backtrackChars, backtrackGlyphs);
 									}
 
 									if (chainSubRule.lookaheadGlyphCount > 0 && chainSubRule.lookAheadSequence) {
-										const lookaheadGlyphs = chainSubRule.lookAheadSequence.filter((g) => letterFor(g) !== undefined).map(letterFor);
+										const lookaheadGlyphs = chainSubRule.lookAheadSequence.filter((g) => charFor(g) !== undefined).map(charFor);
 										lookaheadChars = mergeUniqueCoverage(lookaheadChars, lookaheadGlyphs);
 									}
 								}
@@ -917,7 +870,7 @@ export default class Fondue {
 									const coverage = subtable.getCoverageFromOffset(
 										offset
 									);
-									inputChars = charactersFromGlyphs(coverage);
+									inputChars = charactersFromGlyphs(coverage, charFor);
 								});
 							}
 
@@ -926,7 +879,7 @@ export default class Fondue {
 									const coverage = subtable.getCoverageFromOffset(
 										offset
 									);
-									backtrackChars = charactersFromGlyphs(coverage);
+									backtrackChars = charactersFromGlyphs(coverage, charFor);
 								});
 							}
 
@@ -935,7 +888,7 @@ export default class Fondue {
 									const coverage = subtable.getCoverageFromOffset(
 										offset
 									);
-									lookaheadChars = charactersFromGlyphs(coverage);
+									lookaheadChars = charactersFromGlyphs(coverage, charFor);
 								});
 							}
 						} else {
