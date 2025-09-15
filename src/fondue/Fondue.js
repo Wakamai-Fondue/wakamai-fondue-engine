@@ -29,6 +29,16 @@ import {
 	mergeUniqueCoverage,
 	charactersFromGlyphs,
 } from "./utils/lookup-utils.js";
+import {
+	isVariable,
+	isColor,
+	hasFeatures,
+	hasLanguages,
+	hasOpticalSize,
+	isHinted,
+	getCharCount,
+	getGlyphCount,
+} from "./utils/font-properties.js";
 
 export default class Fondue {
 	_removeNullBytes(value) {
@@ -50,6 +60,38 @@ export default class Fondue {
 		this._unicodeRangeCache = null;
 	}
 
+	get isVariable() {
+		return isVariable(this._font);
+	}
+
+	get isColor() {
+		return isColor(this._font);
+	}
+
+	get hasFeatures() {
+		return hasFeatures(this._font);
+	}
+
+	get hasLanguages() {
+		return hasLanguages(this._font);
+	}
+
+	get hasOpticalSize() {
+		return hasOpticalSize(this._font);
+	}
+
+	get isHinted() {
+		return isHinted(this._font);
+	}
+
+	get charCount() {
+		return getCharCount(this._font);
+	}
+
+	get glyphCount() {
+		return getGlyphCount(this._font);
+	}
+
 	get outlines() {
 		let outlines = [];
 		if (this._font.opentype.tables.CFF) {
@@ -64,62 +106,6 @@ export default class Fondue {
 		return outlines;
 	}
 
-	get isVariable() {
-		return this._font.opentype.tables.fvar != undefined;
-	}
-
-	get isColor() {
-		return this.colorFormats.length > 0;
-	}
-
-	get hasFeatures() {
-		return this.features.length > 0;
-	}
-
-	get hasLanguages() {
-		return this.languageSystems.length > 0;
-	}
-
-	get hasOpticalSize() {
-		return (
-			this.isVariable &&
-			this.variable.axes.find((o) => o.id === "opsz") !== undefined
-		);
-	}
-
-	get isHinted() {
-		// Ideally we should (also) check for hinting data to be present
-		// for individual glyphs. For now the presence of these "helper
-		// tables" is a good enough indication of a hinted font.
-		const hintingTables = ["cvt", "cvar", "fpgm", "hdmx", "VDMX"];
-		for (const hintingTable of hintingTables) {
-			if (hintingTable in this._font.opentype.tables) {
-				return true;
-			}
-		}
-		// Some (Google) fonts contain a simple `prep` table, which seems
-		// to be an artifact of a build/verification process.
-		// This is considered a false positive, so we're ignoring `prep`
-		// tables with this specific content.
-		// Also see https://github.com/googlefonts/fontbakery/issues/3076
-		const simplePrep = [184, 1, 255, 133, 176, 4, 141].toString();
-		if (
-			"prep" in this._font.opentype.tables &&
-			this._font.opentype.tables.prep.instructions.toString() !==
-				simplePrep
-		) {
-			return true;
-		}
-		return false;
-	}
-
-	get charCount() {
-		return this.supportedCharacters.length;
-	}
-
-	get glyphCount() {
-		return this._font.opentype.tables.maxp.numGlyphs;
-	}
 
 	// Return an object of all language systems supported by
 	// either GSUB or GPOS. Tags are stripped ("ROM " → "ROM").
