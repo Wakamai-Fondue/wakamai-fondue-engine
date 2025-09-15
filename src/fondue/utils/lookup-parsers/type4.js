@@ -1,6 +1,11 @@
 // Ligature substitution
-export function parseLookupType4(lookup, charFor, charactersFromGlyphs, mergeUniqueCoverage) {
-	const parsedData = { input: [], backtrack: [], lookahead: [], alternateCount: [] };
+export function parseLookupType4(lookup, charFor, charactersFromGlyphs) {
+	const parsedData = {
+		input: [],
+		backtrack: [],
+		lookahead: [],
+		alternateCount: [],
+	};
 
 	lookup.subtableOffsets.forEach((_, i) => {
 		const subtable = lookup.getSubTable(i);

@@ -1,10 +1,5 @@
 // Single substitution
-export function parseLookupType1(
-	lookup,
-	charFor,
-	charactersFromGlyphs,
-	mergeUniqueCoverage
-) {
+export function parseLookupType1(lookup, charFor, charactersFromGlyphs) {
 	const parsedData = {
 		input: [],
 		backtrack: [],

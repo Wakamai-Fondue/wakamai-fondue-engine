@@ -1,6 +1,13 @@
+import { mergeUniqueCoverage } from "../lookup-utils.js";
+
 // Chained context substitution
-export function parseLookupType6(lookup, charFor, charactersFromGlyphs, mergeUniqueCoverage) {
-	const parsedData = { input: [], backtrack: [], lookahead: [], alternateCount: [] };
+export function parseLookupType6(lookup, charFor, charactersFromGlyphs) {
+	const parsedData = {
+		input: [],
+		backtrack: [],
+		lookahead: [],
+		alternateCount: [],
+	};
 
 	// Note that currently if a ChainContextSubst contains multiple coverages,
 	// we merge them all into one and remove duplicates. This is purely to keep
@@ -26,13 +33,17 @@ export function parseLookupType6(lookup, charFor, charactersFromGlyphs, mergeUni
 					setIndex < subtable.chainSubRuleSetCount;
 					setIndex++
 				) {
-					const chainSubRuleSet = subtable.getChainSubRuleSet(setIndex);
+					const chainSubRuleSet = subtable.getChainSubRuleSet(
+						setIndex
+					);
 					for (
 						let ruleIndex = 0;
 						ruleIndex < chainSubRuleSet.chainSubRuleCount;
 						ruleIndex++
 					) {
-						const chainSubRule = chainSubRuleSet.getSubRule(ruleIndex);
+						const chainSubRule = chainSubRuleSet.getSubRule(
+							ruleIndex
+						);
 
 						if (
 							chainSubRule.inputGlyphCount > 0 &&
@@ -41,7 +52,10 @@ export function parseLookupType6(lookup, charFor, charactersFromGlyphs, mergeUni
 							const inputGlyphs = chainSubRule.inputSequence
 								.filter((g) => charFor(g) !== undefined)
 								.map(charFor);
-							inputChars = mergeUniqueCoverage(inputChars, inputGlyphs);
+							inputChars = mergeUniqueCoverage(
+								inputChars,
+								inputGlyphs
+							);
 						}
 
 						if (
@@ -83,14 +97,20 @@ export function parseLookupType6(lookup, charFor, charactersFromGlyphs, mergeUni
 				if (subtable.backtrackGlyphCount > 0) {
 					subtable.backtrackCoverageOffsets.forEach((offset) => {
 						const coverage = subtable.getCoverageFromOffset(offset);
-						backtrackChars = charactersFromGlyphs(coverage, charFor);
+						backtrackChars = charactersFromGlyphs(
+							coverage,
+							charFor
+						);
 					});
 				}
 
 				if (subtable.lookaheadGlyphCount > 0) {
 					subtable.lookaheadCoverageOffsets.forEach((offset) => {
 						const coverage = subtable.getCoverageFromOffset(offset);
-						lookaheadChars = charactersFromGlyphs(coverage, charFor);
+						lookaheadChars = charactersFromGlyphs(
+							coverage,
+							charFor
+						);
 					});
 				}
 			} else {
@@ -114,10 +134,13 @@ export function parseLookupType6(lookup, charFor, charactersFromGlyphs, mergeUni
 				// Check if any chainSubRule has backtrack/lookahead with only unmappable glyphs
 				for (
 					let setIndex = 0;
-					setIndex < subtable.chainSubRuleSetCount && shouldIncludeLookup;
+					setIndex < subtable.chainSubRuleSetCount &&
+					shouldIncludeLookup;
 					setIndex++
 				) {
-					const chainSubRuleSet = subtable.getChainSubRuleSet(setIndex);
+					const chainSubRuleSet = subtable.getChainSubRuleSet(
+						setIndex
+					);
 
 					for (
 						let ruleIndex = 0;
@@ -125,7 +148,9 @@ export function parseLookupType6(lookup, charFor, charactersFromGlyphs, mergeUni
 						shouldIncludeLookup;
 						ruleIndex++
 					) {
-						const chainSubRule = chainSubRuleSet.getSubRule(ruleIndex);
+						const chainSubRule = chainSubRuleSet.getSubRule(
+							ruleIndex
+						);
 
 						if (
 							chainSubRule.backtrackGlyphCount > 0 &&

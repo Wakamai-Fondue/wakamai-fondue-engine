@@ -674,8 +674,7 @@ export default class Fondue {
 				const parsedData = parser(
 					lookup,
 					charFor,
-					charactersFromGlyphs,
-					mergeUniqueCoverage
+					charactersFromGlyphs
 				);
 
 				// Add the lookup results
