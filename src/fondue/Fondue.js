@@ -1001,7 +1001,7 @@ export default class Fondue {
 							}
 						}
 					} catch (error) {
-						console.warn(`Failed to parse GSUB lookup type 6.${i}:`, error.message);
+						console.warn(`Failed to parse GSUB lookup type 6, subtable.${i}:`, error.message);
 					}
 				});
 			}
