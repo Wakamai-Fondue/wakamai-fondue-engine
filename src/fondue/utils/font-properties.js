@@ -24,7 +24,9 @@ export function hasOpticalSize(font) {
 		font.opentype.tables.fvar &&
 		font.opentype.tables.fvar
 			.getSupportedAxes()
-			.find((axis) => font.opentype.tables.fvar.getAxis(axis).tag === "opsz") !== undefined
+			.find(
+				(axis) => font.opentype.tables.fvar.getAxis(axis).tag === "opsz"
+			) !== undefined
 	);
 }
 
