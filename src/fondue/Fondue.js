@@ -35,7 +35,7 @@ import {
 	parseLookupType3,
 	parseLookupType4,
 	parseLookupType6,
-} from "./utils/lookup-parsers.js";
+} from "./utils/lookup-parsers/index.js";
 import {
 	isVariable,
 	isColor,
