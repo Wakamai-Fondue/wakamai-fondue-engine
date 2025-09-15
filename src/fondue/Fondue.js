@@ -28,6 +28,7 @@ import {
 	createGlyphToCharMapper,
 	mergeUniqueCoverage,
 	charactersFromGlyphs,
+	createType6Summary,
 } from "./utils/lookup-utils.js";
 import {
 	isVariable,
@@ -105,7 +106,6 @@ export default class Fondue {
 		}
 		return outlines;
 	}
-
 
 	// Return an object of all language systems supported by
 	// either GSUB or GPOS. Tags are stripped ("ROM " → "ROM").
@@ -828,54 +828,112 @@ export default class Fondue {
 
 						if (substFormat === 1) {
 							// format 1: nested in chainSubRules
-							for (let setIndex = 0; setIndex < subtable.chainSubRuleSetCount; setIndex++) {
-								const chainSubRuleSet = subtable.getChainSubRuleSet(setIndex);
-								for (let ruleIndex = 0; ruleIndex < chainSubRuleSet.chainSubRuleCount; ruleIndex++) {
-									const chainSubRule = chainSubRuleSet.getSubRule(ruleIndex);
+							for (
+								let setIndex = 0;
+								setIndex < subtable.chainSubRuleSetCount;
+								setIndex++
+							) {
+								const chainSubRuleSet = subtable.getChainSubRuleSet(
+									setIndex
+								);
+								for (
+									let ruleIndex = 0;
+									ruleIndex <
+									chainSubRuleSet.chainSubRuleCount;
+									ruleIndex++
+								) {
+									const chainSubRule = chainSubRuleSet.getSubRule(
+										ruleIndex
+									);
 
-									if (chainSubRule.inputGlyphCount > 0 && chainSubRule.inputSequence) {
-										const inputGlyphs = chainSubRule.inputSequence.filter((g) => charFor(g) !== undefined).map(charFor);
-										inputChars = mergeUniqueCoverage(inputChars, inputGlyphs);
+									if (
+										chainSubRule.inputGlyphCount > 0 &&
+										chainSubRule.inputSequence
+									) {
+										const inputGlyphs = chainSubRule.inputSequence
+											.filter(
+												(g) => charFor(g) !== undefined
+											)
+											.map(charFor);
+										inputChars = mergeUniqueCoverage(
+											inputChars,
+											inputGlyphs
+										);
 									}
 
-									if (chainSubRule.backtrackGlyphCount > 0 && chainSubRule.backtrackSequence) {
-										const backtrackGlyphs = chainSubRule.backtrackSequence.filter((g) => charFor(g) !== undefined).map(charFor);
-										backtrackChars = mergeUniqueCoverage(backtrackChars, backtrackGlyphs);
+									if (
+										chainSubRule.backtrackGlyphCount > 0 &&
+										chainSubRule.backtrackSequence
+									) {
+										const backtrackGlyphs = chainSubRule.backtrackSequence
+											.filter(
+												(g) => charFor(g) !== undefined
+											)
+											.map(charFor);
+										backtrackChars = mergeUniqueCoverage(
+											backtrackChars,
+											backtrackGlyphs
+										);
 									}
 
-									if (chainSubRule.lookaheadGlyphCount > 0 && chainSubRule.lookAheadSequence) {
-										const lookaheadGlyphs = chainSubRule.lookAheadSequence.filter((g) => charFor(g) !== undefined).map(charFor);
-										lookaheadChars = mergeUniqueCoverage(lookaheadChars, lookaheadGlyphs);
+									if (
+										chainSubRule.lookaheadGlyphCount > 0 &&
+										chainSubRule.lookAheadSequence
+									) {
+										const lookaheadGlyphs = chainSubRule.lookAheadSequence
+											.filter(
+												(g) => charFor(g) !== undefined
+											)
+											.map(charFor);
+										lookaheadChars = mergeUniqueCoverage(
+											lookaheadChars,
+											lookaheadGlyphs
+										);
 									}
 								}
 							}
 						} else if (substFormat === 3) {
 							// format 3: direct access
 							if (subtable.inputGlyphCount > 0) {
-								subtable.inputCoverageOffsets.forEach((offset) => {
-									const coverage = subtable.getCoverageFromOffset(
-										offset
-									);
-									inputChars = charactersFromGlyphs(coverage, charFor);
-								});
+								subtable.inputCoverageOffsets.forEach(
+									(offset) => {
+										const coverage = subtable.getCoverageFromOffset(
+											offset
+										);
+										inputChars = charactersFromGlyphs(
+											coverage,
+											charFor
+										);
+									}
+								);
 							}
 
 							if (subtable.backtrackGlyphCount > 0) {
-								subtable.backtrackCoverageOffsets.forEach((offset) => {
-									const coverage = subtable.getCoverageFromOffset(
-										offset
-									);
-									backtrackChars = charactersFromGlyphs(coverage, charFor);
-								});
+								subtable.backtrackCoverageOffsets.forEach(
+									(offset) => {
+										const coverage = subtable.getCoverageFromOffset(
+											offset
+										);
+										backtrackChars = charactersFromGlyphs(
+											coverage,
+											charFor
+										);
+									}
+								);
 							}
 
 							if (subtable.lookaheadGlyphCount > 0) {
-								subtable.lookaheadCoverageOffsets.forEach((offset) => {
-									const coverage = subtable.getCoverageFromOffset(
-										offset
-									);
-									lookaheadChars = charactersFromGlyphs(coverage, charFor);
-								});
+								subtable.lookaheadCoverageOffsets.forEach(
+									(offset) => {
+										const coverage = subtable.getCoverageFromOffset(
+											offset
+										);
+										lookaheadChars = charactersFromGlyphs(
+											coverage,
+											charFor
+										);
+									}
+								);
 							}
 						} else {
 							// Yeah, now what?
@@ -896,25 +954,52 @@ export default class Fondue {
 
 						if (substFormat === 1) {
 							// Check if any chainSubRule has backtrack/lookahead with only unmappable glyphs
-							for (let setIndex = 0; setIndex < subtable.chainSubRuleSetCount && shouldIncludeLookup; setIndex++) {
-								const chainSubRuleSet = subtable.getChainSubRuleSet(setIndex);
+							for (
+								let setIndex = 0;
+								setIndex < subtable.chainSubRuleSetCount &&
+								shouldIncludeLookup;
+								setIndex++
+							) {
+								const chainSubRuleSet = subtable.getChainSubRuleSet(
+									setIndex
+								);
 
-								for (let ruleIndex = 0; ruleIndex < chainSubRuleSet.chainSubRuleCount && shouldIncludeLookup; ruleIndex++) {
-									const chainSubRule = chainSubRuleSet.getSubRule(ruleIndex);
+								for (
+									let ruleIndex = 0;
+									ruleIndex <
+										chainSubRuleSet.chainSubRuleCount &&
+									shouldIncludeLookup;
+									ruleIndex++
+								) {
+									const chainSubRule = chainSubRuleSet.getSubRule(
+										ruleIndex
+									);
 
-									if (chainSubRule.backtrackGlyphCount > 0 && !hasBacktrackData) {
+									if (
+										chainSubRule.backtrackGlyphCount > 0 &&
+										!hasBacktrackData
+									) {
 										shouldIncludeLookup = false;
 									}
-									if (chainSubRule.lookaheadGlyphCount > 0 && !hasLookaheadData) {
+									if (
+										chainSubRule.lookaheadGlyphCount > 0 &&
+										!hasLookaheadData
+									) {
 										shouldIncludeLookup = false;
 									}
 								}
 							}
 						} else if (substFormat === 3) {
-							if (subtable.backtrackGlyphCount > 0 && !hasBacktrackData) {
+							if (
+								subtable.backtrackGlyphCount > 0 &&
+								!hasBacktrackData
+							) {
 								shouldIncludeLookup = false;
 							}
-							if (subtable.lookaheadGlyphCount > 0 && !hasLookaheadData) {
+							if (
+								subtable.lookaheadGlyphCount > 0 &&
+								!hasLookaheadData
+							) {
 								shouldIncludeLookup = false;
 							}
 						}
@@ -926,21 +1011,28 @@ export default class Fondue {
 							);
 
 							if (backtrackChars) {
-								parsedLookup["backtrack"][i] = mergeUniqueCoverage(
+								parsedLookup["backtrack"][
+									i
+								] = mergeUniqueCoverage(
 									parsedLookup["backtrack"][i],
 									backtrackChars
 								);
 							}
 
 							if (lookaheadChars) {
-								parsedLookup["lookahead"][i] = mergeUniqueCoverage(
+								parsedLookup["lookahead"][
+									i
+								] = mergeUniqueCoverage(
 									parsedLookup["lookahead"][i],
 									lookaheadChars
 								);
 							}
 						}
 					} catch (error) {
-						console.warn(`Failed to parse GSUB lookup type 6, subtable.${i}:`, error.message);
+						console.warn(
+							`Failed to parse GSUB lookup type 6, subtable.${i}:`,
+							error.message
+						);
 					}
 				});
 			}
@@ -997,82 +1089,3 @@ export default class Fondue {
 		return allGlyphs;
 	}
 }
-
-const createType6Summary = (feature, randomize) => {
-	let allInputs = [];
-	let allBacktracks = [];
-	let allLookaheads = [];
-
-	const limit = 10; // Summary will be limited to a max of limit³ (e.g. 20*20*20 = 8000)
-
-	const shuffleArray = (array) => {
-		for (let i = array.length - 1; i > 0; i--) {
-			const j = Math.floor(Math.random() * (i + 1));
-			[array[i], array[j]] = [array[j], array[i]];
-		}
-		return array;
-	};
-
-	// Create some kind of "all backtracks" or "all lookaheads"
-	for (const lookup of feature["lookups"]) {
-		if (lookup.type !== 6) continue;
-
-		// Create all possible combinations of input, backtrack and lookahead
-		for (const key in Object.entries(lookup["input"])) {
-			allInputs = [...new Set(allInputs.concat(lookup["input"][key]))];
-
-			if (lookup["backtrack"][key]) {
-				allBacktracks = [
-					...new Set(allBacktracks.concat(lookup["backtrack"][key])),
-				];
-			}
-
-			if (lookup["lookahead"][key]) {
-				allLookaheads = [
-					...new Set(allLookaheads.concat(lookup["lookahead"][key])),
-				];
-			}
-		}
-	}
-
-	if (randomize) {
-		allInputs = shuffleArray(allInputs);
-
-		if (allBacktracks.length) {
-			allBacktracks = shuffleArray(allBacktracks);
-		}
-
-		if (allLookaheads.length) {
-			allLookaheads = shuffleArray(allLookaheads);
-		}
-	}
-
-	let allCombinations = [allInputs.slice(0, limit)];
-
-	if (allBacktracks.length) {
-		allCombinations.unshift(allBacktracks.slice(0, limit));
-	}
-
-	if (allLookaheads.length) {
-		allCombinations.push(allLookaheads.slice(0, limit));
-	}
-
-	let summarizedCombinations = allCombinations
-		.reduce((a, b) =>
-			a.reduce((r, v) => r.concat(b.map((w) => [].concat(v, w))), [])
-		)
-		.map((a) => {
-			if (Array.isArray(a)) {
-				return a.join("");
-			} else {
-				return a;
-			}
-		});
-
-	return {
-		allInputs: allInputs.sort(),
-		allBacktracks: allBacktracks.sort(),
-		allLookaheads: allLookaheads.sort(),
-		summarizedCombinations: summarizedCombinations.sort(),
-	};
-};
