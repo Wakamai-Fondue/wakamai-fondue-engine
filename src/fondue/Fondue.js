@@ -40,6 +40,13 @@ import {
 	getCharCount,
 	getGlyphCount,
 } from "./utils/font-properties.js";
+import {
+	COLOR_TABLES,
+	CMAP_PREFERENCES,
+	LANGUAGE_SUPPORT_IGNORE_LIST,
+	UNICODE_CATEGORIES,
+	LOOKUP_TYPE_NAMES,
+} from "./utils/font-data.js";
 
 export default class Fondue {
 	_removeNullBytes(value) {
@@ -348,9 +355,8 @@ export default class Fondue {
 	// Usage:
 	//   fondue.colorFormats -> return e.g. ["SVG "] or empty array
 	get colorFormats() {
-		const colorTables = ["COLR", "sbix", "CBDT", "SVG"];
 		const tables = this._font.opentype.directory.map((d) => d.tag.trim());
-		return tables.filter((table) => colorTables.includes(table));
+		return tables.filter((table) => COLOR_TABLES.includes(table));
 	}
 
 	get colorPalettes() {
@@ -492,17 +498,7 @@ export default class Fondue {
 	// or false, if no unicode cmap subtable is available.
 	// Implementation of the awesome FontTools getBestCmap function.
 	getBestCmap() {
-		const cmapPreferences = [
-			[3, 10],
-			[0, 6],
-			[0, 4],
-			[3, 1],
-			[0, 3],
-			[0, 2],
-			[0, 1],
-			[0, 0],
-		];
-		for (const [platformID, platEncID] of cmapPreferences) {
+		for (const [platformID, platEncID] of CMAP_PREFERENCES) {
 			const cmapSubtable = this._font.opentype.tables.cmap.getSupportedCharCodes(
 				platformID,
 				platEncID
@@ -531,17 +527,7 @@ export default class Fondue {
 			total,
 			ignoreList;
 
-		ignoreList = [
-			167, // section sign
-			8208, // hyphen
-			8224, // dagger
-			8225, // double dagger
-			8242, // prime
-			8243, // double prime
-			8274, // commercial minus sign
-			10216, // mathematical left angle bracket
-			10217, // mathematical right angle bracket
-		];
+		ignoreList = LANGUAGE_SUPPORT_IGNORE_LIST;
 
 		for (language in languageCharSets) {
 			chars = languageCharSets[language];
@@ -572,62 +558,7 @@ export default class Fondue {
 	get categorisedCharacters() {
 		const fontCharSet = this.supportedCharacters;
 
-		// undefined = no subcategory
-		const categories = {
-			Letter: [
-				undefined,
-				"Uppercase",
-				"Lowercase",
-				"Superscript",
-				"Modifier",
-				"Ligature",
-				"Halfform",
-				"Matra",
-				"Spacing",
-				"Jamo",
-				"Syllable",
-				"Number",
-			],
-			Number: [
-				undefined,
-				"Decimal Digit",
-				"Small",
-				"Fraction",
-				"Spacing",
-				"Letter",
-			],
-			Punctuation: [
-				undefined,
-				"Quote",
-				"Parenthesis",
-				"Dash",
-				"Spacing",
-				"Modifier",
-			],
-			Symbol: [
-				undefined,
-				"Currency",
-				"Math",
-				"Modifier",
-				"Superscript",
-				"Format",
-				"Ligature",
-				"Spacing",
-				"Arrow",
-				"Geometry",
-			],
-			Separator: [undefined, "Space", "Format", "Nonspace"],
-			Mark: [
-				undefined,
-				"Modifier",
-				"Spacing",
-				"Nonspacing",
-				"Enclosing",
-				"Spacing Combining",
-				"Ligature",
-			],
-			Other: [undefined, "Format"],
-		};
+		const categories = UNICODE_CATEGORIES;
 
 		let charset = [];
 		let allScriptChars = [];
@@ -707,17 +638,7 @@ export default class Fondue {
 	get featureChars() {
 		const { cmap, GSUB } = this._font.opentype.tables;
 
-		// Human readable names for lookup types
-		const lookupTypes = {
-			1: "Single Substitution",
-			2: "Multiple Substitution",
-			3: "Alternate Substitution",
-			4: "Ligature Substitution",
-			5: "Contextual Substitution",
-			6: "Chained Contexts Substitution",
-			7: "Extension Substitution",
-			8: "Reverse Chaining Contextual Single Substitution",
-		};
+		const lookupTypes = LOOKUP_TYPE_NAMES;
 
 		if (!GSUB) return {};
 
