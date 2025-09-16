@@ -1,3 +1,4 @@
+import { describe, test, expect, it } from "vitest";
 import { fromPath, fromDataBuffer } from "../index";
 import { toArrayBuffer } from "./support/utils";
 
@@ -50,7 +51,9 @@ describe("The loaded font", () => {
 
 	test("throws an error when it doesn't exist.", async () => {
 		await expect(() => fromPath("./fonts/foo.ttf")).rejects.toEqual(
-			"ENOENT: no such file or directory, open './fonts/foo.ttf'"
+			new Error(
+				"ENOENT: no such file or directory, open './fonts/foo.ttf'"
+			)
 		);
 	});
 
