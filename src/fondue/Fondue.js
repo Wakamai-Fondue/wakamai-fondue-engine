@@ -24,6 +24,35 @@ import getFormat from "../tools/summary/format.js";
 import getFileSize from "../tools/summary/file-size.js";
 import getFilename from "../tools/summary/filename.js";
 import glyphData from "../tools/GlyphData.json";
+import {
+	createGlyphToCharMapper,
+	mergeUniqueCoverage,
+	charactersFromGlyphs,
+	createType6Summary,
+} from "./utils/lookup-utils.js";
+import {
+	parseLookupType1,
+	parseLookupType3,
+	parseLookupType4,
+	parseLookupType6,
+} from "./utils/lookup-parsers/index.js";
+import {
+	isVariable,
+	isColor,
+	hasFeatures,
+	hasLanguages,
+	hasOpticalSize,
+	isHinted,
+	getCharCount,
+	getGlyphCount,
+} from "./utils/font-properties.js";
+import {
+	COLOR_TABLES,
+	CMAP_PREFERENCES,
+	LANGUAGE_SUPPORT_IGNORE_LIST,
+	UNICODE_CATEGORIES,
+	LOOKUP_TYPE_NAMES,
+} from "./utils/font-data.js";
 
 export default class Fondue {
 	_removeNullBytes(value) {
@@ -45,6 +74,38 @@ export default class Fondue {
 		this._unicodeRangeCache = null;
 	}
 
+	get isVariable() {
+		return isVariable(this._font);
+	}
+
+	get isColor() {
+		return isColor(this._font);
+	}
+
+	get hasFeatures() {
+		return hasFeatures(this._font);
+	}
+
+	get hasLanguages() {
+		return hasLanguages(this._font);
+	}
+
+	get hasOpticalSize() {
+		return hasOpticalSize(this._font);
+	}
+
+	get isHinted() {
+		return isHinted(this._font);
+	}
+
+	get charCount() {
+		return getCharCount(this._font);
+	}
+
+	get glyphCount() {
+		return getGlyphCount(this._font);
+	}
+
 	get outlines() {
 		let outlines = [];
 		if (this._font.opentype.tables.CFF) {
@@ -57,63 +118,6 @@ export default class Fondue {
 			outlines.push("TrueType glyf");
 		}
 		return outlines;
-	}
-
-	get isVariable() {
-		return this._font.opentype.tables.fvar != undefined;
-	}
-
-	get isColor() {
-		return this.colorFormats.length > 0;
-	}
-
-	get hasFeatures() {
-		return this.features.length > 0;
-	}
-
-	get hasLanguages() {
-		return this.languageSystems.length > 0;
-	}
-
-	get hasOpticalSize() {
-		return (
-			this.isVariable &&
-			this.variable.axes.find((o) => o.id === "opsz") !== undefined
-		);
-	}
-
-	get isHinted() {
-		// Ideally we should (also) check for hinting data to be present
-		// for individual glyphs. For now the presence of these "helper
-		// tables" is a good enough indication of a hinted font.
-		const hintingTables = ["cvt", "cvar", "fpgm", "hdmx", "VDMX"];
-		for (const hintingTable of hintingTables) {
-			if (hintingTable in this._font.opentype.tables) {
-				return true;
-			}
-		}
-		// Some (Google) fonts contain a simple `prep` table, which seems
-		// to be an artifact of a build/verification process.
-		// This is considered a false positive, so we're ignoring `prep`
-		// tables with this specific content.
-		// Also see https://github.com/googlefonts/fontbakery/issues/3076
-		const simplePrep = [184, 1, 255, 133, 176, 4, 141].toString();
-		if (
-			"prep" in this._font.opentype.tables &&
-			this._font.opentype.tables.prep.instructions.toString() !==
-				simplePrep
-		) {
-			return true;
-		}
-		return false;
-	}
-
-	get charCount() {
-		return this.supportedCharacters.length;
-	}
-
-	get glyphCount() {
-		return this._font.opentype.tables.maxp.numGlyphs;
 	}
 
 	// Return an object of all language systems supported by
@@ -357,9 +361,8 @@ export default class Fondue {
 	// Usage:
 	//   fondue.colorFormats -> return e.g. ["SVG "] or empty array
 	get colorFormats() {
-		const colorTables = ["COLR", "sbix", "CBDT", "SVG"];
 		const tables = this._font.opentype.directory.map((d) => d.tag.trim());
-		return tables.filter((table) => colorTables.includes(table));
+		return tables.filter((table) => COLOR_TABLES.includes(table));
 	}
 
 	get colorPalettes() {
@@ -501,17 +504,7 @@ export default class Fondue {
 	// or false, if no unicode cmap subtable is available.
 	// Implementation of the awesome FontTools getBestCmap function.
 	getBestCmap() {
-		const cmapPreferences = [
-			[3, 10],
-			[0, 6],
-			[0, 4],
-			[3, 1],
-			[0, 3],
-			[0, 2],
-			[0, 1],
-			[0, 0],
-		];
-		for (const [platformID, platEncID] of cmapPreferences) {
+		for (const [platformID, platEncID] of CMAP_PREFERENCES) {
 			const cmapSubtable = this._font.opentype.tables.cmap.getSupportedCharCodes(
 				platformID,
 				platEncID
@@ -540,17 +533,7 @@ export default class Fondue {
 			total,
 			ignoreList;
 
-		ignoreList = [
-			167, // section sign
-			8208, // hyphen
-			8224, // dagger
-			8225, // double dagger
-			8242, // prime
-			8243, // double prime
-			8274, // commercial minus sign
-			10216, // mathematical left angle bracket
-			10217, // mathematical right angle bracket
-		];
+		ignoreList = LANGUAGE_SUPPORT_IGNORE_LIST;
 
 		for (language in languageCharSets) {
 			chars = languageCharSets[language];
@@ -581,62 +564,7 @@ export default class Fondue {
 	get categorisedCharacters() {
 		const fontCharSet = this.supportedCharacters;
 
-		// undefined = no subcategory
-		const categories = {
-			Letter: [
-				undefined,
-				"Uppercase",
-				"Lowercase",
-				"Superscript",
-				"Modifier",
-				"Ligature",
-				"Halfform",
-				"Matra",
-				"Spacing",
-				"Jamo",
-				"Syllable",
-				"Number",
-			],
-			Number: [
-				undefined,
-				"Decimal Digit",
-				"Small",
-				"Fraction",
-				"Spacing",
-				"Letter",
-			],
-			Punctuation: [
-				undefined,
-				"Quote",
-				"Parenthesis",
-				"Dash",
-				"Spacing",
-				"Modifier",
-			],
-			Symbol: [
-				undefined,
-				"Currency",
-				"Math",
-				"Modifier",
-				"Superscript",
-				"Format",
-				"Ligature",
-				"Spacing",
-				"Arrow",
-				"Geometry",
-			],
-			Separator: [undefined, "Space", "Format", "Nonspace"],
-			Mark: [
-				undefined,
-				"Modifier",
-				"Spacing",
-				"Nonspacing",
-				"Enclosing",
-				"Spacing Combining",
-				"Ligature",
-			],
-			Other: [undefined, "Format"],
-		};
+		const categories = UNICODE_CATEGORIES;
 
 		let charset = [];
 		let allScriptChars = [];
@@ -716,74 +644,19 @@ export default class Fondue {
 	get featureChars() {
 		const { cmap, GSUB } = this._font.opentype.tables;
 
-		// Human readable names for lookup types
-		const lookupTypes = {
-			1: "Single Substitution",
-			2: "Multiple Substitution",
-			3: "Alternate Substitution",
-			4: "Ligature Substitution",
-			5: "Contextual Substitution",
-			6: "Chained Contexts Substitution",
-			7: "Extension Substitution",
-			8: "Reverse Chaining Contextual Single Substitution",
-		};
+		const lookupTypes = LOOKUP_TYPE_NAMES;
 
 		if (!GSUB) return {};
 
-		const letterForCache = new Map();
+		const charFor = createGlyphToCharMapper(cmap);
 
-		function letterFor(glyphid) {
-			if (letterForCache.has(glyphid)) {
-				return letterForCache.get(glyphid);
-			}
-			const result = cmap.reverse(glyphid).unicode;
-			letterForCache.set(glyphid, result);
-			return result;
-		}
-
-		// [1,2,3] + [3,4,5] = [1,2,3,4,5]
-		function mergeUniqueCoverage(existing, addition) {
-			return [...new Set([...(existing || []), ...addition])];
-		}
-
-		// Returns glyphs that are mapped directly to characters for
-		// this coverage. If a glyph maps to another glyph, it's
-		// ignored.
-		// If only a specific rangeRecord needs to be processed, e.g.
-		// for lookup type 3, you can pass the desired index.
-		function charactersFromGlyphs(coverage, index) {
-			let results = [];
-
-			if (!coverage.glyphArray) {
-				let records;
-				if (index >= 0) {
-					records = coverage.rangeRecords.filter(
-						(_, i) => index !== i
-					);
-				} else {
-					records = coverage.rangeRecords;
-				}
-				// Glyphs in start/end ranges
-				for (const range of records) {
-					for (
-						let g = range.startGlyphID;
-						g < range.endGlyphID + 1;
-						g++
-					) {
-						const char = letterFor(g);
-						if (char !== undefined) {
-							results.push(char);
-						}
-					}
-				}
-			} else {
-				// Individual glyphs
-				results = coverage.glyphArray
-					.filter((g) => letterFor(g) !== undefined)
-					.map(letterFor);
-			}
-			return results;
-		}
+		// Lookup table for parser functions
+		const LOOKUP_PARSERS = {
+			1: parseLookupType1,
+			3: parseLookupType3,
+			4: parseLookupType4,
+			6: parseLookupType6,
+		};
 
 		function parseLookup(lookup) {
 			const parsedLookup = {
@@ -796,214 +669,16 @@ export default class Fondue {
 				alternateCount: [],
 			};
 
-			// Single substitution
-			if (lookup.lookupType === 1) {
-				lookup.subtableOffsets.forEach((_, i) => {
-					const subtable = lookup.getSubTable(i);
-					const coverage = subtable.getCoverageTable();
-					const results = charactersFromGlyphs(coverage);
+			const parser = LOOKUP_PARSERS[lookup.lookupType];
+			if (parser) {
+				const parsedData = parser(
+					lookup,
+					charFor,
+					charactersFromGlyphs
+				);
 
-					if (results.length > 0) {
-						parsedLookup["input"] = results;
-					}
-				});
-			}
-
-			// Alternate substitution
-			if (lookup.lookupType === 3) {
-				lookup.subtableOffsets.forEach((_, i) => {
-					const subtable = lookup.getSubTable(i);
-					const coverage = subtable.getCoverageTable();
-
-					// It's possible to have AlternateSets with different lengths
-					// inside the same lookup (e.g. 10 alternates for "A", 5 for
-					// "B"), so we keep track of the alternateCount per glyph.
-					subtable.alternateSetOffsets.forEach((_, j) => {
-						parsedLookup["input"] = charactersFromGlyphs(
-							coverage,
-							j
-						);
-
-						const altset = subtable.getAlternateSet(j);
-						parsedLookup["alternateCount"].push(
-							altset.alternateGlyphIDs.length
-						);
-					});
-				});
-			}
-
-			// Ligature substitution
-			if (lookup.lookupType === 4) {
-				lookup.subtableOffsets.forEach((_, i) => {
-					const subtable = lookup.getSubTable(i);
-					const coverage = subtable.getCoverageTable();
-
-					if (coverage.glyphArray !== undefined) {
-						subtable.ligatureSetOffsets.forEach((_, setIndex) => {
-							const ligatureSet = subtable.getLigatureSet(
-								setIndex
-							);
-
-							ligatureSet.ligatureOffsets.forEach(
-								(_, ligIndex) => {
-									const ligatureTable = ligatureSet.getLigature(
-										ligIndex
-									);
-
-									const sequence = [
-										coverage.glyphArray[setIndex],
-										...ligatureTable.componentGlyphIDs,
-									].map(letterFor);
-
-									// Only keep sequences with glyphs mapped to letters
-									if (!sequence.includes(undefined)) {
-										parsedLookup["input"].push(
-											sequence.join("")
-										);
-									}
-								}
-							);
-						});
-					}
-				});
-			}
-
-			// Chained context substitution
-			// Note that currently if a ChainContextSubst contains multiple coverages,
-			// we merge them all into one and remove duplicates. This is purely to keep
-			// a "data dump" less overwhelming, but isn't a perfect treatment of a type
-			// 6 lookup, as this can suggest character combinations that aren't
-			// possible.
-			// Possible future improvement: add the chars as an array to an array of
-			// input/backtrack/lookahead, then let a front decide whether to merge
-			// them or dump everything as-is.
-			if (lookup.lookupType === 6) {
-				lookup.subtableOffsets.forEach((_, i) => {
-					try {
-						const subtable = lookup.getSubTable(i);
-						const substFormat = subtable.substFormat;
-
-						let inputChars = [];
-						let backtrackChars = [];
-						let lookaheadChars = [];
-
-						if (substFormat === 1) {
-							// format 1: nested in chainSubRules
-							for (let setIndex = 0; setIndex < subtable.chainSubRuleSetCount; setIndex++) {
-								const chainSubRuleSet = subtable.getChainSubRuleSet(setIndex);
-								for (let ruleIndex = 0; ruleIndex < chainSubRuleSet.chainSubRuleCount; ruleIndex++) {
-									const chainSubRule = chainSubRuleSet.getSubRule(ruleIndex);
-
-									if (chainSubRule.inputGlyphCount > 0 && chainSubRule.inputSequence) {
-										const inputGlyphs = chainSubRule.inputSequence.filter((g) => letterFor(g) !== undefined).map(letterFor);
-										inputChars = mergeUniqueCoverage(inputChars, inputGlyphs);
-									}
-
-									if (chainSubRule.backtrackGlyphCount > 0 && chainSubRule.backtrackSequence) {
-										const backtrackGlyphs = chainSubRule.backtrackSequence.filter((g) => letterFor(g) !== undefined).map(letterFor);
-										backtrackChars = mergeUniqueCoverage(backtrackChars, backtrackGlyphs);
-									}
-
-									if (chainSubRule.lookaheadGlyphCount > 0 && chainSubRule.lookAheadSequence) {
-										const lookaheadGlyphs = chainSubRule.lookAheadSequence.filter((g) => letterFor(g) !== undefined).map(letterFor);
-										lookaheadChars = mergeUniqueCoverage(lookaheadChars, lookaheadGlyphs);
-									}
-								}
-							}
-						} else if (substFormat === 3) {
-							// format 3: direct access
-							if (subtable.inputGlyphCount > 0) {
-								subtable.inputCoverageOffsets.forEach((offset) => {
-									const coverage = subtable.getCoverageFromOffset(
-										offset
-									);
-									inputChars = charactersFromGlyphs(coverage);
-								});
-							}
-
-							if (subtable.backtrackGlyphCount > 0) {
-								subtable.backtrackCoverageOffsets.forEach((offset) => {
-									const coverage = subtable.getCoverageFromOffset(
-										offset
-									);
-									backtrackChars = charactersFromGlyphs(coverage);
-								});
-							}
-
-							if (subtable.lookaheadGlyphCount > 0) {
-								subtable.lookaheadCoverageOffsets.forEach((offset) => {
-									const coverage = subtable.getCoverageFromOffset(
-										offset
-									);
-									lookaheadChars = charactersFromGlyphs(coverage);
-								});
-							}
-						} else {
-							// Yeah, now what?
-						}
-
-						// When a lookup has a lookahead or backtrack with *only* glyphs (so
-						// no direct characters), we should ignore this lookup. Otherwise it will
-						// result in a lookup that *looks* okay, but isn't.
-						// Example: backtrack [a, b, c], input [n], lookahead[x.alt, y.alt, z.alt]
-						// Since the lookhead contains no chars, it will be reduced to [], and the
-						// lookup with look like this: backtrack [a, b, c], input [n]. This is
-						// wrong, as that only the backtrack+input will not result in any changed
-						// chars
-						const hasBacktrackData = backtrackChars.length > 0;
-						const hasLookaheadData = lookaheadChars.length > 0;
-
-						let shouldIncludeLookup = true;
-
-						if (substFormat === 1) {
-							// Check if any chainSubRule has backtrack/lookahead with only unmappable glyphs
-							for (let setIndex = 0; setIndex < subtable.chainSubRuleSetCount && shouldIncludeLookup; setIndex++) {
-								const chainSubRuleSet = subtable.getChainSubRuleSet(setIndex);
-
-								for (let ruleIndex = 0; ruleIndex < chainSubRuleSet.chainSubRuleCount && shouldIncludeLookup; ruleIndex++) {
-									const chainSubRule = chainSubRuleSet.getSubRule(ruleIndex);
-
-									if (chainSubRule.backtrackGlyphCount > 0 && !hasBacktrackData) {
-										shouldIncludeLookup = false;
-									}
-									if (chainSubRule.lookaheadGlyphCount > 0 && !hasLookaheadData) {
-										shouldIncludeLookup = false;
-									}
-								}
-							}
-						} else if (substFormat === 3) {
-							if (subtable.backtrackGlyphCount > 0 && !hasBacktrackData) {
-								shouldIncludeLookup = false;
-							}
-							if (subtable.lookaheadGlyphCount > 0 && !hasLookaheadData) {
-								shouldIncludeLookup = false;
-							}
-						}
-
-						if (shouldIncludeLookup) {
-							parsedLookup["input"][i] = mergeUniqueCoverage(
-								parsedLookup["input"][i],
-								inputChars
-							);
-
-							if (backtrackChars) {
-								parsedLookup["backtrack"][i] = mergeUniqueCoverage(
-									parsedLookup["backtrack"][i],
-									backtrackChars
-								);
-							}
-
-							if (lookaheadChars) {
-								parsedLookup["lookahead"][i] = mergeUniqueCoverage(
-									parsedLookup["lookahead"][i],
-									lookaheadChars
-								);
-							}
-						}
-					} catch (error) {
-						console.warn(`Failed to parse GSUB lookup type 6, subtable.${i}:`, error.message);
-					}
-				});
+				// Add the lookup results
+				Object.assign(parsedLookup, parsedData);
 			}
 
 			// Return lookup if input contains actual characters
@@ -1058,82 +733,3 @@ export default class Fondue {
 		return allGlyphs;
 	}
 }
-
-const createType6Summary = (feature, randomize) => {
-	let allInputs = [];
-	let allBacktracks = [];
-	let allLookaheads = [];
-
-	const limit = 10; // Summary will be limited to a max of limit³ (e.g. 20*20*20 = 8000)
-
-	const shuffleArray = (array) => {
-		for (let i = array.length - 1; i > 0; i--) {
-			const j = Math.floor(Math.random() * (i + 1));
-			[array[i], array[j]] = [array[j], array[i]];
-		}
-		return array;
-	};
-
-	// Create some kind of "all backtracks" or "all lookaheads"
-	for (const lookup of feature["lookups"]) {
-		if (lookup.type !== 6) continue;
-
-		// Create all possible combinations of input, backtrack and lookahead
-		for (const key in Object.entries(lookup["input"])) {
-			allInputs = [...new Set(allInputs.concat(lookup["input"][key]))];
-
-			if (lookup["backtrack"][key]) {
-				allBacktracks = [
-					...new Set(allBacktracks.concat(lookup["backtrack"][key])),
-				];
-			}
-
-			if (lookup["lookahead"][key]) {
-				allLookaheads = [
-					...new Set(allLookaheads.concat(lookup["lookahead"][key])),
-				];
-			}
-		}
-	}
-
-	if (randomize) {
-		allInputs = shuffleArray(allInputs);
-
-		if (allBacktracks.length) {
-			allBacktracks = shuffleArray(allBacktracks);
-		}
-
-		if (allLookaheads.length) {
-			allLookaheads = shuffleArray(allLookaheads);
-		}
-	}
-
-	let allCombinations = [allInputs.slice(0, limit)];
-
-	if (allBacktracks.length) {
-		allCombinations.unshift(allBacktracks.slice(0, limit));
-	}
-
-	if (allLookaheads.length) {
-		allCombinations.push(allLookaheads.slice(0, limit));
-	}
-
-	let summarizedCombinations = allCombinations
-		.reduce((a, b) =>
-			a.reduce((r, v) => r.concat(b.map((w) => [].concat(v, w))), [])
-		)
-		.map((a) => {
-			if (Array.isArray(a)) {
-				return a.join("");
-			} else {
-				return a;
-			}
-		});
-
-	return {
-		allInputs: allInputs.sort(),
-		allBacktracks: allBacktracks.sort(),
-		allLookaheads: allLookaheads.sort(),
-		summarizedCombinations: summarizedCombinations.sort(),
-	};
-};
