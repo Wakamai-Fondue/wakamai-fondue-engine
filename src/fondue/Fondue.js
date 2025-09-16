@@ -26,7 +26,6 @@ import getFilename from "../tools/summary/filename.js";
 import glyphData from "../tools/GlyphData.json";
 import {
 	createGlyphToCharMapper,
-	mergeUniqueCoverage,
 	charactersFromGlyphs,
 	createType6Summary,
 } from "./utils/lookup-utils.js";
