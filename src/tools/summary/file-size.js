@@ -3,6 +3,6 @@ export default function getFileSize(fondue) {
 	return bytes > 1024 * 1024
 		? `${Math.floor(bytes / (1024 * 1024))} MB`
 		: bytes > 1024
-		? `${Math.floor(bytes / 1024)} KB`
-		: `${Math.floor(bytes)} B`;
+			? `${Math.floor(bytes / 1024)} KB`
+			: `${Math.floor(bytes)} B`;
 }

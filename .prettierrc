@@ -2,7 +2,5 @@
 	"trailingComma": "es5",
 	"singleQuote": false,
 	"tabWidth": 4,
-	"useTabs": true,
-	"editor.formatOnSave": true,
-	"requireConfig": false
+	"useTabs": true
 }

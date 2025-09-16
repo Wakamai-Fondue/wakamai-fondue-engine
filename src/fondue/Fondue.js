@@ -505,10 +505,11 @@ export default class Fondue {
 	// Implementation of the awesome FontTools getBestCmap function.
 	getBestCmap() {
 		for (const [platformID, platEncID] of CMAP_PREFERENCES) {
-			const cmapSubtable = this._font.opentype.tables.cmap.getSupportedCharCodes(
-				platformID,
-				platEncID
-			);
+			const cmapSubtable =
+				this._font.opentype.tables.cmap.getSupportedCharCodes(
+					platformID,
+					platEncID
+				);
 			if (cmapSubtable) {
 				return cmapSubtable;
 			}
@@ -719,12 +720,11 @@ export default class Fondue {
 							].push(parsedLookup);
 						}
 
-						allGlyphs[script][lang][feature.featureTag][
-							"summary"
-						] = createType6Summary(
-							allGlyphs[script][lang][feature.featureTag],
-							true
-						);
+						allGlyphs[script][lang][feature.featureTag]["summary"] =
+							createType6Summary(
+								allGlyphs[script][lang][feature.featureTag],
+								true
+							);
 					});
 				});
 			});
