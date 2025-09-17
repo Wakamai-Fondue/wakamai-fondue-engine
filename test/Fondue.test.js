@@ -1,5 +1,6 @@
 import { describe, test, expect, it } from "vitest";
-import { fromPath, fromDataBuffer } from "../index";
+import { fromPath } from "../node.js";
+import { fromDataBuffer } from "../browser.js";
 import { toArrayBuffer } from "./support/utils";
 
 import fs from "fs";

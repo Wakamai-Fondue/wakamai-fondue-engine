@@ -35,12 +35,3 @@ export async function fromPath(fontPath) {
 		})();
 	});
 }
-
-export function fromDataBuffer(buffer, fontFilename) {
-	return new Promise((resolve, reject) => {
-		const font = new Font(fontFilename);
-		font.onload = () => resolve(new Fondue(font));
-
-		font.fromDataBuffer(buffer, fontFilename).catch(reject);
-	});
-}
