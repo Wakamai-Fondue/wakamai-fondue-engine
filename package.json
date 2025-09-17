@@ -3,10 +3,14 @@
 	"version": "1.1.0",
 	"type": "module",
 	"description": "What if you could actually inspect your web fonts? In the same context that you actually use those web fonts? That's what this is for.",
-	"module": "./index.js",
-	"main": "./lib/index.js",
+	"exports": {
+		".": {
+			"browser": "./browser.js",
+			"node": "./node.js",
+			"import": "./browser.js"
+		}
+	},
 	"directories": {
-		"lib": "lib",
 		"test": "test"
 	},
 	"scripts": {
@@ -18,8 +22,6 @@
 		"lint-fix": "npm-run-all --sequential lint-fix:** prettier",
 		"lint-fix:eslint": "eslint --fix .",
 		"prettier": "prettier --write .",
-		"build": "rollup -c",
-		"watch": "rollup -c -w",
 		"prepare": "husky"
 	},
 	"repository": {
