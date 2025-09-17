@@ -6,8 +6,7 @@
 	"exports": {
 		".": {
 			"browser": "./browser.js",
-			"node": "./node.js",
-			"import": "./browser.js"
+			"node": "./node.js"
 		}
 	},
 	"directories": {
