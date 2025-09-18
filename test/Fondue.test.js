@@ -1,7 +1,9 @@
-import { fromPath, fromDataBuffer } from "../index";
+import { describe, test, expect, it } from "vitest";
+import { fromPath } from "../node.js";
+import { fromDataBuffer } from "../browser.js";
 import { toArrayBuffer } from "./support/utils";
+import fs from "node:fs";
 
-import fs from "fs";
 const readFile = fs.promises.readFile;
 
 const WFTestFont = async () => {
@@ -50,7 +52,9 @@ describe("The loaded font", () => {
 
 	test("throws an error when it doesn't exist.", async () => {
 		await expect(() => fromPath("./fonts/foo.ttf")).rejects.toEqual(
-			"ENOENT: no such file or directory, open './fonts/foo.ttf'"
+			new Error(
+				"ENOENT: no such file or directory, open './fonts/foo.ttf'"
+			)
 		);
 	});
 

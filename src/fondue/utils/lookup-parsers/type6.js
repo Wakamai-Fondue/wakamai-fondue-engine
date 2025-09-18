@@ -33,17 +33,15 @@ export function parseLookupType6(lookup, charFor, charactersFromGlyphs) {
 					setIndex < subtable.chainSubRuleSetCount;
 					setIndex++
 				) {
-					const chainSubRuleSet = subtable.getChainSubRuleSet(
-						setIndex
-					);
+					const chainSubRuleSet =
+						subtable.getChainSubRuleSet(setIndex);
 					for (
 						let ruleIndex = 0;
 						ruleIndex < chainSubRuleSet.chainSubRuleCount;
 						ruleIndex++
 					) {
-						const chainSubRule = chainSubRuleSet.getSubRule(
-							ruleIndex
-						);
+						const chainSubRule =
+							chainSubRuleSet.getSubRule(ruleIndex);
 
 						if (
 							chainSubRule.inputGlyphCount > 0 &&
@@ -62,9 +60,10 @@ export function parseLookupType6(lookup, charFor, charactersFromGlyphs) {
 							chainSubRule.backtrackGlyphCount > 0 &&
 							chainSubRule.backtrackSequence
 						) {
-							const backtrackGlyphs = chainSubRule.backtrackSequence
-								.filter((g) => charFor(g) !== undefined)
-								.map(charFor);
+							const backtrackGlyphs =
+								chainSubRule.backtrackSequence
+									.filter((g) => charFor(g) !== undefined)
+									.map(charFor);
 							backtrackChars = mergeUniqueCoverage(
 								backtrackChars,
 								backtrackGlyphs
@@ -75,9 +74,10 @@ export function parseLookupType6(lookup, charFor, charactersFromGlyphs) {
 							chainSubRule.lookaheadGlyphCount > 0 &&
 							chainSubRule.lookAheadSequence
 						) {
-							const lookaheadGlyphs = chainSubRule.lookAheadSequence
-								.filter((g) => charFor(g) !== undefined)
-								.map(charFor);
+							const lookaheadGlyphs =
+								chainSubRule.lookAheadSequence
+									.filter((g) => charFor(g) !== undefined)
+									.map(charFor);
 							lookaheadChars = mergeUniqueCoverage(
 								lookaheadChars,
 								lookaheadGlyphs
@@ -138,9 +138,8 @@ export function parseLookupType6(lookup, charFor, charactersFromGlyphs) {
 					shouldIncludeLookup;
 					setIndex++
 				) {
-					const chainSubRuleSet = subtable.getChainSubRuleSet(
-						setIndex
-					);
+					const chainSubRuleSet =
+						subtable.getChainSubRuleSet(setIndex);
 
 					for (
 						let ruleIndex = 0;
@@ -148,9 +147,8 @@ export function parseLookupType6(lookup, charFor, charactersFromGlyphs) {
 						shouldIncludeLookup;
 						ruleIndex++
 					) {
-						const chainSubRule = chainSubRuleSet.getSubRule(
-							ruleIndex
-						);
+						const chainSubRule =
+							chainSubRuleSet.getSubRule(ruleIndex);
 
 						if (
 							chainSubRule.backtrackGlyphCount > 0 &&

@@ -1,5 +1,5 @@
 // Ligature substitution
-export function parseLookupType4(lookup, charFor, charactersFromGlyphs) {
+export function parseLookupType4(lookup, charFor) {
 	const parsedData = {
 		input: [],
 		backtrack: [],

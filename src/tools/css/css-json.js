@@ -10,7 +10,8 @@ class CssJson {
 
 		// This is used, a concatenation of all above. We use alternation to
 		// capture.
-		this.altX = /(\/\*[\s\S]*?\*\/)|([^\s\;\{\}][^\;\{\}]*(?=\{))|(\})|([^\;\{\}]+\;(?!\s*\*\/))/gim;
+		this.altX =
+			/(\/\*[\s\S]*?\*\/)|([^\s\;\{\}][^\;\{\}]*(?=\{))|(\})|([^\;\{\}]+\;(?!\s*\*\/))/gim;
 
 		// Capture groups
 		this.capComment = 1;

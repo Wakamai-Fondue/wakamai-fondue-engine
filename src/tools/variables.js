@@ -186,8 +186,7 @@ export const NAME_RECORD = [
 			},
 			{
 				id: 4,
-				name:
-					"Unicode 2.0 and onwards semantics, Unicode full repertoire",
+				name: "Unicode 2.0 and onwards semantics, Unicode full repertoire",
 			},
 			{
 				id: 5,
