@@ -2,8 +2,8 @@ import { describe, test, expect, it } from "vitest";
 import { fromPath } from "../node.js";
 import { fromDataBuffer } from "../browser.js";
 import { toArrayBuffer } from "./support/utils";
+import fs from "node:fs";
 
-import fs from "fs";
 const readFile = fs.promises.readFile;
 
 const WFTestFont = async () => {
