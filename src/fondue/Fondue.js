@@ -465,6 +465,10 @@ export default class Fondue {
 		if (cmap) {
 			for (const chunk of cmap) {
 				for (let i = chunk.start; i <= chunk.end; i++) {
+					// Skip 0xFFFF, lib-font currently reports this
+					// as a supported character
+					// https://github.com/Pomax/lib-font/issues/68
+					if (i == 65535) continue;
 					chars.add(this._toUnicodeValue(i));
 				}
 			}
@@ -622,11 +626,10 @@ export default class Fondue {
 		}
 
 		// List all chars not grouped under scripts in a misc category
-		// Also, ignore 0xFFFF which is erroneously reported as a char
-		// by Fontkit
 		const uncategorisedChars = fontCharSet.filter(
-			(g) => !allScriptChars.includes(g) && g != "FFFF"
+			(g) => !allScriptChars.includes(g)
 		);
+
 		if (uncategorisedChars.length !== 0) {
 			charset.push({
 				category: "Uncategorised",
