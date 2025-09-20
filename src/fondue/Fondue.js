@@ -708,6 +708,12 @@ export default class Fondue {
 				allGlyphs[script][lang] = {};
 
 				features.forEach((feature) => {
+					if (!feature || !feature.lookupListIndices) {
+						console.error(
+							`Couldn't handle feature ${(script, lang)}`
+						);
+						return;
+					}
 					const lookupIDs = feature.lookupListIndices;
 					allGlyphs[script][lang][feature.featureTag] = {};
 					allGlyphs[script][lang][feature.featureTag]["lookups"] = [];
