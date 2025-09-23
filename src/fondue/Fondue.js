@@ -721,6 +721,8 @@ export default class Fondue {
 					lookupIDs.forEach((id) => {
 						const lookup = GSUB.getLookup(id);
 						const parsedLookup = parseLookup(lookup);
+						const randomize = false;
+						const uniqueOnly = true;
 
 						if (parsedLookup) {
 							allGlyphs[script][lang][feature.featureTag][
@@ -731,7 +733,8 @@ export default class Fondue {
 						allGlyphs[script][lang][feature.featureTag]["summary"] =
 							createType6Summary(
 								allGlyphs[script][lang][feature.featureTag],
-								true
+								randomize,
+								uniqueOnly
 							);
 					});
 				});
