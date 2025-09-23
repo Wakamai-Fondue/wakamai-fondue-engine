@@ -49,7 +49,7 @@ export function charactersFromGlyphs(coverage, charFor, index) {
 	return results;
 }
 
-export const createType6Summary = (feature, randomize) => {
+export const createType6Summary = (feature, randomize, uniqueOnly) => {
 	let allInputs = [];
 	let allBacktracks = [];
 	let allLookaheads = [];
@@ -108,6 +108,23 @@ export const createType6Summary = (feature, randomize) => {
 		allCombinations.push(allLookaheads.slice(0, limit));
 	}
 
+	// Create a list of all *unique* characters involved in this lookup
+	let uniqueCombinations = new Set();
+	for (const arr of allCombinations) {
+		for (const char of arr) {
+			uniqueCombinations.add(char);
+		}
+	}
+
+	// Return a small, de-duplicated list of features
+	if (uniqueOnly) {
+		return {
+			uniqueCombinations: Array.from(uniqueCombinations),
+		};
+	}
+
+	// Create a list of all combinations of the characters involved in
+	// this lookup
 	let summarizedCombinations = allCombinations
 		.reduce((a, b) =>
 			a.reduce((r, v) => r.concat(b.map((w) => [].concat(v, w))), [])
@@ -120,10 +137,12 @@ export const createType6Summary = (feature, randomize) => {
 			}
 		});
 
+	// Return the full monty
 	return {
 		allInputs: allInputs.sort(),
 		allBacktracks: allBacktracks.sort(),
 		allLookaheads: allLookaheads.sort(),
 		summarizedCombinations: summarizedCombinations.sort(),
+		uniqueCombinations: Array.from(uniqueCombinations),
 	};
 };

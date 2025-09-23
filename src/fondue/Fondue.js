@@ -722,6 +722,7 @@ export default class Fondue {
 						allGlyphs[script][lang][feature.featureTag]["summary"] =
 							createType6Summary(
 								allGlyphs[script][lang][feature.featureTag],
+								false,
 								true
 							);
 					});
