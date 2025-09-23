@@ -23,7 +23,7 @@ import languageCharSets from "../tools/languageCharSets.js";
 import getFormat from "../tools/summary/format.js";
 import getFileSize from "../tools/summary/file-size.js";
 import getFilename from "../tools/summary/filename.js";
-import glyphData from "../tools/GlyphData.json";
+import glyphData from "../tools/GlyphData.json" with { type: "json" };
 import {
 	createGlyphToCharMapper,
 	charactersFromGlyphs,
@@ -708,6 +708,12 @@ export default class Fondue {
 				allGlyphs[script][lang] = {};
 
 				features.forEach((feature) => {
+					if (!feature || !feature.lookupListIndices) {
+						console.error(
+							`Couldn't handle feature ${(script, lang)}`
+						);
+						return;
+					}
 					const lookupIDs = feature.lookupListIndices;
 					allGlyphs[script][lang][feature.featureTag] = {};
 					allGlyphs[script][lang][feature.featureTag]["lookups"] = [];
