@@ -109,12 +109,7 @@ export const createType6Summary = (feature, randomize, uniqueOnly) => {
 	}
 
 	// Create a list of all *unique* characters involved in this lookup
-	let uniqueCombinations = new Set();
-	for (const arr of allCombinations) {
-		for (const char of arr) {
-			uniqueCombinations.add(char);
-		}
-	}
+	const uniqueCombinations = new Set(allCombinations.flat(1));
 
 	// Return a small, de-duplicated list of features
 	if (uniqueOnly) {
