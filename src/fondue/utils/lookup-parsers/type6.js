@@ -195,7 +195,7 @@ export function parseLookupType6(lookup, charFor, charactersFromGlyphs) {
 			}
 		} catch (error) {
 			console.warn(
-				`Failed to parse GSUB lookup type 6, subtable.${i}:`,
+				`Failed to parse GSUB lookup type 6, subtable ${i}:`,
 				error.message
 			);
 		}

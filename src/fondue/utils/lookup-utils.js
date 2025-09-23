@@ -54,8 +54,6 @@ export const createType6Summary = (feature, randomize, uniqueOnly) => {
 	let allBacktracks = [];
 	let allLookaheads = [];
 
-	const limit = 10; // Summary will be limited to a max of limit³ (e.g. 20*20*20 = 8000)
-
 	const shuffleArray = (array) => {
 		for (let i = array.length - 1; i > 0; i--) {
 			const j = Math.floor(Math.random() * (i + 1));
@@ -98,18 +96,10 @@ export const createType6Summary = (feature, randomize, uniqueOnly) => {
 		}
 	}
 
-	let allCombinations = [allInputs.slice(0, limit)];
-
-	if (allBacktracks.length) {
-		allCombinations.unshift(allBacktracks.slice(0, limit));
-	}
-
-	if (allLookaheads.length) {
-		allCombinations.push(allLookaheads.slice(0, limit));
-	}
+	let allCombinations = [...allInputs, ...allBacktracks, ...allLookaheads];
 
 	// Create a list of all *unique* characters involved in this lookup
-	const uniqueCombinations = new Set(allCombinations.flat(1));
+	const uniqueCombinations = new Set(allCombinations.flat(1).sort());
 
 	// Return a small, de-duplicated list of features
 	if (uniqueOnly) {
