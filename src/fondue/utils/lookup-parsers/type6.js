@@ -64,7 +64,14 @@ function extractFormat2Sequences(subtable) {
 	let backtrackChars = [];
 	let lookaheadChars = [];
 
-	console.log(subtable);
+	for (
+		let setIndex = 0;
+		setIndex < subtable.chainSubClassSetCount;
+		setIndex++
+	) {
+		const chainSubClassSet = subtable.getChainSubClassSet(setIndex);
+		console.log(`ChainSubClassSet ${setIndex}:`, chainSubClassSet);
+	}
 
 	return { inputChars, backtrackChars, lookaheadChars };
 }
