@@ -74,6 +74,6 @@
 		"node": ">=18"
 	},
 	"dependencies": {
-		"lib-font": "2.4.3"
+		"lib-font": "2.5.0"
 	}
 }
