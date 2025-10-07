@@ -460,15 +460,28 @@ describe("Layout features", () => {
 		});
 	});
 
-	test("returns lookup 6 summary", async () => {
+	test("returns lookup 6 unique combinations summary", async () => {
 		const fondue = await AbrilFatFaceFont();
 
 		expect(
 			// Yes, four empty spaces (artifact of old font editing software)
 			fondue.featureChars["    "]["dflt"]["calt"]["summary"][
-				"summarizedCombinations"
-			].length
-		).toBeGreaterThanOrEqual(1);
+				"uniqueCombinations"
+			]
+		).toEqual([
+			"(j",
+			"[j",
+			"fb",
+			"fh",
+			"fk",
+			"fl",
+			"ft",
+			"gg",
+			"gj",
+			"jj",
+			"{j",
+			"ąj",
+		]);
 	});
 
 	test("has no GSUB layout features", async () => {

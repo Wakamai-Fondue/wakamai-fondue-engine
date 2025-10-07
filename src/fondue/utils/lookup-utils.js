@@ -62,24 +62,43 @@ export const createType6Summary = (feature, randomize, uniqueOnly) => {
 		return array;
 	};
 
-	// Create some kind of "all backtracks" or "all lookaheads"
+	// Create unique combinations of backtrack+input and input+lookahead
+	const uniqueCombinationsSet = new Set();
+
 	for (const lookup of feature["lookups"]) {
 		if (lookup.type !== 6) continue;
 
-		// Create all possible combinations of input, backtrack and lookahead
+		// Create combinations based on position
 		for (const key in Object.entries(lookup["input"])) {
-			allInputs = [...new Set(allInputs.concat(lookup["input"][key]))];
+			const inputChars = lookup["input"][key] || [];
+			const backtrackChars = lookup["backtrack"][key] || [];
+			const lookaheadChars = lookup["lookahead"][key] || [];
 
-			if (lookup["backtrack"][key]) {
+			// Collect all characters for the full summary
+			allInputs = [...new Set(allInputs.concat(inputChars))];
+			if (backtrackChars.length > 0) {
 				allBacktracks = [
-					...new Set(allBacktracks.concat(lookup["backtrack"][key])),
+					...new Set(allBacktracks.concat(backtrackChars)),
+				];
+			}
+			if (lookaheadChars.length > 0) {
+				allLookaheads = [
+					...new Set(allLookaheads.concat(lookaheadChars)),
 				];
 			}
 
-			if (lookup["lookahead"][key]) {
-				allLookaheads = [
-					...new Set(allLookaheads.concat(lookup["lookahead"][key])),
-				];
+			// Create backtrack + input combinations
+			for (const backtrackChar of backtrackChars) {
+				for (const inputChar of inputChars) {
+					uniqueCombinationsSet.add(backtrackChar + inputChar);
+				}
+			}
+
+			// Create input + lookahead combinations
+			for (const inputChar of inputChars) {
+				for (const lookaheadChar of lookaheadChars) {
+					uniqueCombinationsSet.add(inputChar + lookaheadChar);
+				}
 			}
 		}
 	}
@@ -98,8 +117,7 @@ export const createType6Summary = (feature, randomize, uniqueOnly) => {
 
 	let allCombinations = [...allInputs, ...allBacktracks, ...allLookaheads];
 
-	// Create a list of all *unique* characters involved in this lookup
-	const uniqueCombinations = new Set(allCombinations.flat(1).sort());
+	const uniqueCombinations = Array.from(uniqueCombinationsSet).sort();
 
 	// Return a small, de-duplicated list of features
 	if (uniqueOnly) {
@@ -128,6 +146,6 @@ export const createType6Summary = (feature, randomize, uniqueOnly) => {
 		allBacktracks: allBacktracks.sort(),
 		allLookaheads: allLookaheads.sort(),
 		summarizedCombinations: summarizedCombinations.sort(),
-		uniqueCombinations: Array.from(uniqueCombinations),
+		uniqueCombinations: uniqueCombinations,
 	};
 };
