@@ -118,11 +118,16 @@ export const createType6Summary = (feature, randomize, uniqueOnly) => {
 	let allCombinations = [...allInputs, ...allBacktracks, ...allLookaheads];
 
 	const uniqueCombinations = Array.from(uniqueCombinationsSet).sort();
+	const totalCombinations = uniqueCombinations.length;
+	const isCapped = totalCombinations > 1000;
+	const cappedCombinations = uniqueCombinations.slice(0, 1000);
 
 	// Return a small, de-duplicated list of features
 	if (uniqueOnly) {
 		return {
-			uniqueCombinations: Array.from(uniqueCombinations),
+			uniqueCombinations: cappedCombinations,
+			totalCombinations: totalCombinations,
+			isCapped: isCapped,
 		};
 	}
 
@@ -146,6 +151,8 @@ export const createType6Summary = (feature, randomize, uniqueOnly) => {
 		allBacktracks: allBacktracks.sort(),
 		allLookaheads: allLookaheads.sort(),
 		summarizedCombinations: summarizedCombinations.sort(),
-		uniqueCombinations: uniqueCombinations,
+		uniqueCombinations: cappedCombinations,
+		totalCombinations: totalCombinations,
+		isCapped: isCapped,
 	};
 };
