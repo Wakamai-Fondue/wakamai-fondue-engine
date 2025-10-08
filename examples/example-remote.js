@@ -3,6 +3,7 @@ import { fromPath } from "../node.js";
 import { writeFileSync } from "fs";
 import https from "https";
 import { basename } from "path";
+import { Buffer } from "buffer";
 
 const url =
 	"https://fonts.gstatic.com/s/roboto/v49/KFO7CnqEu92Fr1ME7kSn66aGLdTylUAMa3yUBHMdazQ.woff2";
