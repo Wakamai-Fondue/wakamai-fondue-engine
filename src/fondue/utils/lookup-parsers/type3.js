@@ -1,3 +1,5 @@
+import { mergeUniqueCoverage } from "../lookup-utils.js";
+
 // Alternate substitution
 export function parseLookupType3(lookup, charFor, charactersFromGlyphs) {
 	const parsedData = {
@@ -15,7 +17,8 @@ export function parseLookupType3(lookup, charFor, charactersFromGlyphs) {
 		// inside the same lookup (e.g. 10 alternates for "A", 5 for
 		// "B"), so we keep track of the alternateCount per glyph.
 		subtable.alternateSetOffsets.forEach((_, j) => {
-			parsedData.input = charactersFromGlyphs(coverage, charFor, j);
+			const results = charactersFromGlyphs(coverage, charFor, j);
+			parsedData.input = mergeUniqueCoverage(parsedData.input, results);
 
 			const altset = subtable.getAlternateSet(j);
 			parsedData.alternateCount.push(altset.alternateGlyphIDs.length);

@@ -31,6 +31,7 @@ import {
 } from "./utils/lookup-utils.js";
 import {
 	parseLookupType1,
+	parseLookupType2,
 	parseLookupType3,
 	parseLookupType4,
 	parseLookupType6,
@@ -656,6 +657,7 @@ export default class Fondue {
 		// Lookup table for parser functions
 		const LOOKUP_PARSERS = {
 			1: parseLookupType1,
+			2: parseLookupType2,
 			3: parseLookupType3,
 			4: parseLookupType4,
 			6: parseLookupType6,
