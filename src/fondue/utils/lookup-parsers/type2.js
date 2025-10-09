@@ -1,3 +1,5 @@
+import { mergeUniqueCoverage } from "../lookup-utils.js";
+
 // Multiple substitution
 export function parseLookupType2(lookup, charFor, charactersFromGlyphs) {
 	const parsedData = {
@@ -12,9 +14,7 @@ export function parseLookupType2(lookup, charFor, charactersFromGlyphs) {
 		const coverage = subtable.getCoverageTable();
 		const results = charactersFromGlyphs(coverage, charFor);
 
-		if (results.length > 0) {
-			parsedData.input = results;
-		}
+		parsedData.input = mergeUniqueCoverage(parsedData.input, results);
 	});
 
 	return parsedData;
