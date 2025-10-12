@@ -43,9 +43,9 @@ function extractFormat1Sequences(subtable, charFor) {
 
 			if (
 				chainSubRule.lookaheadGlyphCount > 0 &&
-				chainSubRule.lookAheadSequence
+				chainSubRule.lookaheadSequence
 			) {
-				const lookaheadGlyphs = chainSubRule.lookAheadSequence
+				const lookaheadGlyphs = chainSubRule.lookaheadSequence
 					.filter((g) => charFor(g) !== undefined)
 					.map(charFor);
 				lookaheadChars = mergeUniqueCoverage(
