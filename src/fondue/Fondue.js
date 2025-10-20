@@ -71,6 +71,7 @@ export default class Fondue {
 		this._font = font;
 		this._supportedCharactersCache = null;
 		this._unicodeRangeCache = null;
+		this._featuresCache = null;
 	}
 
 	get isVariable() {
@@ -308,11 +309,13 @@ export default class Fondue {
 	}
 
 	// Gets all information about the font features.
-	// TODO: if feature has a UI Name ID, return its name
-	//       https://github.com/Pomax/lib-font/issues/73
 	// Usage:
 	//   fondue.features
 	get features() {
+		if (this._featuresCache !== null) {
+			return this._featuresCache;
+		}
+
 		const getRawFeatures = (table) => {
 			if (!table) return [];
 			return table.featureList.featureRecords.map(
@@ -346,6 +349,9 @@ export default class Fondue {
 			}
 			return features;
 		}, []);
+
+		this._featuresCache = result;
+		return this._featuresCache;
 	}
 
 	// Gets all information about the font's variable features.
