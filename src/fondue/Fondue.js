@@ -72,6 +72,7 @@ export default class Fondue {
 		this._font = font;
 		this._supportedCharactersCache = null;
 		this._unicodeRangeCache = null;
+		this._featuresCache = null;
 	}
 
 	get isVariable() {
@@ -309,11 +310,13 @@ export default class Fondue {
 	}
 
 	// Gets all information about the font features.
-	// TODO: if feature has a UI Name ID, return its name
-	//       https://github.com/Pomax/lib-font/issues/73
 	// Usage:
 	//   fondue.features
 	get features() {
+		if (this._featuresCache !== null) {
+			return this._featuresCache;
+		}
+
 		const getRawFeatures = (table) => {
 			if (!table) return [];
 			return table.featureList.featureRecords.map(
@@ -330,12 +333,29 @@ export default class Fondue {
 			}
 		};
 
+		const getFeatureUIName = (featureTag) => {
+			const gsub = this._raw("GSUB");
+			if (!gsub) return null;
+			const feature = gsub.getFeature(featureTag);
+			if (feature && feature.featureParams && feature.featureParams > 0) {
+				const params = feature.getFeatureParams();
+				if (params && params.UINameID) {
+					const uiName = this.name(params.UINameID);
+					if (uiName) {
+						return this._removeNullBytes(uiName);
+					}
+				}
+			}
+
+			return null;
+		};
+
 		const rawFeatures = new Set([
 			...getRawFeatures(this._raw("GSUB")),
 			...getRawFeatures(this._raw("GPOS")),
 		]);
 
-		return [...rawFeatures].reduce((features, rawFeature) => {
+		const result = [...rawFeatures].reduce((features, rawFeature) => {
 			const featureIndex = getFeatureIndex(rawFeature);
 			const feature = {
 				...featureMapping.find((f) => f.tag == featureIndex),
@@ -343,10 +363,20 @@ export default class Fondue {
 			if (feature) {
 				// Restore original tag in case of enumerated tag (ss## or cv##)
 				feature.tag = rawFeature;
+
+				// See if there's a human readable name
+				const uiName = getFeatureUIName(rawFeature);
+				if (uiName) {
+					feature.uiName = uiName;
+				}
+
 				features.push(feature);
 			}
 			return features;
 		}, []);
+
+		this._featuresCache = result;
+		return this._featuresCache;
 	}
 
 	// Gets all information about the font's variable features.
