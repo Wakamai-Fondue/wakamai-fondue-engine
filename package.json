@@ -1,6 +1,6 @@
 {
 	"name": "@wakamai-fondue/engine",
-	"version": "1.1.2",
+	"version": "1.1.3",
 	"type": "module",
 	"description": "What if you could actually inspect your web fonts? In the same context that you actually use those web fonts? That's what this is for.",
 	"exports": {
