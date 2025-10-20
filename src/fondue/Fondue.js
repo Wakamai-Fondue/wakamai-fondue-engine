@@ -332,12 +332,29 @@ export default class Fondue {
 			}
 		};
 
+		const getFeatureUIName = (featureTag) => {
+			const gsub = this._raw("GSUB");
+			if (!gsub) return null;
+			const feature = gsub.getFeature(featureTag);
+			if (feature && feature.featureParams && feature.featureParams > 0) {
+				const params = feature.getFeatureParams();
+				if (params && params.UINameID) {
+					const uiName = this.name(params.UINameID);
+					if (uiName) {
+						return this._removeNullBytes(uiName);
+					}
+				}
+			}
+
+			return null;
+		};
+
 		const rawFeatures = new Set([
 			...getRawFeatures(this._raw("GSUB")),
 			...getRawFeatures(this._raw("GPOS")),
 		]);
 
-		return [...rawFeatures].reduce((features, rawFeature) => {
+		const result = [...rawFeatures].reduce((features, rawFeature) => {
 			const featureIndex = getFeatureIndex(rawFeature);
 			const feature = {
 				...featureMapping.find((f) => f.tag == featureIndex),
@@ -345,6 +362,13 @@ export default class Fondue {
 			if (feature) {
 				// Restore original tag in case of enumerated tag (ss## or cv##)
 				feature.tag = rawFeature;
+
+				// See if there's a human readable name
+				const uiName = getFeatureUIName(rawFeature);
+				if (uiName) {
+					feature.uiName = uiName;
+				}
+
 				features.push(feature);
 			}
 			return features;
