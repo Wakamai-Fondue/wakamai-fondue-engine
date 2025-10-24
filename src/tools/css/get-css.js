@@ -68,29 +68,34 @@ const getAvailableFeatures = (font) => {
 };
 
 const getVariableCSS = (font) => {
-	let css = "";
-	let maxProps = 6;
+	const cssBlocks = [];
+	const maxProps = 6;
 	const name = slugify(getSafeName(font.summary["Font name"]));
 	const fvar = font.get("fvar");
 	const variations = fvar ? fvar.instances : [];
+
 	for (const v in variations) {
 		let propCounter = 2; // First line of props should be shorter
 		const variation = variations[v];
 		const instanceSlug = slugify(v);
 		const featureShortcut = `${name}-${instanceSlug}`;
-		css = css + `.${featureShortcut} {\n`;
-		css = css + "    font-variation-settings:";
-		let glue = " ";
+
+		const settings = [];
 		for (const axis of Object.keys(variation)) {
-			css = css + `${glue}"${axis}" ${variation[axis]}`;
-			glue = ", ";
+			settings.push(`"${axis}" ${variation[axis]}`);
 			// Poor man's code formatting
-			if (++propCounter % maxProps === 0) {
-				glue = `,\n        `;
+			if (++propCounter % maxProps === 0 && settings.length > 0) {
+				const joined = settings.join(", ");
+				settings.length = 0;
+				settings.push(joined + ",\n        ");
 			}
 		}
-		css = css + ";";
-		css = css + "\n}\n\n";
+
+		const settingsStr = settings.join(", ");
+		cssBlocks.push(`.${featureShortcut} {
+    font-variation-settings: ${settingsStr};
+}
+`);
 	}
 
 	// Disabled as this is website-specific
@@ -106,7 +111,7 @@ const getVariableCSS = (font) => {
 	//     css += ';';
 	//     css += `\n}\n`;
 	// }
-	return css;
+	return cssBlocks.join("\n");
 };
 
 // Linewrap a string of CSS properties divided by ", "
