@@ -147,7 +147,7 @@ const lineWrap = (str, max = 78, tabSize = 4) => {
 	});
 };
 
-const getFontFace = (font) => {
+const getFontFace = (font, opts) => {
 	const parts = [];
 
 	parts.push(`    font-family: "${getSafeName(font.summary["Font name"])}";`);
@@ -167,11 +167,13 @@ const getFontFace = (font) => {
 	}
 
 	// Add Unicode range
-	const cssFormattedRanges = font.unicodeRange
-		.map((c) => `U+${c}`)
-		.join(", ");
-	const unicodeRange = `unicode-range: ${cssFormattedRanges};`;
-	parts.push(lineWrap(unicodeRange).join(""));
+	if (opts.include.fontFaceUnicodeRange) {
+		const cssFormattedRanges = font.unicodeRange
+			.map((c) => `U+${c}`)
+			.join(", ");
+		const unicodeRange = `unicode-range: ${cssFormattedRanges};`;
+		parts.push(lineWrap(unicodeRange).join(""));
+	}
 
 	return `@font-face {
 ${parts.join("\n")}
@@ -185,6 +187,7 @@ const getCSS = (fondue, options = {}) => {
 	const opts = {
 		include: {
 			fontFace: true,
+			fontFaceUnicodeRange: true,
 			features: true,
 			variables: true,
 			...(options.include || {}),
@@ -209,7 +212,7 @@ const getCSS = (fondue, options = {}) => {
 	sections.push(stylesheetIntro);
 
 	if (opts.include.fontFace) {
-		sections.push(getFontFace(fondue));
+		sections.push(getFontFace(fondue, opts));
 	}
 
 	if (opts.include.features && features.length) {
