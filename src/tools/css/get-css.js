@@ -148,23 +148,21 @@ const lineWrap = (str, max = 78, tabSize = 4) => {
 };
 
 const getFontFace = (font) => {
-	let fontface = "@font-face {\n";
+	const parts = [];
 
-	fontface += `    font-family: "${getSafeName(
-		font.summary["Font name"]
-	)}";\n`;
-	fontface += `    src: url("${font.summary["Filename"]}");\n`;
+	parts.push(`    font-family: "${getSafeName(font.summary["Font name"])}";`);
+	parts.push(`    src: url("${font.summary["Filename"]}");`);
 
 	// Add variable defaults
 	if (font.isVariable) {
 		const weight = font.variable.axes.find((o) => o.id === "wght");
 		if (weight) {
-			fontface += `    font-weight: ${weight.min} ${weight.max};\n`;
+			parts.push(`    font-weight: ${weight.min} ${weight.max};`);
 		}
 
 		const width = font.variable.axes.find((o) => o.id === "wdth");
 		if (width) {
-			fontface += `    font-stretch: ${width.min}% ${width.max}%;\n`;
+			parts.push(`    font-stretch: ${width.min}% ${width.max}%;`);
 		}
 	}
 
@@ -172,12 +170,14 @@ const getFontFace = (font) => {
 	const cssFormattedRanges = font.unicodeRange
 		.map((c) => `U+${c}`)
 		.join(", ");
-	const unicodeRange = `unicode-range: ${cssFormattedRanges};\n`;
-	fontface += lineWrap(unicodeRange);
+	const unicodeRange = `unicode-range: ${cssFormattedRanges};`;
+	parts.push(lineWrap(unicodeRange).join(""));
 
-	fontface += "}\n\n";
+	return `@font-face {
+${parts.join("\n")}
+}
 
-	return fontface;
+`;
 };
 
 const getCSS = (fondue, ...exclude) => {
