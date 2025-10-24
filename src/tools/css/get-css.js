@@ -180,7 +180,17 @@ ${parts.join("\n")}
 `;
 };
 
-const getCSS = (fondue, ...exclude) => {
+const getCSS = (fondue, options = {}) => {
+	// Merge user options with defaults
+	const opts = {
+		include: {
+			fontFace: true,
+			features: true,
+			variables: true,
+			...(options.include || {}),
+		},
+	};
+
 	// Skip features for now
 	const features = getAvailableFeatures(fondue);
 	// Make a 'slug' of the font name to use throughout CSS
@@ -198,11 +208,11 @@ const getCSS = (fondue, ...exclude) => {
 
 	sections.push(stylesheetIntro);
 
-	if (!exclude.includes(CSS_SECTION_FONT_FACE)) {
+	if (opts.include.fontFace) {
 		sections.push(getFontFace(fondue));
 	}
 
-	if (features.length) {
+	if (opts.include.features && features.length) {
 		// Layout stuff
 		const rootrules = [];
 		const featureclasses = [];
@@ -270,14 +280,16 @@ ${featureclasses.join(",\n")} {
 	}
 
 	// Variable stuff
-	const varcss = getVariableCSS(fondue);
+	if (opts.include.variables) {
+		const varcss = getVariableCSS(fondue);
 
-	if (varcss !== "") {
-		if (sections.length === 0) {
-			sections.push(stylesheetIntro);
-		}
-		sections.push(`/* Variable instances */
+		if (varcss !== "") {
+			if (sections.length === 0) {
+				sections.push(stylesheetIntro);
+			}
+			sections.push(`/* Variable instances */
 ${varcss}`);
+		}
 	}
 
 	return sections.join("");
