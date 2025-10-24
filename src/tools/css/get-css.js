@@ -32,7 +32,6 @@ const getFeatureCSS = (feature, name) => {
 	};
 	const featureCSS = featureData.css;
 
-	let css = "";
 	// We can't take the variable out, or to auto/default or
 	// something, so set it to a non-existing feature
 	// Thanks Koen!
@@ -41,15 +40,17 @@ const getFeatureCSS = (feature, name) => {
 	// CSS: font-variant-*
 	if (featureCSS.variant) {
 		const featureShortcut = `${name}-${feature}`;
-		css = css + `@supports (${featureCSS.variant}) {\n`;
-		css = css + `    .${name}-${feature} {\n`;
-		css = css + `        --${featureShortcut}: "${fakeFeature}";\n`;
-		css = css + `        ${featureCSS.variant};\n`;
-		css = css + "    }\n";
-		css = css + "}\n\n";
+		return `@supports (${featureCSS.variant}) {
+    .${name}-${feature} {
+        --${featureShortcut}: "${fakeFeature}";
+        ${featureCSS.variant};
+    }
+}
+
+`;
 	}
 
-	return css;
+	return "";
 };
 
 const getAvailableFeatures = (font) => {
