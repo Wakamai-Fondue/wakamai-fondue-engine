@@ -2,6 +2,13 @@ import slugify from "./slugify.js";
 import featureMapping from "../features/layout-features.js";
 import CssJson from "./css-json.js";
 
+export const CSS_SECTION_FONT_FACE = "font-face";
+export const CSS_SECTION_FEATURES = "features";
+export const CSS_SECTION_VARIABLES = "variables";
+export const BROWSER_SUPPORT_MODERN = "modern";
+export const BROWSER_SUPPORT_LEGACY = "legacy";
+export const BROWSER_SUPPORT_BOTH = "both";
+
 const unnamedFontName = "UNNAMED FONT";
 
 // Get indexed version, e.g. ss03 → ss##
@@ -184,7 +191,7 @@ const getCSS = (fondue, ...exclude) => {
 
 	stylesheet = stylesheet + stylesheetIntro;
 
-	if (!exclude.includes("font-face")) {
+	if (!exclude.includes(CSS_SECTION_FONT_FACE)) {
 		stylesheet = stylesheet + getFontFace(fondue);
 	}
 
