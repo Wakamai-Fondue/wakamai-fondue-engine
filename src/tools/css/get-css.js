@@ -216,6 +216,11 @@ const getCSS = (fondue, options = {}) => {
 	}
 
 	if (opts.include.features && features.length) {
+		// Filter features if specific ones are requested
+		const featuresToInclude = Array.isArray(opts.include.features)
+			? features.filter((f) => opts.include.features.includes(f))
+			: features;
+
 		// Layout stuff
 		const rootrules = [];
 		const featureclasses = [];
@@ -223,7 +228,7 @@ const getCSS = (fondue, options = {}) => {
 		const cssvardecs = [];
 		const maxProps = 3;
 
-		for (const feature of features) {
+		for (const feature of featuresToInclude) {
 			const featureIndex = getFeatureIndex(feature);
 			const featureData = {
 				...featureMapping.find((f) => f.tag == featureIndex),
