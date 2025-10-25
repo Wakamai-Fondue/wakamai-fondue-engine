@@ -98,6 +98,25 @@ describe("The loaded font", () => {
 		);
 	});
 
+	test("returns CSS for specific features only", async () => {
+		const fondue = await SourceCodeProOTFFont();
+
+		// Test one feature
+		const cssWithCase = fondue.fontCSS({
+			include: { features: ["case"] },
+		});
+		expect(cssWithCase).toContain("--source-code-pro-case");
+		expect(cssWithCase).not.toContain("--source-code-pro-onum");
+
+		// Test multiple features
+		const cssWithMultiple = fondue.fontCSS({
+			include: { features: ["case", "zero"] },
+		});
+		expect(cssWithMultiple).toContain("--source-code-pro-case");
+		expect(cssWithMultiple).toContain("--source-code-pro-zero");
+		expect(cssWithMultiple).not.toContain("--source-code-pro-onum");
+	});
+
 	test("supports WOFF", async () => {
 		const fondue = await fromPath(
 			"./test/fixtures/SourceCodePro-Regular.ttf.woff"
