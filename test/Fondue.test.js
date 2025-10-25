@@ -132,6 +132,55 @@ describe("fromDataBuffer", () => {
 	});
 });
 
+describe("CSS generation options", () => {
+	test("excludes @font-face", async () => {
+		const fondue = await SourceCodeProOTFFont();
+		const css = fondue.fontCSS({ include: { fontFace: false } });
+		expect(css).not.toContain("@font-face");
+		expect(css).not.toContain("font-family:");
+	});
+
+	test("excludes features", async () => {
+		const fondue = await SourceCodeProOTFFont();
+		const css = fondue.fontCSS({ include: { features: false } });
+		expect(css).not.toContain("font-feature-settings:");
+		expect(css).not.toContain("font-variant");
+		expect(css).toContain("@font-face");
+	});
+
+	test("excludes variable instances", async () => {
+		const fondue = await SourceCodeVariableTTFFont();
+		const css = fondue.fontCSS({ include: { variables: false } });
+		expect(css).not.toContain("font-variation-settings:");
+		expect(css).not.toContain("/* Variable instances */");
+	});
+
+	test("excludes unicode-range", async () => {
+		const fondue = await SourceCodeProOTFFont();
+		const css = fondue.fontCSS({
+			include: { fontFaceUnicodeRange: false },
+		});
+		expect(css).toContain("@font-face");
+		expect(css).not.toContain("unicode-range:");
+	});
+
+	test("combines multiple options", async () => {
+		const fondue = await SourceCodeVariableTTFFont();
+		const css = fondue.fontCSS({
+			include: {
+				fontFace: true,
+				fontFaceUnicodeRange: false,
+				features: false,
+				variables: false,
+			},
+		});
+		expect(css).toContain("@font-face");
+		expect(css).not.toContain("unicode-range:");
+		expect(css).not.toContain("font-feature-settings:");
+		expect(css).not.toContain("font-variation-settings:");
+	});
+});
+
 describe("outline format", () => {
 	test("OTF font", async () => {
 		const fondue = await SourceCodeProOTFFont();
