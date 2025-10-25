@@ -115,25 +115,27 @@ const getVariableCSS = (font) => {
 	const variations = fvar ? fvar.instances : [];
 
 	for (const v in variations) {
-		let propCounter = 2; // First line of props should be shorter
 		const variation = variations[v];
 		const instanceSlug = slugify(v);
 		const featureShortcut = `${name}-${instanceSlug}`;
 
 		const settings = [];
-		let isFirstProp = true;
 		for (const axis of Object.keys(variation)) {
 			settings.push(`"${axis}" ${variation[axis]}`);
-			// Poor man's code formatting
-			if (++propCounter % maxProps === 0 && settings.length > 0) {
-				const joined = settings.join(", ");
-				settings.length = 0;
-				settings.push(isFirstProp ? joined : "\n        " + joined);
-				isFirstProp = false;
-			}
 		}
 
-		const settingsStr = settings.join(", ");
+		const settingsStr = settings
+			.map((part, index) => {
+				if (
+					(index + 1) % maxProps === 0 &&
+					index < settings.length - 1
+				) {
+					return "\n        " + part;
+				}
+				return part;
+			})
+			.join(", ");
+
 		cssBlocks.push(`.${featureShortcut} {
     font-variation-settings: ${settingsStr};
 }
