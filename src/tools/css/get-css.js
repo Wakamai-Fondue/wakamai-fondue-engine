@@ -121,13 +121,15 @@ const getVariableCSS = (font) => {
 		const featureShortcut = `${name}-${instanceSlug}`;
 
 		const settings = [];
+		let isFirstProp = true;
 		for (const axis of Object.keys(variation)) {
 			settings.push(`"${axis}" ${variation[axis]}`);
 			// Poor man's code formatting
 			if (++propCounter % maxProps === 0 && settings.length > 0) {
 				const joined = settings.join(", ");
 				settings.length = 0;
-				settings.push(joined + ",\n        ");
+				settings.push(isFirstProp ? joined : "\n        " + joined);
+				isFirstProp = false;
 			}
 		}
 
@@ -302,12 +304,11 @@ ${getWakamaiFondueCSS(feature, name)}`);
 						(index + 1) % maxProps === 0 &&
 						index < featuredecParts.length - 1
 					) {
-						return part + ",\n        ";
+						return "\n        " + part;
 					}
 					return part;
 				})
-				.join(", ")
-				.replace(/,\s*$/, "");
+				.join(", ");
 
 			sections.push(`/* Set custom properties for each layout feature */
 :root {
