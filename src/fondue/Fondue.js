@@ -15,7 +15,10 @@
  */
 
 import { NAME_TABLE, NAME_RECORD, CMAP_RECORD } from "../tools/variables.js";
-import getCSS, { getCSSAsJSON } from "../tools/css/get-css.js";
+import getStylesheet, {
+	getFeatureCSS,
+	getCSSAsJSON,
+} from "../tools/css/get-css.js";
 import slugify from "../tools/css/slugify.js";
 import featureMapping from "../tools/features/layout-features.js";
 import languageMapping from "../tools/ot-to-html-lang.js";
@@ -458,12 +461,17 @@ export default class Fondue {
 	// Usage:
 	//   fondue.cssString
 	get cssString() {
-		return getCSS(this);
+		return getStylesheet(this);
 	}
 
 	// Get CSS as string, with options to control what's included
-	fontCSS(options) {
-		return getCSS(this, options);
+	stylesheet(options) {
+		return getStylesheet(this, options);
+	}
+
+	// Get CSS for a single feature
+	featureCSS(featureTag, options) {
+		return getFeatureCSS(featureTag, options);
 	}
 
 	// Returns whether a specific character is supported by this font.

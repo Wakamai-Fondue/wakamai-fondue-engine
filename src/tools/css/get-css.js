@@ -24,8 +24,48 @@ const getSafeName = (name) => {
 	}
 };
 
+// Get CSS for a single feature
+const getFeatureCSS = (featureTag, options = {}) => {
+	const { value = 1, format = "auto", comments = false } = options;
+
+	const featureIndex = getFeatureIndex(featureTag);
+	const featureData = featureMapping.find((f) => f.tag === featureIndex);
+
+	if (!featureData) {
+		console.error(`Unknown feature: ${featureTag}`);
+	}
+
+	const { css } = featureData;
+
+	let result = "";
+
+	// Font variant
+	if (format === "variant" || (format === "auto" && css.variant)) {
+		result = `${css.variant};`;
+	}
+
+	// Font feature settings
+	if (
+		format === "feature-settings" ||
+		(format === "auto" && !css.variant) ||
+		format === "both"
+	) {
+		const state = value === 0 ? "off" : value === 1 ? "on" : value;
+		const ffsValue = `font-feature-settings: "${featureTag}" ${state};`;
+		result =
+			format === "both" && result ? `${result}\n${ffsValue}` : ffsValue;
+	}
+
+	// Comments
+	if (comments && featureData.comment) {
+		result = `/* ${featureData.comment} */\n${result}`;
+	}
+
+	return result;
+};
+
 // Return CSS with custom CSS properties
-const getFeatureCSS = (feature, name) => {
+const getWakamaiFondueCSS = (feature, name) => {
 	const featureIndex = getFeatureIndex(feature);
 	const featureData = {
 		...featureMapping.find((f) => f.tag == featureIndex),
@@ -182,7 +222,7 @@ ${parts.join("\n")}
 `;
 };
 
-const getCSS = (fondue, options = {}) => {
+const getStylesheet = (fondue, options = {}) => {
 	// Merge user options with defaults
 	const opts = {
 		include: {
@@ -251,7 +291,7 @@ const getCSS = (fondue, options = {}) => {
     --${featureShortcut}: "${feature}" on;
 }
 
-${getFeatureCSS(feature, name)}`);
+${getWakamaiFondueCSS(feature, name)}`);
 		}
 
 		if (rootrules.length > 0) {
@@ -304,8 +344,8 @@ ${varcss}`);
 };
 
 const getCSSAsJSON = (font) => {
-	return new CssJson().toJSON(getCSS(font).replace(/[\n\s]+/g, " "));
+	return new CssJson().toJSON(getStylesheet(font).replace(/[\n\s]+/g, " "));
 };
 
-export default getCSS;
-export { getCSSAsJSON };
+export default getStylesheet;
+export { getFeatureCSS, getCSSAsJSON };

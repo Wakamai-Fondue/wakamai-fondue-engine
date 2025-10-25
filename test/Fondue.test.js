@@ -102,14 +102,14 @@ describe("The loaded font", () => {
 		const fondue = await SourceCodeProOTFFont();
 
 		// Test one feature
-		const cssWithCase = fondue.fontCSS({
+		const cssWithCase = fondue.stylesheet({
 			include: { features: ["case"] },
 		});
 		expect(cssWithCase).toContain("--source-code-pro-case");
 		expect(cssWithCase).not.toContain("--source-code-pro-onum");
 
 		// Test multiple features
-		const cssWithMultiple = fondue.fontCSS({
+		const cssWithMultiple = fondue.stylesheet({
 			include: { features: ["case", "zero"] },
 		});
 		expect(cssWithMultiple).toContain("--source-code-pro-case");
@@ -154,14 +154,14 @@ describe("fromDataBuffer", () => {
 describe("CSS generation options", () => {
 	test("excludes @font-face", async () => {
 		const fondue = await SourceCodeProOTFFont();
-		const css = fondue.fontCSS({ include: { fontFace: false } });
+		const css = fondue.stylesheet({ include: { fontFace: false } });
 		expect(css).not.toContain("@font-face");
 		expect(css).not.toContain("font-family:");
 	});
 
 	test("excludes features", async () => {
 		const fondue = await SourceCodeProOTFFont();
-		const css = fondue.fontCSS({ include: { features: false } });
+		const css = fondue.stylesheet({ include: { features: false } });
 		expect(css).not.toContain("font-feature-settings:");
 		expect(css).not.toContain("font-variant");
 		expect(css).toContain("@font-face");
@@ -169,14 +169,14 @@ describe("CSS generation options", () => {
 
 	test("excludes variable instances", async () => {
 		const fondue = await SourceCodeVariableTTFFont();
-		const css = fondue.fontCSS({ include: { variables: false } });
+		const css = fondue.stylesheet({ include: { variables: false } });
 		expect(css).not.toContain("font-variation-settings:");
 		expect(css).not.toContain("/* Variable instances */");
 	});
 
 	test("excludes unicode-range", async () => {
 		const fondue = await SourceCodeProOTFFont();
-		const css = fondue.fontCSS({
+		const css = fondue.stylesheet({
 			include: { fontFaceUnicodeRange: false },
 		});
 		expect(css).toContain("@font-face");
@@ -185,7 +185,7 @@ describe("CSS generation options", () => {
 
 	test("combines multiple options", async () => {
 		const fondue = await SourceCodeVariableTTFFont();
-		const css = fondue.fontCSS({
+		const css = fondue.stylesheet({
 			include: {
 				fontFace: true,
 				fontFaceUnicodeRange: false,
