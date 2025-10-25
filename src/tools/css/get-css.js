@@ -67,30 +67,29 @@ const getFeatureCSS = (featureTag, options = {}) => {
 // Return CSS with custom CSS properties
 const getWakamaiFondueCSS = (feature, name) => {
 	const featureIndex = getFeatureIndex(feature);
-	const featureData = {
-		...featureMapping.find((f) => f.tag == featureIndex),
-	};
-	const featureCSS = featureData.css;
+	const featureData = featureMapping.find((f) => f.tag === featureIndex);
+
+	// If not `font-variant-*` for this, skip
+	if (!featureData || !featureData.css.variant) {
+		return "";
+	}
+
+	const variantCSS = getFeatureCSS(feature, { format: "variant" });
 
 	// We can't take the variable out, or to auto/default or
 	// something, so set it to a non-existing feature
 	// Thanks Koen!
 	const fakeFeature = "____";
+	const featureShortcut = `${name}-${feature}`;
 
-	// CSS: font-variant-*
-	if (featureCSS.variant) {
-		const featureShortcut = `${name}-${feature}`;
-		return `@supports (${featureCSS.variant}) {
+	return `@supports (${featureData.css.variant}) {
     .${name}-${feature} {
         --${featureShortcut}: "${fakeFeature}";
-        ${featureCSS.variant};
+        ${variantCSS}
     }
 }
 
 `;
-	}
-
-	return "";
 };
 
 const getAvailableFeatures = (font) => {
