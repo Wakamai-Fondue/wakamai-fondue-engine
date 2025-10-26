@@ -2,6 +2,13 @@ import slugify from "./slugify.js";
 import featureMapping from "../features/layout-features.js";
 import CssJson from "./css-json.js";
 
+export const CSS_SECTION_FONT_FACE = "font-face";
+export const CSS_SECTION_FEATURES = "features";
+export const CSS_SECTION_VARIABLES = "variables";
+export const BROWSER_SUPPORT_MODERN = "modern";
+export const BROWSER_SUPPORT_LEGACY = "legacy";
+export const BROWSER_SUPPORT_BOTH = "both";
+
 const unnamedFontName = "UNNAMED FONT";
 
 // Get indexed version, e.g. ss03 → ss##
@@ -25,7 +32,6 @@ const getFeatureCSS = (feature, name) => {
 	};
 	const featureCSS = featureData.css;
 
-	let css = "";
 	// We can't take the variable out, or to auto/default or
 	// something, so set it to a non-existing feature
 	// Thanks Koen!
@@ -34,15 +40,17 @@ const getFeatureCSS = (feature, name) => {
 	// CSS: font-variant-*
 	if (featureCSS.variant) {
 		const featureShortcut = `${name}-${feature}`;
-		css = css + `@supports (${featureCSS.variant}) {\n`;
-		css = css + `    .${name}-${feature} {\n`;
-		css = css + `        --${featureShortcut}: "${fakeFeature}";\n`;
-		css = css + `        ${featureCSS.variant};\n`;
-		css = css + "    }\n";
-		css = css + "}\n\n";
+		return `@supports (${featureCSS.variant}) {
+    .${name}-${feature} {
+        --${featureShortcut}: "${fakeFeature}";
+        ${featureCSS.variant};
+    }
+}
+
+`;
 	}
 
-	return css;
+	return "";
 };
 
 const getAvailableFeatures = (font) => {
@@ -60,29 +68,34 @@ const getAvailableFeatures = (font) => {
 };
 
 const getVariableCSS = (font) => {
-	let css = "";
-	let maxProps = 6;
+	const cssBlocks = [];
+	const maxProps = 6;
 	const name = slugify(getSafeName(font.summary["Font name"]));
 	const fvar = font.get("fvar");
 	const variations = fvar ? fvar.instances : [];
+
 	for (const v in variations) {
 		let propCounter = 2; // First line of props should be shorter
 		const variation = variations[v];
 		const instanceSlug = slugify(v);
 		const featureShortcut = `${name}-${instanceSlug}`;
-		css = css + `.${featureShortcut} {\n`;
-		css = css + "    font-variation-settings:";
-		let glue = " ";
+
+		const settings = [];
 		for (const axis of Object.keys(variation)) {
-			css = css + `${glue}"${axis}" ${variation[axis]}`;
-			glue = ", ";
+			settings.push(`"${axis}" ${variation[axis]}`);
 			// Poor man's code formatting
-			if (++propCounter % maxProps === 0) {
-				glue = `,\n        `;
+			if (++propCounter % maxProps === 0 && settings.length > 0) {
+				const joined = settings.join(", ");
+				settings.length = 0;
+				settings.push(joined + ",\n        ");
 			}
 		}
-		css = css + ";";
-		css = css + "\n}\n\n";
+
+		const settingsStr = settings.join(", ");
+		cssBlocks.push(`.${featureShortcut} {
+    font-variation-settings: ${settingsStr};
+}
+`);
 	}
 
 	// Disabled as this is website-specific
@@ -98,7 +111,7 @@ const getVariableCSS = (font) => {
 	//     css += ';';
 	//     css += `\n}\n`;
 	// }
-	return css;
+	return cssBlocks.join("\n");
 };
 
 // Linewrap a string of CSS properties divided by ", "
@@ -134,69 +147,81 @@ const lineWrap = (str, max = 78, tabSize = 4) => {
 	});
 };
 
-const getFontFace = (font) => {
-	let fontface = "@font-face {\n";
+const getFontFace = (font, opts) => {
+	const parts = [];
 
-	fontface += `    font-family: "${getSafeName(
-		font.summary["Font name"]
-	)}";\n`;
-	fontface += `    src: url("${font.summary["Filename"]}");\n`;
+	parts.push(`    font-family: "${getSafeName(font.summary["Font name"])}";`);
+	parts.push(`    src: url("${font.summary["Filename"]}");`);
 
 	// Add variable defaults
 	if (font.isVariable) {
 		const weight = font.variable.axes.find((o) => o.id === "wght");
 		if (weight) {
-			fontface += `    font-weight: ${weight.min} ${weight.max};\n`;
+			parts.push(`    font-weight: ${weight.min} ${weight.max};`);
 		}
 
 		const width = font.variable.axes.find((o) => o.id === "wdth");
 		if (width) {
-			fontface += `    font-stretch: ${width.min}% ${width.max}%;\n`;
+			parts.push(`    font-stretch: ${width.min}% ${width.max}%;`);
 		}
 	}
 
 	// Add Unicode range
-	const cssFormattedRanges = font.unicodeRange
-		.map((c) => `U+${c}`)
-		.join(", ");
-	const unicodeRange = `unicode-range: ${cssFormattedRanges};\n`;
-	fontface += lineWrap(unicodeRange);
+	if (opts.include.fontFaceUnicodeRange) {
+		const cssFormattedRanges = font.unicodeRange
+			.map((c) => `U+${c}`)
+			.join(", ");
+		const unicodeRange = `unicode-range: ${cssFormattedRanges};`;
+		parts.push(lineWrap(unicodeRange).join(""));
+	}
 
-	fontface += "}\n\n";
+	return `@font-face {
+${parts.join("\n")}
+}
 
-	return fontface;
+`;
 };
 
-const getCSS = (fondue, ...exclude) => {
+const getCSS = (fondue, options = {}) => {
+	// Merge user options with defaults
+	const opts = {
+		include: {
+			fontFace: true,
+			fontFaceUnicodeRange: true,
+			features: true,
+			variables: true,
+			...(options.include || {}),
+		},
+	};
+
 	// Skip features for now
 	const features = getAvailableFeatures(fondue);
 	// Make a 'slug' of the font name to use throughout CSS
 	const realName = getSafeName(fondue.summary["Font name"]);
 	const name = slugify(realName);
 
-	let stylesheet = "";
-	const stylesheetIntro =
-		"/**\n" +
-		` * CSS for ${realName}\n` +
-		" * Generated by Wakamai Fondue - https://wakamaifondue.com\n" +
-		" * by Roel Nieskens/PixelAmbacht - https://pixelambacht.nl\n" +
-		" */\n\n";
+	const sections = [];
+	const stylesheetIntro = `/**
+ * CSS for ${realName}
+ * Generated by Wakamai Fondue - https://wakamaifondue.com
+ * by Roel Nieskens/PixelAmbacht - https://pixelambacht.nl
+ */
 
-	stylesheet = stylesheet + stylesheetIntro;
+`;
 
-	if (!exclude.includes("font-face")) {
-		stylesheet = stylesheet + getFontFace(fondue);
+	sections.push(stylesheetIntro);
+
+	if (opts.include.fontFace) {
+		sections.push(getFontFace(fondue, opts));
 	}
 
-	if (features.length) {
+	if (opts.include.features && features.length) {
 		// Layout stuff
-		let rootrules = "";
-		let featureclasses = "";
-		let featuredec = "font-feature-settings:";
-		let featuredecGlue = " ";
-		let cssvardecs = "";
-		let propCounter = 1; // First line of props should be shorter
-		let maxProps = 3;
+		const rootrules = [];
+		const featureclasses = [];
+		const featuredecParts = [];
+		const cssvardecs = [];
+		const maxProps = 3;
 
 		for (const feature of features) {
 			const featureIndex = getFeatureIndex(feature);
@@ -211,73 +236,66 @@ const getCSS = (fondue, ...exclude) => {
 
 			const featureShortcut = `${name}-${feature}`;
 
-			rootrules =
-				rootrules +
-				`    --${featureShortcut}: "${feature}" ${defaultState};\n`;
+			rootrules.push(
+				`    --${featureShortcut}: "${feature}" ${defaultState};`
+			);
+			featureclasses.push(`.${featureShortcut}`);
+			featuredecParts.push(`var(--${featureShortcut})`);
 
-			featureclasses = featureclasses + `.${featureShortcut},\n`;
+			cssvardecs.push(`.${featureShortcut} {
+    --${featureShortcut}: "${feature}" on;
+}
 
-			featuredec =
-				featuredec + `${featuredecGlue}var(--${featureShortcut})`;
-
-			cssvardecs = cssvardecs + `.${featureShortcut} {\n`;
-			cssvardecs =
-				cssvardecs + `    --${featureShortcut}: "${feature}" on;\n`;
-			cssvardecs = cssvardecs + "}\n\n";
-
-			cssvardecs = cssvardecs + getFeatureCSS(feature, name);
-
-			if (++propCounter % maxProps === 0) {
-				featuredecGlue = ",\n        ";
-			} else {
-				featuredecGlue = ", ";
-			}
+${getFeatureCSS(feature, name)}`);
 		}
 
-		if (rootrules !== "") {
-			rootrules = rootrules + "}\n";
-			featuredec = featuredec + ";";
+		if (rootrules.length > 0) {
+			// Format font-feature-settings with proper line breaks
+			const featuredecFormatted = featuredecParts
+				.map((part, index) => {
+					if (
+						(index + 1) % maxProps === 0 &&
+						index < featuredecParts.length - 1
+					) {
+						return part + ",\n        ";
+					}
+					return part;
+				})
+				.join(", ")
+				.replace(/,\s*$/, "");
 
-			featureclasses = featureclasses.replace(/,\n(?!.*,)/gim, "");
+			sections.push(`/* Set custom properties for each layout feature */
+:root {
+${rootrules.join("\n")}
+}
 
-			stylesheet =
-				stylesheet +
-				"/* Set custom properties for each layout feature */\n";
-			stylesheet = stylesheet + ":root {\n";
-			stylesheet = stylesheet + `${rootrules}\n`;
+/* If class is applied, update custom property and
+   apply modern font-variant-* when supported */
+${cssvardecs.join("")}
+/* Apply current state of all custom properties
+   whenever a class is being applied */
+${featureclasses.join(",\n")} {
+    font-feature-settings: ${featuredecFormatted};
+}
 
-			stylesheet =
-				stylesheet +
-				"/* If class is applied, update custom property and\n";
-			stylesheet =
-				stylesheet +
-				"   apply modern font-variant-* when supported */\n";
-			stylesheet = stylesheet + `${cssvardecs}`;
-
-			stylesheet =
-				stylesheet +
-				"/* Apply current state of all custom properties\n";
-			stylesheet =
-				stylesheet + "   whenever a class is being applied */\n";
-			stylesheet = stylesheet + `${featureclasses} {\n`;
-			stylesheet = stylesheet + `    ${featuredec}\n`;
-			stylesheet = stylesheet + "}\n\n";
+`);
 		}
 	}
 
 	// Variable stuff
-	let varcss = "";
-	varcss = varcss + getVariableCSS(fondue);
+	if (opts.include.variables) {
+		const varcss = getVariableCSS(fondue);
 
-	if (varcss !== "") {
-		if (stylesheet === "") {
-			stylesheet = stylesheet + stylesheetIntro;
+		if (varcss !== "") {
+			if (sections.length === 0) {
+				sections.push(stylesheetIntro);
+			}
+			sections.push(`/* Variable instances */
+${varcss}`);
 		}
-		stylesheet = stylesheet + "/* Variable instances */\n";
-		stylesheet = stylesheet + varcss;
 	}
 
-	return stylesheet;
+	return sections.join("");
 };
 
 const getCSSAsJSON = (font) => {
