@@ -24,33 +24,72 @@ const getSafeName = (name) => {
 	}
 };
 
+// Get CSS for a single feature
+const getFeatureCSS = (featureTag, options = {}) => {
+	const { value = 1, format = "auto", comments = false } = options;
+
+	const featureIndex = getFeatureIndex(featureTag);
+	const featureData = featureMapping.find((f) => f.tag === featureIndex);
+
+	if (!featureData) {
+		console.error(`Unknown feature: ${featureTag}`);
+	}
+
+	const { css } = featureData;
+
+	let result = "";
+
+	// Font variant
+	if (format === "variant" || (format === "auto" && css.variant)) {
+		result = `${css.variant};`;
+	}
+
+	// Font feature settings
+	if (
+		format === "feature-settings" ||
+		(format === "auto" && !css.variant) ||
+		format === "both"
+	) {
+		const state = value === 0 ? "off" : value === 1 ? "on" : value;
+		const ffsValue = `font-feature-settings: "${featureTag}" ${state};`;
+		result =
+			format === "both" && result ? `${result}\n${ffsValue}` : ffsValue;
+	}
+
+	// Comments
+	if (comments && featureData.comment) {
+		result = `/* ${featureData.comment} */\n${result}`;
+	}
+
+	return result;
+};
+
 // Return CSS with custom CSS properties
-const getFeatureCSS = (feature, name) => {
+const getWakamaiFondueCSS = (feature, name) => {
 	const featureIndex = getFeatureIndex(feature);
-	const featureData = {
-		...featureMapping.find((f) => f.tag == featureIndex),
-	};
-	const featureCSS = featureData.css;
+	const featureData = featureMapping.find((f) => f.tag === featureIndex);
+
+	// If not `font-variant-*` for this, skip
+	if (!featureData || !featureData.css.variant) {
+		return "";
+	}
+
+	const variantCSS = getFeatureCSS(feature, { format: "variant" });
 
 	// We can't take the variable out, or to auto/default or
 	// something, so set it to a non-existing feature
 	// Thanks Koen!
 	const fakeFeature = "____";
+	const featureShortcut = `${name}-${feature}`;
 
-	// CSS: font-variant-*
-	if (featureCSS.variant) {
-		const featureShortcut = `${name}-${feature}`;
-		return `@supports (${featureCSS.variant}) {
+	return `@supports (${featureData.css.variant}) {
     .${name}-${feature} {
         --${featureShortcut}: "${fakeFeature}";
-        ${featureCSS.variant};
+        ${variantCSS}
     }
 }
 
 `;
-	}
-
-	return "";
 };
 
 const getAvailableFeatures = (font) => {
@@ -75,7 +114,6 @@ const getVariableCSS = (font) => {
 	const variations = fvar ? fvar.instances : [];
 
 	for (const v in variations) {
-		let propCounter = 2; // First line of props should be shorter
 		const variation = variations[v];
 		const instanceSlug = slugify(v);
 		const featureShortcut = `${name}-${instanceSlug}`;
@@ -83,15 +121,20 @@ const getVariableCSS = (font) => {
 		const settings = [];
 		for (const axis of Object.keys(variation)) {
 			settings.push(`"${axis}" ${variation[axis]}`);
-			// Poor man's code formatting
-			if (++propCounter % maxProps === 0 && settings.length > 0) {
-				const joined = settings.join(", ");
-				settings.length = 0;
-				settings.push(joined + ",\n        ");
-			}
 		}
 
-		const settingsStr = settings.join(", ");
+		const settingsStr = settings
+			.map((part, index) => {
+				if (
+					(index + 1) % maxProps === 0 &&
+					index < settings.length - 1
+				) {
+					return "\n        " + part;
+				}
+				return part;
+			})
+			.join(", ");
+
 		cssBlocks.push(`.${featureShortcut} {
     font-variation-settings: ${settingsStr};
 }
@@ -182,7 +225,7 @@ ${parts.join("\n")}
 `;
 };
 
-const getCSS = (fondue, options = {}) => {
+const getStylesheet = (fondue, options = {}) => {
 	// Merge user options with defaults
 	const opts = {
 		include: {
@@ -216,6 +259,11 @@ const getCSS = (fondue, options = {}) => {
 	}
 
 	if (opts.include.features && features.length) {
+		// Filter features if specific ones are requested
+		const featuresToInclude = Array.isArray(opts.include.features)
+			? features.filter((f) => opts.include.features.includes(f))
+			: features;
+
 		// Layout stuff
 		const rootrules = [];
 		const featureclasses = [];
@@ -223,7 +271,7 @@ const getCSS = (fondue, options = {}) => {
 		const cssvardecs = [];
 		const maxProps = 3;
 
-		for (const feature of features) {
+		for (const feature of featuresToInclude) {
 			const featureIndex = getFeatureIndex(feature);
 			const featureData = {
 				...featureMapping.find((f) => f.tag == featureIndex),
@@ -246,7 +294,7 @@ const getCSS = (fondue, options = {}) => {
     --${featureShortcut}: "${feature}" on;
 }
 
-${getFeatureCSS(feature, name)}`);
+${getWakamaiFondueCSS(feature, name)}`);
 		}
 
 		if (rootrules.length > 0) {
@@ -257,12 +305,11 @@ ${getFeatureCSS(feature, name)}`);
 						(index + 1) % maxProps === 0 &&
 						index < featuredecParts.length - 1
 					) {
-						return part + ",\n        ";
+						return "\n        " + part;
 					}
 					return part;
 				})
-				.join(", ")
-				.replace(/,\s*$/, "");
+				.join(", ");
 
 			sections.push(`/* Set custom properties for each layout feature */
 :root {
@@ -299,8 +346,8 @@ ${varcss}`);
 };
 
 const getCSSAsJSON = (font) => {
-	return new CssJson().toJSON(getCSS(font).replace(/[\n\s]+/g, " "));
+	return new CssJson().toJSON(getStylesheet(font).replace(/[\n\s]+/g, " "));
 };
 
-export default getCSS;
-export { getCSSAsJSON };
+export default getStylesheet;
+export { getFeatureCSS, getCSSAsJSON };
