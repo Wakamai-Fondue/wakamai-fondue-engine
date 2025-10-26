@@ -40,7 +40,10 @@ const getFeatureCSS = (featureTag, options = {}) => {
 	let result = "";
 
 	// Font variant
-	if (format === "variant" || (format === "auto" && css.variant)) {
+	if (
+		css.variant &&
+		(format === "variant" || format === "auto" || format === "both")
+	) {
 		result = `${css.variant};`;
 	}
 
@@ -52,8 +55,14 @@ const getFeatureCSS = (featureTag, options = {}) => {
 	) {
 		const state = value === 0 ? "off" : value === 1 ? "on" : value;
 		const ffsValue = `font-feature-settings: "${featureTag}" ${state};`;
-		result =
-			format === "both" && result ? `${result}\n${ffsValue}` : ffsValue;
+
+		if (format === "both" && css.variant && result) {
+			result = `${result}\n@supports not (${css.variant}) {\n  ${ffsValue}\n}`;
+		} else if (format === "both" && result) {
+			result = `${result}\n${ffsValue}`;
+		} else {
+			result = ffsValue;
+		}
 	}
 
 	// Comments
@@ -106,6 +115,7 @@ const getAvailableFeatures = (font) => {
 	return [...extraFeatures];
 };
 
+// Get CSS for variabe axis
 const getVariableCSS = (font) => {
 	const cssBlocks = [];
 	const maxProps = 6;
@@ -141,19 +151,6 @@ const getVariableCSS = (font) => {
 `);
 	}
 
-	// Disabled as this is website-specific
-	// if (window.labAxes && window.labAxes !== false) {
-	//     const instanceName = 'custom-instance';
-	//     css += `.${name}-${instanceName} {\n`;
-	//     css += `    font-variation-settings:`;
-	//     let glue = ' ';
-	//     for (const axis in labAxes) {
-	//         css += `${glue}'${axis}' ${labAxes[axis].value}`;
-	//         glue = ', ';
-	//     }
-	//     css += ';';
-	//     css += `\n}\n`;
-	// }
 	return cssBlocks.join("\n");
 };
 
