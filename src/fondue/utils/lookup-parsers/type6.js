@@ -113,14 +113,14 @@ function extractFormat3Sequences(subtable, charFor, charactersFromGlyphs) {
 // lookup with look like this: backtrack [a, b, c], input [n]. This is
 // wrong, as that only the backtrack+input will not result in any changed
 // chars
-function shouldIncludeSequences(sequences, subtable, substFormat) {
+function shouldIncludeSequences(sequences, subtable, format) {
 	const { backtrackChars, lookaheadChars } = sequences;
 	const hasBacktrackData = backtrackChars.length > 0;
 	const hasLookaheadData = lookaheadChars.length > 0;
 
 	let shouldIncludeLookup = true;
 
-	if (substFormat === 1) {
+	if (format === 1) {
 		for (
 			let setIndex = 0;
 			setIndex < subtable.chainSubRuleSetCount && shouldIncludeLookup;
@@ -144,9 +144,9 @@ function shouldIncludeSequences(sequences, subtable, substFormat) {
 				}
 			}
 		}
-	} else if (substFormat === 2) {
+	} else if (format === 2) {
 		console.log(subtable);
-	} else if (substFormat === 3) {
+	} else if (format === 3) {
 		if (subtable.backtrackGlyphCount > 0 && !hasBacktrackData) {
 			shouldIncludeLookup = false;
 		}
@@ -201,21 +201,21 @@ export function parseLookupType6(lookup, charFor, charactersFromGlyphs) {
 	lookup.subtableOffsets.forEach((_, i) => {
 		try {
 			const subtable = lookup.getSubTable(i);
-			const substFormat = subtable.substFormat;
+			const format = subtable.format;
 
 			let inputChars = [];
 			let backtrackChars = [];
 			let lookaheadChars = [];
 
-			if (substFormat === 1) {
+			if (format === 1) {
 				// Format 1: nested in chainSubRules
 				({ inputChars, backtrackChars, lookaheadChars } =
 					extractFormat1Sequences(subtable, charFor));
-			} else if (substFormat === 2) {
+			} else if (format === 2) {
 				// Format 2: class-based rules
 				({ inputChars, backtrackChars, lookaheadChars } =
 					extractFormat2Sequences(subtable));
-			} else if (substFormat === 3) {
+			} else if (format === 3) {
 				// Format 3: direct access
 				({ inputChars, backtrackChars, lookaheadChars } =
 					extractFormat3Sequences(
@@ -225,15 +225,12 @@ export function parseLookupType6(lookup, charFor, charactersFromGlyphs) {
 					));
 			} else {
 				// Yeah, now what?
-				console.warn(
-					"No implementation for type 6, format",
-					substFormat
-				);
+				console.warn("No implementation for type 6, format", format);
 			}
 
 			const sequences = { inputChars, backtrackChars, lookaheadChars };
 
-			if (shouldIncludeSequences(sequences, subtable, substFormat)) {
+			if (shouldIncludeSequences(sequences, subtable, format)) {
 				mergeParsedData(parsedData, sequences, i);
 			}
 		} catch (error) {
