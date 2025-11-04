@@ -38,6 +38,7 @@ import {
 	parseLookupType3,
 	parseLookupType4,
 	parseLookupType6,
+	parseLookupType7,
 } from "./utils/lookup-parsers/index.js";
 import {
 	isVariable,
@@ -699,13 +700,27 @@ export default class Fondue {
 			3: parseLookupType3,
 			4: parseLookupType4,
 			6: parseLookupType6,
+			7: (lookup, charFor, charactersFromGlyphs) => {
+				return parseLookupType7(
+					lookup,
+					charFor,
+					charactersFromGlyphs,
+					LOOKUP_PARSERS
+				);
+			},
 		};
 
 		function parseLookup(lookup) {
+			// For type 7, get the underlying type
+			let type = lookup.lookupType;
+			if (lookup.lookupType === 7) {
+				const subtable = lookup.getSubTable(0);
+				type = subtable.type;
+			}
+
 			const parsedLookup = {
-				type: lookup.lookupType,
-				typeName:
-					lookupTypes[lookup.lookupType] || "Unknown lookup type",
+				type: type,
+				typeName: lookupTypes[type] || "Unknown lookup type",
 				input: [],
 				backtrack: [],
 				lookahead: [],
