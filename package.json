@@ -74,6 +74,6 @@
 		"node": ">=18"
 	},
 	"dependencies": {
-		"lib-font": "github:Pomax/lib-font#subtable7"
+		"lib-font": "3.0.0"
 	}
 }
