@@ -57,7 +57,8 @@ const getFeatureCSS = (featureTag, options = {}) => {
 		const ffsValue = `font-feature-settings: "${featureTag}" ${state};`;
 
 		if (format === "both" && css.variant && result) {
-			result = `${result}\n@supports not (${css.variant}) {\n  ${ffsValue}\n}`;
+			const comment = `/* for older browsers, optionally add: */\n`;
+			result = `${result}\n${comment}@supports not (${css.variant}) {\n  ${ffsValue}\n}`;
 		} else if (format === "both" && result) {
 			result = `${result}\n${ffsValue}`;
 		} else {
