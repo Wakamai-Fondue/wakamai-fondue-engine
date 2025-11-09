@@ -509,7 +509,11 @@ export default class Fondue {
 					// as a supported character
 					// https://github.com/Pomax/lib-font/issues/68
 					if (i == 65535) continue;
-					chars.add(this._toUnicodeValue(i));
+
+					// Double-check if character is actually supported
+					if (this.supports(String.fromCharCode(i))) {
+						chars.add(this._toUnicodeValue(i));
+					}
 				}
 			}
 		}
