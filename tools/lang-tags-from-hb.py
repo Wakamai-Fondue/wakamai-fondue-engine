@@ -36,6 +36,30 @@ import json
 import re
 
 
+def cleanlang(lang_name):
+    # No need to communicate this
+    lang_name = (
+        lang_name.replace("[macrolanguage]", "")
+        .replace("[family]", "")
+        .replace("(retired code)", "")
+    )
+
+    # This indicates a deprectaed OT tag, but we don't want
+    # this information to be added to the language name
+    lang_name = lang_name.replace("(deprecated)", "")
+    lang_name = lang_name.strip()
+    return lang_name
+
+
+def add_language(langdict, ot, bcp47, name):
+    if not ot in langdict:
+        langdict[ot] = {
+            "ot": ot,
+            "html": bcp47,
+            "name": cleanlang(name),
+        }
+
+
 def extract_languages(content):
     langdict = {}
 
@@ -73,12 +97,7 @@ def extract_languages(content):
         if "->" in lang_name:
             lang_name = lang_name.split("->")[1].strip()
 
-        if not lang_ot in langdict:
-            langdict[lang_ot] = {
-                "ot": lang_ot,
-                "html": lang_bcp,
-                "name": cleanlang(lang_name),
-            }
+        add_language(langdict, lang_ot, lang_bcp, lang_name)
 
     # Ambiguous languages
     am_lang_section = content.split("hb_ot_ambiguous_tag_to_language (hb_tag_t tag)")[1].split("switch (tag)")[1].split("default")[0]
@@ -107,30 +126,11 @@ def extract_languages(content):
                             return_line.split("/*")[1].split("*/")[0].strip()
                         )
 
-                        langdict[am_lang_ot] = {
-                            "ot": am_lang_ot,
-                            "html": am_lang_bcp,
-                            "name": cleanlang(am_lang_name),
-                        }
+                        add_language(langdict, am_lang_ot, am_lang_bcp, am_lang_name)
                         break
         i += 1
 
     return list(langdict.values())
-
-
-def cleanlang(lang_name):
-    # No need to communicate this
-    lang_name = (
-        lang_name.replace("[macrolanguage]", "")
-        .replace("[family]", "")
-        .replace("(retired code)", "")
-    )
-
-    # This indicates a deprectaed OT tag, but we don't want
-    # this information to be added to the language name
-    lang_name = lang_name.replace("(deprecated)", "")
-    lang_name = lang_name.strip()
-    return lang_name
 
 
 def main():
