@@ -306,6 +306,11 @@ describe("hasAxes", () => {
 		const fondue = await WFTestFont();
 		expect(fondue.hasOpticalSize).toBe(false);
 	});
+
+	test("has default instance", async () => {
+		const fondue = await SourceCodeVariableTTFFont();
+		expect(fondue.variable.defaultInstance).toEqual("Regular");
+	});
 });
 
 describe("hasFeatures", () => {

@@ -236,7 +236,35 @@ export default class Fondue {
 									current: axisRaw.defaultValue,
 								};
 							});
-						return { axes, instances };
+
+						// Find which named instance matches the default axis values
+						let defaultInstance = null;
+						const defaultAxes = {};
+						for (const axis of axes) {
+							defaultAxes[axis.id] = axis.default;
+						}
+
+						for (const instanceName in instances) {
+							const instanceAxes = instances[instanceName];
+							let matches = true;
+
+							// Check if all axis values match defaults
+							for (const axisId in defaultAxes) {
+								if (
+									defaultAxes[axisId] !== instanceAxes[axisId]
+								) {
+									matches = false;
+									break;
+								}
+							}
+
+							if (matches) {
+								defaultInstance = instanceName;
+								break;
+							}
+						}
+
+						return { axes, instances, defaultInstance };
 					}
 					case "name": {
 						return table.nameRecords.map((record) => {
