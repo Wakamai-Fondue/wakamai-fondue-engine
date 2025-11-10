@@ -37,10 +37,9 @@ import json
 
 def extract_languages(content):
     langdict = {}
-    last_resort_langdict = {}
 
     # Regular languages
-    lang_content = content.split("ot_languages[] = {\n")[1].split("\n};")[0]
+    lang_content = content.split("ot_languages2[] = {\n")[1].split("\n};")[0]
     languages = lang_content.split("\n")
 
     # This loop will encounter some languages more than once,
@@ -48,90 +47,95 @@ def extract_languages(content):
     # This will be fixed by the "ambiguous languages"
     # further on
     for language in languages:
-        if "HB_TAG_NONE" in language:
+        if "HB_TAG_NONE" in language or not language.strip():
             continue
 
-        # Commented-out languages can be added at the end
-        # when no other languages match
-        last_resort = language.startswith("/*")
+        # Ignore commented-out languages (lines starting with /*)
+        if language.strip().startswith("/*"):
+            continue
 
-        # Clean up some noise
-        language = (
-            language.replace("HB_TAG(", "")
-            .replace("','", "")
-            .replace("},", "")
-            .replace("{", "")
-            .replace("/*", "")
-            .replace("*/", "")
+        # Split off the comment at the end (contains the language name)
+        if "/*" not in language:
+            continue
+        tag_part = language.split("/*")[0]
+        comment_part = language.split("/*")[1].split("*/")[0].strip()
+
+        # Clean up noise to get to the data
+        tag_part = (
+            tag_part.replace("HB_TAG(", "")
             .replace("'", "")
-            .replace('"', "")
+            .replace(")", "")
+            .replace("{", "")
+            .replace("},", "")
+            .replace(",", "")
             .strip()
         )
 
-        # Some reformatting to make notations consistent
-        language = language.replace("Sotho, Northern", "Northern Sotho").replace(
-            "Sotho, Southern", "Southern Sotho"
-        )
+        # After cleanup, we have two tags concatenated, e.g., "aa  AFR "
+        # BCP47 is first 2-4 chars, OT is next 3-4 chars
+        # Split by whitespace to separate them
+        tags = tag_part.split()
+        if len(tags) < 2:
+            continue
 
-        parts = language.split(")", 1)
+        lang_bcp = tags[0].strip()
+        lang_ot = tags[1].strip()
+        lang_name = comment_part
 
-        # Human readable name
-        tmp = parts[1].split("->")
-        if len(tmp) == 2:
-            lang_name = tmp[1]
-        else:
-            lang_name = tmp[0]
+        # Handle arrow notation in comments
+        if "->" in lang_name:
+            lang_name = lang_name.split("->")[1].strip()
 
-        # BCP47 and OT tag
-        tmp = parts[0].split(",")
-        lang_bcp = tmp[0].strip()
-        lang_ot = tmp[1].strip()
-
-        if not lang_ot in langdict and not last_resort:
+        if not lang_ot in langdict:
             langdict[lang_ot] = {
-                "ot": lang_ot,
-                "html": lang_bcp,
-                "name": cleanlang(lang_name),
-            }
-        if not lang_ot in last_resort_langdict and last_resort:
-            last_resort_langdict[lang_ot] = {
                 "ot": lang_ot,
                 "html": lang_bcp,
                 "name": cleanlang(lang_name),
             }
 
     # Ambiguous languages
-    am_lang_content = (
-        content.split("hb_ot_ambiguous_tag_to_language (hb_tag_t tag)")[1]
-        .split("{\n")[2]
-        .split("default")[0]
-    )
-    am_languages = am_lang_content.replace("\n    ", "").split("\n")
+    am_lang_section = content.split("hb_ot_ambiguous_tag_to_language (hb_tag_t tag)")[1].split("switch (tag)")[1].split("default")[0]
+    am_lines = am_lang_section.split("\n")
 
     # This loop will replace ambiguous languages with the
     # "correct" ones, as deemed by the HarfBuzz project
-    for am_language in am_languages:
-        if am_language.strip():
-            # Clean up some noise
-            am_language = (
-                am_language.replace("case HB_TAG('", "").replace("','", "").strip()
+    i = 0
+    while i < len(am_lines):
+        line = am_lines[i].strip()
+        if line.startswith("case HB_TAG"):
+            # Clean up
+            if "/*" in line:
+                line = line.split("/*")[0]
+            ot_line = (
+                line.replace("case HB_TAG(", "")
+                .replace("'", "")
+                .replace(")", "")
+                .replace(":", "")
+                .replace(",", "")
+                .strip()
             )
+            am_lang_ot = ot_line.strip()
 
-            am_lang_ot = am_language.split("'")[0].strip().strip()
-            am_lang_bcp = am_language.split('("')[1].split('"')[0].strip()
-            am_lang_name = am_language.split(";  /*")[1].split("*/")[0].strip()
+            for j in range(i + 1, min(i + 5, len(am_lines))):
+                if "return hb_language_from_string" in am_lines[j]:
+                    return_line = am_lines[j]
+                    # Extract BCP47 from ("xxx", -1)
+                    am_lang_bcp = (
+                        return_line.split('("')[1].split('"')[0].strip()
+                    )
+                    # Extract language from comment
+                    am_lang_name = (
+                        return_line.split("/*")[1].split("*/")[0].strip()
+                    )
 
-            langdict[am_lang_ot] = {
-                "ot": am_lang_ot,
-                "html": am_lang_bcp,
-                "name": cleanlang(am_lang_name),
-            }
+                    langdict[am_lang_ot] = {
+                        "ot": am_lang_ot,
+                        "html": am_lang_bcp,
+                        "name": cleanlang(am_lang_name),
+                    }
+                    break
+        i += 1
 
-    for lr_lang in last_resort_langdict:
-        if not lr_lang in langdict:
-            langdict[lr_lang] = last_resort_langdict[lr_lang]
-
-    # Return results as list
     return list(langdict.values())
 
 
