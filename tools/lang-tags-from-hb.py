@@ -33,6 +33,7 @@
 
 import sys
 import json
+import re
 
 
 def extract_languages(content):
@@ -54,33 +55,19 @@ def extract_languages(content):
         if language.strip().startswith("/*"):
             continue
 
-        # Split off the comment at the end (contains the language name)
+        # Extract comment at the end (has language name)
         if "/*" not in language:
             continue
-        tag_part = language.split("/*")[0]
-        comment_part = language.split("/*")[1].split("*/")[0].strip()
+        lang_name = language.split("/*")[1].split("*/")[0].strip()
 
-        # Clean up noise to get to the data
-        tag_part = (
-            tag_part.replace("HB_TAG(", "")
-            .replace("'", "")
-            .replace(")", "")
-            .replace("{", "")
-            .replace("},", "")
-            .replace(",", "")
-            .strip()
-        )
-
-        # After cleanup, we have two tags concatenated, e.g., "aa  AFR "
-        # BCP47 is first 2-4 chars, OT is next 3-4 chars
-        # Split by whitespace to separate them
-        tags = tag_part.split()
-        if len(tags) < 2:
+        # Extract all single-quoted characters
+        chars = re.findall(r"'(.)'", language)
+        if len(chars) < 8:
             continue
 
-        lang_bcp = tags[0].strip()
-        lang_ot = tags[1].strip()
-        lang_name = comment_part
+        # First 4 chars are BCP47, next 4 are OT tag
+        lang_bcp = "".join(chars[0:4]).strip()
+        lang_ot = "".join(chars[4:8]).strip()
 
         # Handle arrow notation in comments
         if "->" in lang_name:
@@ -103,37 +90,29 @@ def extract_languages(content):
     while i < len(am_lines):
         line = am_lines[i].strip()
         if line.startswith("case HB_TAG"):
-            # Clean up
-            if "/*" in line:
-                line = line.split("/*")[0]
-            ot_line = (
-                line.replace("case HB_TAG(", "")
-                .replace("'", "")
-                .replace(")", "")
-                .replace(":", "")
-                .replace(",", "")
-                .strip()
-            )
-            am_lang_ot = ot_line.strip()
+            # Extract OT tag
+            chars = re.findall(r"'(.)'", line)
+            if len(chars) >= 4:
+                am_lang_ot = "".join(chars[0:4]).strip()
 
-            for j in range(i + 1, min(i + 5, len(am_lines))):
-                if "return hb_language_from_string" in am_lines[j]:
-                    return_line = am_lines[j]
-                    # Extract BCP47 from ("xxx", -1)
-                    am_lang_bcp = (
-                        return_line.split('("')[1].split('"')[0].strip()
-                    )
-                    # Extract language from comment
-                    am_lang_name = (
-                        return_line.split("/*")[1].split("*/")[0].strip()
-                    )
+                for j in range(i + 1, min(i + 5, len(am_lines))):
+                    if "return hb_language_from_string" in am_lines[j]:
+                        return_line = am_lines[j]
+                        # Extract BCP47 from ("xxx", -1)
+                        am_lang_bcp = (
+                            return_line.split('("')[1].split('"')[0].strip()
+                        )
+                        # Extract language name
+                        am_lang_name = (
+                            return_line.split("/*")[1].split("*/")[0].strip()
+                        )
 
-                    langdict[am_lang_ot] = {
-                        "ot": am_lang_ot,
-                        "html": am_lang_bcp,
-                        "name": cleanlang(am_lang_name),
-                    }
-                    break
+                        langdict[am_lang_ot] = {
+                            "ot": am_lang_ot,
+                            "html": am_lang_bcp,
+                            "name": cleanlang(am_lang_name),
+                        }
+                        break
         i += 1
 
     return list(langdict.values())
