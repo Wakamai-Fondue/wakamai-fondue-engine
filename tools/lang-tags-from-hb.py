@@ -37,16 +37,13 @@ import re
 
 
 def cleanlang(lang_name):
-    # No need to communicate this
-    lang_name = (
-        lang_name.replace("[macrolanguage]", "")
-        .replace("[family]", "")
-        .replace("(retired code)", "")
-    )
+    # Remove all square bracket stuff
+    lang_name = re.sub(r"\[.*?\]", "", lang_name)
 
     # This indicates a deprectaed OT tag, but we don't want
     # this information to be added to the language name
-    lang_name = lang_name.replace("(deprecated)", "")
+    lang_name = lang_name.replace("(retired code)", "").replace("(deprecated)", "")
+
     lang_name = lang_name.strip()
     return lang_name
 
