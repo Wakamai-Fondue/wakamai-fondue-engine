@@ -51,8 +51,8 @@ def cleanlang(lang_name):
     return lang_name
 
 
-def add_language(langdict, ot, bcp47, name):
-    if not ot in langdict:
+def add_language(langdict, ot, bcp47, name, replace=False):
+    if replace or not ot in langdict:
         langdict[ot] = {
             "ot": ot,
             "html": bcp47,
@@ -126,7 +126,7 @@ def extract_languages(content):
                             return_line.split("/*")[1].split("*/")[0].strip()
                         )
 
-                        add_language(langdict, am_lang_ot, am_lang_bcp, am_lang_name)
+                        add_language(langdict, am_lang_ot, am_lang_bcp, am_lang_name, replace=True)
                         break
         i += 1
 
