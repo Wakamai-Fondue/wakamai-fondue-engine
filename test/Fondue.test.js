@@ -373,7 +373,7 @@ test("null bytes are omitted", async () => {
 describe("Language support", () => {
 	test("supports no languages", async () => {
 		const fondue = await WFTestFont();
-		expect(fondue.languageSupport).toStrictEqual([]);
+		expect(await fondue.languageSupport()).toStrictEqual([]);
 	});
 
 	// This test can't currently work because of a bug in lib-font
@@ -382,7 +382,7 @@ describe("Language support", () => {
 	// on supported characters for its test fonts
 	test("supports various languages", async () => {
 		const fondue = await SourceCodeVariableTTFFont();
-		expect(fondue.languageSupport).toEqual(
+		expect(await fondue.languageSupport()).toEqual(
 			expect.arrayContaining(["English", "Dutch"])
 		);
 	});
