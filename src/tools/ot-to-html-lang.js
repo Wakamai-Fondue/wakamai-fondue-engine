@@ -72,7 +72,7 @@ export default [
 	},
 	{
 		html: "ath",
-		name: "Athapascan [collection]",
+		name: "Athapascan",
 		ot: "ATH",
 	},
 	{
@@ -92,7 +92,7 @@ export default [
 	},
 	{
 		html: "ber",
-		name: "Berber [collection]",
+		name: "Berber",
 		ot: "BBR",
 	},
 	{
@@ -147,7 +147,7 @@ export default [
 	},
 	{
 		html: "btk",
-		name: "Batak [collection]",
+		name: "Batak",
 		ot: "BTK",
 	},
 	{
@@ -187,7 +187,7 @@ export default [
 	},
 	{
 		html: "crp",
-		name: "Creoles and pidgins [collection]",
+		name: "Creoles and pidgins",
 		ot: "CPP",
 	},
 	{
@@ -422,7 +422,7 @@ export default [
 	},
 	{
 		html: "ijo",
-		name: "Ijo [collection]",
+		name: "Ijo",
 		ot: "IJO",
 	},
 	{
@@ -577,7 +577,7 @@ export default [
 	},
 	{
 		html: "kar",
-		name: "Karen [collection]",
+		name: "Karen",
 		ot: "KRN",
 	},
 	{
@@ -732,12 +732,12 @@ export default [
 	},
 	{
 		html: "myn",
-		name: "Mayan [collection]",
+		name: "Mayan",
 		ot: "MYN",
 	},
 	{
 		html: "nah",
-		name: "Nahuatl [collection]",
+		name: "Nahuatl",
 		ot: "NAH",
 	},
 	{
