@@ -525,7 +525,7 @@ const layoutFeatures = [
 		name: "Standard Ligatures",
 		css: {
 			feature: 'font-feature-settings: "liga"',
-			variant: null,
+			variant: "font-variant-ligatures: common-ligatures",
 		},
 		state: "on",
 		category: "Standard typographic presentation",
