@@ -57,17 +57,10 @@ def add_language(langdict, ot, bcp47, name, replace=False):
         }
 
 
-def extract_languages(content):
-    langdict = {}
-
-    # Regular languages
-    lang_content = content.split("ot_languages2[] = {\n")[1].split("\n};")[0]
+def parse_language_table(content, table_name, langdict):
+    lang_content = content.split(f"{table_name}[] = {{\n")[1].split("\n};")[0]
     languages = lang_content.split("\n")
 
-    # This loop will encounter some languages more than once,
-    # e.g. "ATH " or "TNE " and will overwrite them!
-    # This will be fixed by the "ambiguous languages"
-    # further on
     for language in languages:
         if "HB_TAG_NONE" in language or not language.strip():
             continue
@@ -95,6 +88,17 @@ def extract_languages(content):
             lang_name = lang_name.split("->")[1].strip()
 
         add_language(langdict, lang_ot, lang_bcp, lang_name)
+
+
+def extract_languages(content):
+    langdict = {}
+
+    # Regular languages (2-letter and 3-letter BCP47 codes)
+    # These loops will encounter some languages more than once,
+    # e.g. "ATH " or "TNE " and will overwrite them!
+    # This will be fixed by the "ambiguous languages" further on
+    parse_language_table(content, "ot_languages2", langdict)
+    parse_language_table(content, "ot_languages3", langdict)
 
     # Ambiguous languages
     am_lang_section = content.split("hb_ot_ambiguous_tag_to_language (hb_tag_t tag)")[1].split("switch (tag)")[1].split("default")[0]
