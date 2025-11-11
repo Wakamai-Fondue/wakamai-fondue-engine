@@ -22,7 +22,6 @@ import getStylesheet, {
 import slugify from "../tools/css/slugify.js";
 import featureMapping from "../tools/features/layout-features.js";
 import languageMapping from "../tools/ot-to-html-lang.js";
-import languageCharSets from "../tools/languageCharSets.js";
 import getFormat from "../tools/summary/format.js";
 import getFileSize from "../tools/summary/file-size.js";
 import getFilename from "../tools/summary/filename.js";
@@ -598,7 +597,10 @@ export default class Fondue {
 	}
 
 	// Language support (from old Wakamai Fondue)
-	get languageSupport() {
+	async languageSupport() {
+		const languageCharSets = await import("../tools/languageCharSets.js");
+		const charSets = languageCharSets.default;
+
 		const fontCharSet = this.supportedCharacters;
 		let result = [],
 			language,
@@ -611,8 +613,8 @@ export default class Fondue {
 
 		ignoreList = LANGUAGE_SUPPORT_IGNORE_LIST;
 
-		for (language in languageCharSets) {
-			chars = languageCharSets[language];
+		for (language in charSets) {
+			chars = charSets[language];
 			found = 0;
 			total = chars.length;
 
