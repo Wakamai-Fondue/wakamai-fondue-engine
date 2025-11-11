@@ -79,7 +79,7 @@ const layoutFeatures = [
 		name: "JIS2004 Forms",
 		css: {
 			feature: 'font-feature-settings: "jp04"',
-			variant: null,
+			variant: "font-variant-east-asian: jis04",
 		},
 		comment: "Japanese only",
 		state: "fixed",
@@ -90,7 +90,7 @@ const layoutFeatures = [
 		name: "JIS78 Forms",
 		css: {
 			feature: 'font-feature-settings: "jp78"',
-			variant: null,
+			variant: "font-variant-east-asian: jis78",
 		},
 		comment: "Japanese only",
 		state: "fixed",
@@ -101,7 +101,7 @@ const layoutFeatures = [
 		name: "JIS83 Forms",
 		css: {
 			feature: 'font-feature-settings: "jp83"',
-			variant: null,
+			variant: "font-variant-east-asian: jis83",
 		},
 		comment: "Japanese only",
 		state: "fixed",
@@ -112,7 +112,7 @@ const layoutFeatures = [
 		name: "JIS90 Forms",
 		css: {
 			feature: 'font-feature-settings: "jp90"',
-			variant: null,
+			variant: "font-variant-east-asian: jis90",
 		},
 		comment: "Japanese only",
 		state: "fixed",
@@ -134,7 +134,7 @@ const layoutFeatures = [
 		name: "Simplified Forms",
 		css: {
 			feature: 'font-feature-settings: "smpl"',
-			variant: null,
+			variant: "font-variant-east-asian: simplified",
 		},
 		state: "fixed",
 		category: "Default glyph pre-processing",
@@ -155,7 +155,7 @@ const layoutFeatures = [
 		name: "Traditional Forms",
 		css: {
 			feature: 'font-feature-settings: "trad"',
-			variant: null,
+			variant: "font-variant-east-asian: traditional",
 		},
 		state: "fixed",
 		category: "Default glyph pre-processing",
@@ -457,7 +457,7 @@ const layoutFeatures = [
 		name: "Contextual Ligatures",
 		css: {
 			feature: 'font-feature-settings: "clig"',
-			variant: null,
+			variant: "font-variant-ligatures: contextual",
 		},
 		state: "on",
 		category: "Standard typographic presentation",
@@ -525,7 +525,7 @@ const layoutFeatures = [
 		name: "Standard Ligatures",
 		css: {
 			feature: 'font-feature-settings: "liga"',
-			variant: null,
+			variant: "font-variant-ligatures: common-ligatures",
 		},
 		state: "on",
 		category: "Standard typographic presentation",
@@ -773,7 +773,7 @@ const layoutFeatures = [
 		name: "Full Widths Mostly CJKV fonts",
 		css: {
 			feature: 'font-feature-settings: "fwid"',
-			variant: null,
+			variant: "font-variant-east-asian: full-width",
 		},
 		state: "off",
 		category: "Discretionary typographic presentation",
@@ -826,7 +826,7 @@ const layoutFeatures = [
 		name: "Half Widths",
 		css: {
 			feature: 'font-feature-settings: "hwid"',
-			variant: null,
+			variant: "font-variant-east-asian: half-width",
 		},
 		state: "off",
 		category: "Discretionary typographic presentation",
@@ -960,7 +960,7 @@ const layoutFeatures = [
 		name: "Proportional Widths",
 		css: {
 			feature: 'font-feature-settings: "pwid"',
-			variant: null,
+			variant: "font-variant-east-asian: proportional-width",
 		},
 		comment: "Mostly CJKV fonts",
 		state: "off",
@@ -982,7 +982,7 @@ const layoutFeatures = [
 		name: "Ruby Notation Forms",
 		css: {
 			feature: 'font-feature-settings: "ruby"',
-			variant: null,
+			variant: "font-variant-east-asian: ruby",
 		},
 		state: "off",
 		category: "Discretionary typographic presentation",
