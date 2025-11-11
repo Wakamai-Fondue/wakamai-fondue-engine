@@ -18,8 +18,6 @@
 #
 # Usage: ./lang-tags-from-hb.py hb-ot-tag-table.hh > ../src/tools/ot-to-html-lang.js
 #
-# File should be formatted as in this version:
-# https://github.com/harfbuzz/harfbuzz/blob/7a961692e9568806221de8b2e2bf41bdfc1b8b3f/src/hb-ot-tag-table.hh
 # Get the latest table from HarfBuzz:
 # https://raw.githubusercontent.com/harfbuzz/harfbuzz/master/src/hb-ot-tag-table.hh
 #
@@ -33,121 +31,105 @@
 
 import sys
 import json
+import re
+
+
+def cleanlang(lang_name):
+    # Remove all square bracket stuff
+    lang_name = re.sub(r"\[.*?\]", "", lang_name)
+
+    # This indicates a deprectaed OT tag, but we don't want
+    # this information to be added to the language name
+    lang_name = lang_name.replace("(retired code)", "").replace("(deprecated)", "")
+
+    lang_name = lang_name.strip()
+    return lang_name
+
+
+def add_language(langdict, ot, bcp47, name, replace=False):
+    if replace or not ot in langdict:
+        langdict[ot] = {
+            "ot": ot,
+            "html": bcp47,
+            "name": cleanlang(name),
+        }
+
+
+def parse_language_table(content, table_name, langdict):
+    lang_content = content.split(f"{table_name}[] = {{\n")[1].split("\n};")[0]
+    languages = lang_content.split("\n")
+
+    for language in languages:
+        if "HB_TAG_NONE" in language or not language.strip():
+            continue
+
+        # Ignore commented-out languages (lines starting with /*)
+        if language.strip().startswith("/*"):
+            continue
+
+        # Extract comment at the end (has language name)
+        if "/*" not in language:
+            continue
+        lang_name = language.split("/*")[1].split("*/")[0].strip()
+
+        # Extract all single-quoted characters
+        chars = re.findall(r"'(.)'", language)
+        if len(chars) < 8:
+            continue
+
+        # First 4 chars are BCP47, next 4 are OT tag
+        lang_bcp = "".join(chars[0:4]).strip()
+        lang_ot = "".join(chars[4:8]).strip()
+
+        # Handle arrow notation in comments
+        if "->" in lang_name:
+            lang_name = lang_name.split("->")[1].strip()
+
+        add_language(langdict, lang_ot, lang_bcp, lang_name)
 
 
 def extract_languages(content):
     langdict = {}
-    last_resort_langdict = {}
 
-    # Regular languages
-    lang_content = content.split("ot_languages[] = {\n")[1].split("\n};")[0]
-    languages = lang_content.split("\n")
-
-    # This loop will encounter some languages more than once,
+    # Regular languages (2-letter and 3-letter BCP47 codes)
+    # These loops will encounter some languages more than once,
     # e.g. "ATH " or "TNE " and will overwrite them!
-    # This will be fixed by the "ambiguous languages"
-    # further on
-    for language in languages:
-        if "HB_TAG_NONE" in language:
-            continue
-
-        # Commented-out languages can be added at the end
-        # when no other languages match
-        last_resort = language.startswith("/*")
-
-        # Clean up some noise
-        language = (
-            language.replace("HB_TAG(", "")
-            .replace("','", "")
-            .replace("},", "")
-            .replace("{", "")
-            .replace("/*", "")
-            .replace("*/", "")
-            .replace("'", "")
-            .replace('"', "")
-            .strip()
-        )
-
-        # Some reformatting to make notations consistent
-        language = language.replace("Sotho, Northern", "Northern Sotho").replace(
-            "Sotho, Southern", "Southern Sotho"
-        )
-
-        parts = language.split(")", 1)
-
-        # Human readable name
-        tmp = parts[1].split("->")
-        if len(tmp) == 2:
-            lang_name = tmp[1]
-        else:
-            lang_name = tmp[0]
-
-        # BCP47 and OT tag
-        tmp = parts[0].split(",")
-        lang_bcp = tmp[0].strip()
-        lang_ot = tmp[1].strip()
-
-        if not lang_ot in langdict and not last_resort:
-            langdict[lang_ot] = {
-                "ot": lang_ot,
-                "html": lang_bcp,
-                "name": cleanlang(lang_name),
-            }
-        if not lang_ot in last_resort_langdict and last_resort:
-            last_resort_langdict[lang_ot] = {
-                "ot": lang_ot,
-                "html": lang_bcp,
-                "name": cleanlang(lang_name),
-            }
+    # This will be fixed by the "ambiguous languages" further on
+    parse_language_table(content, "ot_languages2", langdict)
+    parse_language_table(content, "ot_languages3", langdict)
 
     # Ambiguous languages
-    am_lang_content = (
-        content.split("hb_ot_ambiguous_tag_to_language (hb_tag_t tag)")[1]
-        .split("{\n")[2]
-        .split("default")[0]
-    )
-    am_languages = am_lang_content.replace("\n    ", "").split("\n")
+    am_lang_section = content.split("hb_ot_ambiguous_tag_to_language (hb_tag_t tag)")[1].split("switch (tag)")[1].split("default")[0]
+    am_lines = am_lang_section.split("\n")
 
     # This loop will replace ambiguous languages with the
     # "correct" ones, as deemed by the HarfBuzz project
-    for am_language in am_languages:
-        if am_language.strip():
-            # Clean up some noise
-            am_language = (
-                am_language.replace("case HB_TAG('", "").replace("','", "").strip()
-            )
+    i = 0
+    while i < len(am_lines):
+        line = am_lines[i].strip()
+        if line.startswith("case HB_TAG"):
+            # Extract OT tag
+            chars = re.findall(r"'(.)'", line)
+            if len(chars) >= 4:
+                am_lang_ot = "".join(chars[0:4]).strip()
 
-            am_lang_ot = am_language.split("'")[0].strip().strip()
-            am_lang_bcp = am_language.split('("')[1].split('"')[0].strip()
-            am_lang_name = am_language.split(";  /*")[1].split("*/")[0].strip()
+                for j in range(i + 1, min(i + 5, len(am_lines))):
+                    if "return hb_language_from_string" in am_lines[j]:
+                        return_line = am_lines[j]
+                        # Extract BCP47 from ("xxx", -1)
+                        am_lang_bcp = (
+                            return_line.split('("')[1].split('"')[0].strip()
+                        )
+                        # Extract language name
+                        am_lang_name = (
+                            return_line.split("/*")[1].split("*/")[0].strip()
+                        )
 
-            langdict[am_lang_ot] = {
-                "ot": am_lang_ot,
-                "html": am_lang_bcp,
-                "name": cleanlang(am_lang_name),
-            }
+                        add_language(langdict, am_lang_ot, am_lang_bcp, am_lang_name, replace=True)
+                        break
+        i += 1
 
-    for lr_lang in last_resort_langdict:
-        if not lr_lang in langdict:
-            langdict[lr_lang] = last_resort_langdict[lr_lang]
-
-    # Return results as list
     return list(langdict.values())
-
-
-def cleanlang(lang_name):
-    # No need to communicate this
-    lang_name = (
-        lang_name.replace("[macrolanguage]", "")
-        .replace("[family]", "")
-        .replace("(retired code)", "")
-    )
-
-    # This indicates a deprectaed OT tag, but we don't want
-    # this information to be added to the language name
-    lang_name = lang_name.replace("(deprecated)", "")
-    lang_name = lang_name.strip()
-    return lang_name
 
 
 def main():
