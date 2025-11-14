@@ -313,12 +313,6 @@ const getStylesheet = (fondue, options = {}) => {
 				? `${namespace}-${feature}`
 				: feature;
 
-			rootrules.push(
-				`    --${customPropertyName}: "${feature}" ${defaultState};`
-			);
-			featureclasses.push(`.${featureShortcut}`);
-			featuredecParts.push(`var(--${customPropertyName})`);
-
 			const wakamaiFondueCSS = getWakamaiFondueCSS(
 				feature,
 				namespace,
@@ -329,6 +323,12 @@ const getStylesheet = (fondue, options = {}) => {
 			if (wakamaiFondueCSS) {
 				cssvardecs.push(wakamaiFondueCSS);
 			} else {
+				rootrules.push(
+					`    --${customPropertyName}: "${feature}" ${defaultState};`
+				);
+				featureclasses.push(`.${featureShortcut}`);
+				featuredecParts.push(`var(--${customPropertyName})`);
+
 				cssvardecs.push(`.${featureShortcut} {
     --${customPropertyName}: "${feature}" on;
 }

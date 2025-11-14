@@ -113,7 +113,7 @@ describe("The loaded font", () => {
 			include: { features: ["case", "zero"] },
 		});
 		expect(cssWithMultiple).toContain("--source-code-pro-case");
-		expect(cssWithMultiple).toContain("--source-code-pro-zero");
+		expect(cssWithMultiple).toContain(".source-code-pro-slashed-zero");
 		expect(cssWithMultiple).not.toContain("--source-code-pro-onum");
 	});
 
