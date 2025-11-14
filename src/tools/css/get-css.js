@@ -98,7 +98,7 @@ const getWakamaiFondueCSS = (feature, namespace, includeFallback = true) => {
 }
 
 `
-		: "";
+		: "\n";
 
 	return `.${featureShortcut} {
     ${variantCSS}
