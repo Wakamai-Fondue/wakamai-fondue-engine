@@ -75,7 +75,7 @@ const getFeatureCSS = (featureTag, options = {}) => {
 };
 
 // Return CSS with custom CSS properties
-const getWakamaiFondueCSS = (feature, name) => {
+const getWakamaiFondueCSS = (feature, name, includeFallback = true) => {
 	const featureIndex = getFeatureIndex(feature);
 	const featureData = featureMapping.find((f) => f.tag === featureIndex);
 
@@ -89,17 +89,21 @@ const getWakamaiFondueCSS = (feature, name) => {
 	const state = "on";
 	const ffsValue = `font-feature-settings: "${feature}" ${state};`;
 
-	return `.${featureShortcut} {
-    ${variantCSS}
-}
-/* for older browsers, optionally add: */
+	const fallback = includeFallback
+		? `/* for older browsers, optionally add: */
 @supports not (${featureData.css.variant}) {
     .${featureShortcut} {
         ${ffsValue}
     }
 }
 
-`;
+`
+		: "";
+
+	return `.${featureShortcut} {
+    ${variantCSS}
+}
+${fallback}`;
 };
 
 const getAvailableFeatures = (font) => {
@@ -229,6 +233,7 @@ const getStylesheet = (fondue, options = {}) => {
 		include: {
 			fontFace: true,
 			fontFaceUnicodeRange: true,
+			fontFeatureFallback: true,
 			features: true,
 			variables: true,
 			...(options.include || {}),
@@ -288,7 +293,11 @@ const getStylesheet = (fondue, options = {}) => {
 			featureclasses.push(`.${featureShortcut}`);
 			featuredecParts.push(`var(--${featureShortcut})`);
 
-			const wakamaiFondueCSS = getWakamaiFondueCSS(feature, name);
+			const wakamaiFondueCSS = getWakamaiFondueCSS(
+				feature,
+				name,
+				opts.include.fontFeatureFallback
+			);
 			if (wakamaiFondueCSS) {
 				cssvardecs.push(wakamaiFondueCSS);
 			} else {
