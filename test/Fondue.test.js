@@ -117,6 +117,16 @@ describe("The loaded font", () => {
 		expect(cssWithMultiple).not.toContain("--source-code-pro-onum");
 	});
 
+	test("generates @supports not fallback", async () => {
+		const fondue = await OpenSansFont();
+		const css = fondue.cssString;
+		expect(css).toContain("font-variant-numeric: lining-nums;");
+		expect(css).toContain(
+			"@supports not (font-variant-numeric: lining-nums)"
+		);
+		expect(css).toContain('font-feature-settings: "lnum" on;');
+	});
+
 	test("supports WOFF", async () => {
 		const fondue = await fromPath(
 			"./test/fixtures/SourceCodePro-Regular.ttf.woff"
