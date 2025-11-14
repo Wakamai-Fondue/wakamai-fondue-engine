@@ -84,18 +84,18 @@ const getWakamaiFondueCSS = (feature, name) => {
 		return "";
 	}
 
-	const variantCSS = getFeatureCSS(feature, { format: "variant" });
-
-	// We can't take the variable out, or to auto/default or
-	// something, so set it to a non-existing feature
-	// Thanks Koen!
-	const fakeFeature = "____";
 	const featureShortcut = `${name}-${feature}`;
+	const variantCSS = getFeatureCSS(feature, { format: "variant" });
+	const state = "on";
+	const ffsValue = `font-feature-settings: "${feature}" ${state};`;
 
-	return `@supports (${featureData.css.variant}) {
-    .${name}-${feature} {
-        --${featureShortcut}: "${fakeFeature}";
-        ${variantCSS}
+	return `.${featureShortcut} {
+    ${variantCSS}
+}
+/* for older browsers, optionally add: */
+@supports not (${featureData.css.variant}) {
+    .${featureShortcut} {
+        ${ffsValue}
     }
 }
 
@@ -288,11 +288,16 @@ const getStylesheet = (fondue, options = {}) => {
 			featureclasses.push(`.${featureShortcut}`);
 			featuredecParts.push(`var(--${featureShortcut})`);
 
-			cssvardecs.push(`.${featureShortcut} {
+			const wakamaiFondueCSS = getWakamaiFondueCSS(feature, name);
+			if (wakamaiFondueCSS) {
+				cssvardecs.push(wakamaiFondueCSS);
+			} else {
+				cssvardecs.push(`.${featureShortcut} {
     --${featureShortcut}: "${feature}" on;
 }
 
-${getWakamaiFondueCSS(feature, name)}`);
+`);
+			}
 		}
 
 		if (rootrules.length > 0) {
@@ -316,8 +321,7 @@ ${rootrules.join("\n")}
 
 /* If class is applied, update custom property and
    apply modern font-variant-* when supported */
-${cssvardecs.join("")}
-/* Apply current state of all custom properties
+${cssvardecs.join("")}/* Apply current state of all custom properties
    whenever a class is being applied */
 ${featureclasses.join(",\n")} {
     font-feature-settings: ${featuredecFormatted};
