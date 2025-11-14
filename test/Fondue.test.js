@@ -113,8 +113,18 @@ describe("The loaded font", () => {
 			include: { features: ["case", "zero"] },
 		});
 		expect(cssWithMultiple).toContain("--source-code-pro-case");
-		expect(cssWithMultiple).toContain("--source-code-pro-zero");
+		expect(cssWithMultiple).toContain(".source-code-pro-slashed-zero");
 		expect(cssWithMultiple).not.toContain("--source-code-pro-onum");
+	});
+
+	test("generates @supports not fallback", async () => {
+		const fondue = await OpenSansFont();
+		const css = fondue.cssString;
+		expect(css).toContain("font-variant-numeric: lining-nums;");
+		expect(css).toContain(
+			"@supports not (font-variant-numeric: lining-nums)"
+		);
+		expect(css).toContain('font-feature-settings: "lnum" on;');
 	});
 
 	test("supports WOFF", async () => {

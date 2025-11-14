@@ -75,7 +75,13 @@ const getFeatureCSS = (featureTag, options = {}) => {
 };
 
 // Return CSS with custom CSS properties
-const getWakamaiFondueCSS = (feature, name) => {
+const getWakamaiFondueCSS = (
+	feature,
+	namespace,
+	featureName,
+	customPropertyName,
+	includeFallback = true
+) => {
 	const featureIndex = getFeatureIndex(feature);
 	const featureData = featureMapping.find((f) => f.tag === featureIndex);
 
@@ -84,22 +90,28 @@ const getWakamaiFondueCSS = (feature, name) => {
 		return "";
 	}
 
+	const featureShortcut = namespace
+		? `${namespace}-${featureName}`
+		: featureName;
 	const variantCSS = getFeatureCSS(feature, { format: "variant" });
+	const state = "on";
+	const ffsValue = `font-feature-settings: "${feature}" ${state};`;
 
-	// We can't take the variable out, or to auto/default or
-	// something, so set it to a non-existing feature
-	// Thanks Koen!
-	const fakeFeature = "____";
-	const featureShortcut = `${name}-${feature}`;
-
-	return `@supports (${featureData.css.variant}) {
-    .${name}-${feature} {
-        --${featureShortcut}: "${fakeFeature}";
-        ${variantCSS}
+	const fallback = includeFallback
+		? `/* for older browsers, optionally add: */
+@supports not (${featureData.css.variant}) {
+    .${featureShortcut} {
+        ${ffsValue}
     }
 }
 
-`;
+`
+		: "\n";
+
+	return `.${featureShortcut} {
+    ${variantCSS}
+}
+${fallback}`;
 };
 
 const getAvailableFeatures = (font) => {
@@ -117,17 +129,18 @@ const getAvailableFeatures = (font) => {
 };
 
 // Get CSS for variabe axis
-const getVariableCSS = (font) => {
+const getVariableCSS = (font, namespace) => {
 	const cssBlocks = [];
 	const maxProps = 6;
-	const name = slugify(getSafeName(font.summary["Font name"]));
 	const fvar = font.get("fvar");
 	const variations = fvar ? fvar.instances : [];
 
 	for (const v in variations) {
 		const variation = variations[v];
 		const instanceSlug = slugify(v);
-		const featureShortcut = `${name}-${instanceSlug}`;
+		const featureShortcut = namespace
+			? `${namespace}-${instanceSlug}`
+			: instanceSlug;
 
 		const settings = [];
 		for (const axis of Object.keys(variation)) {
@@ -229,6 +242,7 @@ const getStylesheet = (fondue, options = {}) => {
 		include: {
 			fontFace: true,
 			fontFaceUnicodeRange: true,
+			fontFeatureFallback: true,
 			features: true,
 			variables: true,
 			...(options.include || {}),
@@ -239,7 +253,8 @@ const getStylesheet = (fondue, options = {}) => {
 	const features = getAvailableFeatures(fondue);
 	// Make a 'slug' of the font name to use throughout CSS
 	const realName = getSafeName(fondue.summary["Font name"]);
-	const name = slugify(realName);
+	const namespace =
+		options.namespace !== undefined ? options.namespace : slugify(realName);
 
 	const sections = [];
 	const stylesheetIntro = `/**
@@ -280,19 +295,46 @@ const getStylesheet = (fondue, options = {}) => {
 				continue;
 			}
 
-			const featureShortcut = `${name}-${feature}`;
+			const fontFeature = fondue.features.find((f) => f.tag === feature);
+			let featureName = fontFeature
+				? slugify(fontFeature.uiName || fontFeature.name)
+				: feature;
 
-			rootrules.push(
-				`    --${featureShortcut}: "${feature}" ${defaultState};`
+			const numberMatch = feature.match(/^(ss|cv)(\d+)$/);
+			if (numberMatch && fontFeature && !fontFeature.uiName) {
+				const number = parseInt(numberMatch[2], 10);
+				featureName = `${featureName}-${number}`;
+			}
+
+			const featureShortcut = namespace
+				? `${namespace}-${featureName}`
+				: featureName;
+			const customPropertyName = namespace
+				? `${namespace}-${feature}`
+				: feature;
+
+			const wakamaiFondueCSS = getWakamaiFondueCSS(
+				feature,
+				namespace,
+				featureName,
+				customPropertyName,
+				opts.include.fontFeatureFallback
 			);
-			featureclasses.push(`.${featureShortcut}`);
-			featuredecParts.push(`var(--${featureShortcut})`);
+			if (wakamaiFondueCSS) {
+				cssvardecs.push(wakamaiFondueCSS);
+			} else {
+				rootrules.push(
+					`    --${customPropertyName}: "${feature}" ${defaultState};`
+				);
+				featureclasses.push(`.${featureShortcut}`);
+				featuredecParts.push(`var(--${customPropertyName})`);
 
-			cssvardecs.push(`.${featureShortcut} {
-    --${featureShortcut}: "${feature}" on;
+				cssvardecs.push(`.${featureShortcut} {
+    --${customPropertyName}: "${feature}" on;
 }
 
-${getWakamaiFondueCSS(feature, name)}`);
+`);
+			}
 		}
 
 		if (rootrules.length > 0) {
@@ -316,8 +358,7 @@ ${rootrules.join("\n")}
 
 /* If class is applied, update custom property and
    apply modern font-variant-* when supported */
-${cssvardecs.join("")}
-/* Apply current state of all custom properties
+${cssvardecs.join("")}/* Apply current state of all custom properties
    whenever a class is being applied */
 ${featureclasses.join(",\n")} {
     font-feature-settings: ${featuredecFormatted};
@@ -329,7 +370,7 @@ ${featureclasses.join(",\n")} {
 
 	// Variable stuff
 	if (opts.include.variables) {
-		const varcss = getVariableCSS(fondue);
+		const varcss = getVariableCSS(fondue, namespace);
 
 		if (varcss !== "") {
 			if (sections.length === 0) {
