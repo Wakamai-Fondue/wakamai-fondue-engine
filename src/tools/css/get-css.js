@@ -75,7 +75,7 @@ const getFeatureCSS = (featureTag, options = {}) => {
 };
 
 // Return CSS with custom CSS properties
-const getWakamaiFondueCSS = (feature, name, includeFallback = true) => {
+const getWakamaiFondueCSS = (feature, namespace, includeFallback = true) => {
 	const featureIndex = getFeatureIndex(feature);
 	const featureData = featureMapping.find((f) => f.tag === featureIndex);
 
@@ -84,7 +84,7 @@ const getWakamaiFondueCSS = (feature, name, includeFallback = true) => {
 		return "";
 	}
 
-	const featureShortcut = `${name}-${feature}`;
+	const featureShortcut = namespace ? `${namespace}-${feature}` : feature;
 	const variantCSS = getFeatureCSS(feature, { format: "variant" });
 	const state = "on";
 	const ffsValue = `font-feature-settings: "${feature}" ${state};`;
@@ -121,17 +121,18 @@ const getAvailableFeatures = (font) => {
 };
 
 // Get CSS for variabe axis
-const getVariableCSS = (font) => {
+const getVariableCSS = (font, namespace) => {
 	const cssBlocks = [];
 	const maxProps = 6;
-	const name = slugify(getSafeName(font.summary["Font name"]));
 	const fvar = font.get("fvar");
 	const variations = fvar ? fvar.instances : [];
 
 	for (const v in variations) {
 		const variation = variations[v];
 		const instanceSlug = slugify(v);
-		const featureShortcut = `${name}-${instanceSlug}`;
+		const featureShortcut = namespace
+			? `${namespace}-${instanceSlug}`
+			: instanceSlug;
 
 		const settings = [];
 		for (const axis of Object.keys(variation)) {
@@ -244,7 +245,8 @@ const getStylesheet = (fondue, options = {}) => {
 	const features = getAvailableFeatures(fondue);
 	// Make a 'slug' of the font name to use throughout CSS
 	const realName = getSafeName(fondue.summary["Font name"]);
-	const name = slugify(realName);
+	const namespace =
+		options.namespace !== undefined ? options.namespace : slugify(realName);
 
 	const sections = [];
 	const stylesheetIntro = `/**
@@ -285,7 +287,9 @@ const getStylesheet = (fondue, options = {}) => {
 				continue;
 			}
 
-			const featureShortcut = `${name}-${feature}`;
+			const featureShortcut = namespace
+				? `${namespace}-${feature}`
+				: feature;
 
 			rootrules.push(
 				`    --${featureShortcut}: "${feature}" ${defaultState};`
@@ -295,7 +299,7 @@ const getStylesheet = (fondue, options = {}) => {
 
 			const wakamaiFondueCSS = getWakamaiFondueCSS(
 				feature,
-				name,
+				namespace,
 				opts.include.fontFeatureFallback
 			);
 			if (wakamaiFondueCSS) {
@@ -342,7 +346,7 @@ ${featureclasses.join(",\n")} {
 
 	// Variable stuff
 	if (opts.include.variables) {
-		const varcss = getVariableCSS(fondue);
+		const varcss = getVariableCSS(fondue, namespace);
 
 		if (varcss !== "") {
 			if (sections.length === 0) {
