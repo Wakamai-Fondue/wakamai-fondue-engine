@@ -75,7 +75,13 @@ const getFeatureCSS = (featureTag, options = {}) => {
 };
 
 // Return CSS with custom CSS properties
-const getWakamaiFondueCSS = (feature, namespace, includeFallback = true) => {
+const getWakamaiFondueCSS = (
+	feature,
+	namespace,
+	featureName,
+	customPropertyName,
+	includeFallback = true
+) => {
 	const featureIndex = getFeatureIndex(feature);
 	const featureData = featureMapping.find((f) => f.tag === featureIndex);
 
@@ -84,7 +90,9 @@ const getWakamaiFondueCSS = (feature, namespace, includeFallback = true) => {
 		return "";
 	}
 
-	const featureShortcut = namespace ? `${namespace}-${feature}` : feature;
+	const featureShortcut = namespace
+		? `${namespace}-${featureName}`
+		: featureName;
 	const variantCSS = getFeatureCSS(feature, { format: "variant" });
 	const state = "on";
 	const ffsValue = `font-feature-settings: "${feature}" ${state};`;
@@ -287,26 +295,42 @@ const getStylesheet = (fondue, options = {}) => {
 				continue;
 			}
 
+			const fontFeature = fondue.features.find((f) => f.tag === feature);
+			let featureName = fontFeature
+				? slugify(fontFeature.uiName || fontFeature.name)
+				: feature;
+
+			const numberMatch = feature.match(/^(ss|cv)(\d+)$/);
+			if (numberMatch && fontFeature && !fontFeature.uiName) {
+				const number = parseInt(numberMatch[2], 10);
+				featureName = `${featureName}-${number}`;
+			}
+
 			const featureShortcut = namespace
+				? `${namespace}-${featureName}`
+				: featureName;
+			const customPropertyName = namespace
 				? `${namespace}-${feature}`
 				: feature;
 
 			rootrules.push(
-				`    --${featureShortcut}: "${feature}" ${defaultState};`
+				`    --${customPropertyName}: "${feature}" ${defaultState};`
 			);
 			featureclasses.push(`.${featureShortcut}`);
-			featuredecParts.push(`var(--${featureShortcut})`);
+			featuredecParts.push(`var(--${customPropertyName})`);
 
 			const wakamaiFondueCSS = getWakamaiFondueCSS(
 				feature,
 				namespace,
+				featureName,
+				customPropertyName,
 				opts.include.fontFeatureFallback
 			);
 			if (wakamaiFondueCSS) {
 				cssvardecs.push(wakamaiFondueCSS);
 			} else {
 				cssvardecs.push(`.${featureShortcut} {
-    --${featureShortcut}: "${feature}" on;
+    --${customPropertyName}: "${feature}" on;
 }
 
 `);
