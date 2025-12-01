@@ -186,8 +186,10 @@ const lineWrap = (str, max = 78, tabSize = 4) => {
 	let tab = " ".repeat(tabSize);
 	let newline = "";
 
-	return lines.map((line) => {
-		const formattedLine = `${newline}${tab}${line.join(joiner)}`;
+	return lines.map((line, index) => {
+		const isLastLine = index === lines.length - 1;
+		const trailing = isLastLine ? "" : ",";
+		const formattedLine = `${newline}${tab}${line.join(joiner)}${trailing}`;
 		newline = "\n";
 		tab = " ".repeat(tabSize * 2);
 		return formattedLine;
