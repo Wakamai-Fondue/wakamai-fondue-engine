@@ -131,7 +131,6 @@ const getAvailableFeatures = (font) => {
 // Get CSS for variabe axis
 const getVariableCSS = (font, namespace) => {
 	const cssBlocks = [];
-	const maxProps = 6;
 	const fvar = font.get("fvar");
 	const variations = fvar ? fvar.instances : [];
 
@@ -147,20 +146,14 @@ const getVariableCSS = (font, namespace) => {
 			settings.push(`"${axis}" ${variation[axis]}`);
 		}
 
-		const settingsStr = settings
-			.map((part, index) => {
-				if (
-					(index + 1) % maxProps === 0 &&
-					index < settings.length - 1
-				) {
-					return "\n        " + part;
-				}
-				return part;
-			})
-			.join(", ");
+		const settingsStr = lineWrap(
+			`font-variation-settings: ${settings.join(", ")};`,
+			80,
+			4
+		).join("");
 
 		cssBlocks.push(`.${featureShortcut} {
-    font-variation-settings: ${settingsStr};
+${settingsStr}
 }
 `);
 	}
@@ -282,7 +275,6 @@ const getStylesheet = (fondue, options = {}) => {
 		const featureclasses = [];
 		const featuredecParts = [];
 		const cssvardecs = [];
-		const maxProps = 3;
 
 		for (const feature of featuresToInclude) {
 			const featureIndex = getFeatureIndex(feature);
@@ -338,18 +330,11 @@ const getStylesheet = (fondue, options = {}) => {
 		}
 
 		if (rootrules.length > 0) {
-			// Format font-feature-settings with proper line breaks
-			const featuredecFormatted = featuredecParts
-				.map((part, index) => {
-					if (
-						(index + 1) % maxProps === 0 &&
-						index < featuredecParts.length - 1
-					) {
-						return "\n        " + part;
-					}
-					return part;
-				})
-				.join(", ");
+			const featuredecFormatted = lineWrap(
+				`font-feature-settings: ${featuredecParts.join(", ")};`,
+				80,
+				4
+			).join("");
 
 			sections.push(`/* Set custom properties for each layout feature */
 :root {
@@ -361,7 +346,7 @@ ${rootrules.join("\n")}
 ${cssvardecs.join("")}/* Apply current state of all custom properties
    whenever a class is being applied */
 ${featureclasses.join(",\n")} {
-    font-feature-settings: ${featuredecFormatted};
+${featuredecFormatted}
 }
 
 `);
