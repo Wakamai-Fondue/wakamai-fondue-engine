@@ -75,6 +75,7 @@ export default class Fondue {
 		this._font = font;
 		this._supportedCharactersCache = null;
 		this._unicodeRangeCache = null;
+		this._featureCharsCache = null;
 		this._featuresCache = null;
 	}
 
@@ -719,11 +720,19 @@ export default class Fondue {
 	// Return characters per feature
 	// Only GSUB for now, TODO: GPOS
 	get featureChars() {
+		// Return cached value if it exists
+		if (this._featureCharsCache !== null) {
+			return this._featureCharsCache;
+		}
+
 		const { cmap, GSUB } = this._font.opentype.tables;
 
 		const lookupTypes = LOOKUP_TYPE_NAMES;
 
-		if (!GSUB) return {};
+		if (!GSUB) {
+			this._featureCharsCache = {};
+			return this._featureCharsCache;
+		}
 
 		const charFor = createGlyphToCharMapper(cmap);
 
@@ -830,6 +839,8 @@ export default class Fondue {
 			});
 		});
 
+		// Cache the result before returning
+		this._featureCharsCache = allGlyphs;
 		return allGlyphs;
 	}
 }

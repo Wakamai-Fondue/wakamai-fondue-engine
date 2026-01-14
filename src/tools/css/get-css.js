@@ -24,6 +24,14 @@ const getSafeName = (name) => {
 	}
 };
 
+// Get max alternate count for type 3 lookups
+const getMaxAlternates = (lookup) => {
+	if (!lookup.alternateCount || lookup.alternateCount.length === 0) {
+		return 0;
+	}
+	return Math.max(...lookup.alternateCount);
+};
+
 // Get CSS for a single feature
 const getFeatureCSS = (featureTag, options = {}) => {
 	const { value = 1, format = "auto", comments = false } = options;
@@ -284,6 +292,9 @@ const getStylesheet = (fondue, options = {}) => {
 		const cssvardecs = [];
 		const maxProps = 3;
 
+		// Cache featureChars to avoid expensive lookups in the loop
+		const allFeatureChars = fondue.featureChars?.["DFLT"]?.["dflt"] || {};
+
 		for (const feature of featuresToInclude) {
 			const featureIndex = getFeatureIndex(feature);
 			const featureData = {
@@ -323,14 +334,33 @@ const getStylesheet = (fondue, options = {}) => {
 			if (wakamaiFondueCSS) {
 				cssvardecs.push(wakamaiFondueCSS);
 			} else {
+				// Use numeric 0 for off state
+				const offValue = defaultState === "off" ? "0" : defaultState;
 				rootrules.push(
-					`    --${customPropertyName}: "${feature}" ${defaultState};`
+					`    --${customPropertyName}: "${feature}" ${offValue};`
 				);
 				featureclasses.push(`.${featureShortcut}`);
 				featuredecParts.push(`var(--${customPropertyName})`);
 
+				// Check for type 3 lookups (alternate substitution)
+				let featureValue = ""; // No value = on
+				let alternateComment = "";
+				const featureChars = allFeatureChars[feature];
+				if (featureChars?.lookups) {
+					const type3Lookup = featureChars.lookups.find(
+						(lookup) => lookup.type === 3
+					);
+					if (type3Lookup) {
+						const maxAlternates = getMaxAlternates(type3Lookup);
+						if (maxAlternates > 1) {
+							featureValue = " 1";
+							alternateComment = ` /* Use value 1 to ${maxAlternates} for all alternates */`;
+						}
+					}
+				}
+
 				cssvardecs.push(`.${featureShortcut} {
-    --${customPropertyName}: "${feature}" on;
+    --${customPropertyName}: "${feature}"${featureValue};${alternateComment}
 }
 
 `);
