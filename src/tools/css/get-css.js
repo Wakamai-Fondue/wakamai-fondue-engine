@@ -252,6 +252,7 @@ const getStylesheet = (fondue, options = {}) => {
 			fontFaceUnicodeRange: true,
 			fontFeatureFallback: true,
 			features: true,
+			includeDefaultOnFeatures: false,
 			variables: true,
 			...(options.include || {}),
 		},
@@ -301,8 +302,9 @@ const getStylesheet = (fondue, options = {}) => {
 				...featureMapping.find((f) => f.tag == featureIndex),
 			};
 			const defaultState = featureData.state;
+			const isOnByDefault = defaultState !== "off";
 
-			if (defaultState !== "off") {
+			if (isOnByDefault && !opts.include.includeDefaultOnFeatures) {
 				continue;
 			}
 
@@ -334,33 +336,39 @@ const getStylesheet = (fondue, options = {}) => {
 			if (wakamaiFondueCSS) {
 				cssvardecs.push(wakamaiFondueCSS);
 			} else {
-				// Use numeric 0 for off state
-				const offValue = defaultState === "off" ? "0" : defaultState;
-				rootrules.push(`    --${customPropertyName}: ${offValue};`);
+				const rootValue = isOnByDefault ? "on" : "off";
+				rootrules.push(`    --${customPropertyName}: ${rootValue};`);
 				featureclasses.push(`.${featureShortcut}`);
 				featuredecParts.push(
 					`"${feature}" var(--${customPropertyName})`
 				);
 
-				// Check for type 3 lookups (alternate substitution)
-				let featureValue = "on";
-				let alternateComment = "";
-				const featureChars = allFeatureChars[feature];
-				if (featureChars?.lookups) {
-					const type3Lookup = featureChars.lookups.find(
-						(lookup) => lookup.type === 3
-					);
-					if (type3Lookup) {
-						const maxAlternates = getMaxAlternates(type3Lookup);
-						if (maxAlternates > 1) {
-							featureValue = "1";
-							alternateComment = ` /* Use value 1 to ${maxAlternates} for all alternates */`;
+				let featureValue;
+				let featureComment = "";
+
+				if (isOnByDefault) {
+					featureValue = "off";
+					featureComment = " /* Note! This turns the feature off! */";
+				} else {
+					// Check for type 3 lookups (alternate substitution)
+					featureValue = "on";
+					const featureChars = allFeatureChars[feature];
+					if (featureChars?.lookups) {
+						const type3Lookup = featureChars.lookups.find(
+							(lookup) => lookup.type === 3
+						);
+						if (type3Lookup) {
+							const maxAlternates = getMaxAlternates(type3Lookup);
+							if (maxAlternates > 1) {
+								featureValue = "1";
+								featureComment = ` /* Use value 1 to ${maxAlternates} for all alternates */`;
+							}
 						}
 					}
 				}
 
 				cssvardecs.push(`.${featureShortcut} {
-    --${customPropertyName}: ${featureValue};${alternateComment}
+    --${customPropertyName}: ${featureValue};${featureComment}
 }
 
 `);
