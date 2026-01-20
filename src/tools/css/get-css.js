@@ -389,15 +389,19 @@ const getStylesheet = (fondue, options = {}) => {
 				})
 				.join(", ");
 
-			sections.push(`/* Set custom properties for each layout feature */
+			sections.push(`/**
+ * OpenType Layout Features
+ */
+
+`);
+
+			sections.push(`/* Initial values for the layout features */
 :root {
 ${rootrules.join("\n")}
 }
 
-/* If class is applied, update custom property and
-   apply modern font-variant-* when supported */
-${cssvardecs.join("")}/* Apply current state of all custom properties
-   whenever a class is being applied */
+/* Classes to apply the layout features */
+${cssvardecs.join("")}/* Apply the values set by the classes */
 ${featureclasses.join(",\n")} {
     font-feature-settings: ${featuredecFormatted};
 }
@@ -414,8 +418,12 @@ ${featureclasses.join(",\n")} {
 			if (sections.length === 0) {
 				sections.push(stylesheetIntro);
 			}
-			sections.push(`/* Variable instances */
-${varcss}`);
+			sections.push(`/**
+ * Variable Instances
+ */
+
+${varcss}
+`);
 		}
 	}
 
