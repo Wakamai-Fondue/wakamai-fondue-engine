@@ -336,14 +336,14 @@ const getStylesheet = (fondue, options = {}) => {
 			} else {
 				// Use numeric 0 for off state
 				const offValue = defaultState === "off" ? "0" : defaultState;
-				rootrules.push(
-					`    --${customPropertyName}: "${feature}" ${offValue};`
-				);
+				rootrules.push(`    --${customPropertyName}: ${offValue};`);
 				featureclasses.push(`.${featureShortcut}`);
-				featuredecParts.push(`var(--${customPropertyName})`);
+				featuredecParts.push(
+					`"${feature}" var(--${customPropertyName})`
+				);
 
 				// Check for type 3 lookups (alternate substitution)
-				let featureValue = ""; // No value = on
+				let featureValue = "on";
 				let alternateComment = "";
 				const featureChars = allFeatureChars[feature];
 				if (featureChars?.lookups) {
@@ -353,14 +353,14 @@ const getStylesheet = (fondue, options = {}) => {
 					if (type3Lookup) {
 						const maxAlternates = getMaxAlternates(type3Lookup);
 						if (maxAlternates > 1) {
-							featureValue = " 1";
+							featureValue = "1";
 							alternateComment = ` /* Use value 1 to ${maxAlternates} for all alternates */`;
 						}
 					}
 				}
 
 				cssvardecs.push(`.${featureShortcut} {
-    --${customPropertyName}: "${feature}"${featureValue};${alternateComment}
+    --${customPropertyName}: ${featureValue};${alternateComment}
 }
 
 `);
