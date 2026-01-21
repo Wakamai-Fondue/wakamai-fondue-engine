@@ -263,7 +263,9 @@ const getStylesheet = (fondue, options = {}) => {
 
 	// Make a 'slug' of the font name and designer to use throughout CSS
 	const realName = getSafeName(fondue.summary["Font name"]);
-	const realDesigner = getSafeName(fondue.summary["Designer"]);
+	const realDesigner = getSafeName(
+		fondue.summary["Designer"] || fondue.summary["Manufacturer name"] || ""
+	);
 
 	// Optional "namespace" to make claases and custom properties unique
 	const namespace =
