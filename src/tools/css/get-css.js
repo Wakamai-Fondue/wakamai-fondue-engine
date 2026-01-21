@@ -251,6 +251,7 @@ const getStylesheet = (fondue, options = {}) => {
 			fontFace: true,
 			fontFaceUnicodeRange: true,
 			fontFeatureFallback: true,
+			fontFeatureSettingsOnly: false,
 			features: true,
 			includeDefaultOnFeatures: false,
 			variables: true,
@@ -326,13 +327,15 @@ const getStylesheet = (fondue, options = {}) => {
 				? `${namespace}-${feature}`
 				: feature;
 
-			const wakamaiFondueCSS = getWakamaiFondueCSS(
-				feature,
-				namespace,
-				featureName,
-				customPropertyName,
-				opts.include.fontFeatureFallback
-			);
+			const wakamaiFondueCSS = opts.include.fontFeatureSettingsOnly
+				? ""
+				: getWakamaiFondueCSS(
+						feature,
+						namespace,
+						featureName,
+						customPropertyName,
+						opts.include.fontFeatureFallback
+					);
 			if (wakamaiFondueCSS) {
 				cssvardecs.push(wakamaiFondueCSS);
 			} else {
