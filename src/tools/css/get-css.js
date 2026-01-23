@@ -10,6 +10,7 @@ export const BROWSER_SUPPORT_LEGACY = "legacy";
 export const BROWSER_SUPPORT_BOTH = "both";
 
 const unnamedFontName = "UNNAMED FONT";
+const maxProps = 3;
 
 // Get indexed version, e.g. ss03 → ss##
 const getFeatureIndex = (feature) => {
@@ -138,42 +139,88 @@ const getAvailableFeatures = (font) => {
 
 // Get CSS for variabe axis
 const getVariableCSS = (font, namespace) => {
-	const cssBlocks = [];
-	const maxProps = 6;
 	const fvar = font.get("fvar");
-	const variations = fvar ? fvar.instances : [];
+	if (!fvar || !fvar.axes || fvar.axes.length === 0) {
+		return "";
+	}
 
-	for (const v in variations) {
-		const variation = variations[v];
-		const instanceSlug = slugify(v);
-		const featureShortcut = namespace
+	const axes = fvar.axes;
+	const instances = fvar.instances || {};
+
+	// Build :root with custom properties for each axis
+	const rootRules = axes.map((axis) => {
+		const customPropertyName = namespace
+			? `${namespace}-${axis.id}`
+			: axis.id;
+		return `    --${customPropertyName}: ${axis.default};`;
+	});
+
+	// Build instance classes
+	const instanceClasses = [];
+	const instanceDeclarations = [];
+
+	for (const instanceName in instances) {
+		const instanceSlug = slugify(instanceName);
+		const className = namespace
 			? `${namespace}-${instanceSlug}`
 			: instanceSlug;
+		instanceClasses.push(`.${className}`);
 
-		const settings = [];
-		for (const axis of Object.keys(variation)) {
-			settings.push(`"${axis}" ${variation[axis]}`);
-		}
+		const axisUpdates = axes.map((axis) => {
+			const customPropertyName = namespace
+				? `${namespace}-${axis.id}`
+				: axis.id;
+			const value = instances[instanceName][axis.id];
+			return `    --${customPropertyName}: ${value};`;
+		});
 
-		const settingsStr = settings
-			.map((part, index) => {
-				if (
-					(index + 1) % maxProps === 0 &&
-					index < settings.length - 1
-				) {
-					return "\n        " + part;
-				}
-				return part;
-			})
-			.join(", ");
-
-		cssBlocks.push(`.${featureShortcut} {
-    font-variation-settings: ${settingsStr};
+		instanceDeclarations.push(`.${className} {
+${axisUpdates.join("\n")}
 }
 `);
 	}
 
-	return cssBlocks.join("\n");
+	// Build font-variation-settings declaration
+	const variationSettingsParts = axes.map((axis) => {
+		const customPropertyName = namespace
+			? `${namespace}-${axis.id}`
+			: axis.id;
+		return `"${axis.id}" var(--${customPropertyName})`;
+	});
+
+	const variationSettingsFormatted = variationSettingsParts
+		.map((part, index) => {
+			if (
+				(index + 1) % maxProps === 0 &&
+				index < variationSettingsParts.length - 1
+			) {
+				return "\n        " + part;
+			}
+			return part;
+		})
+		.join(", ");
+
+	let result = `/**
+ * Variable axes
+ */
+
+/* Initial values for the variable axes */
+:root {
+${rootRules.join("\n")}
+}
+
+/* Classes to apply the variable instances */
+${instanceDeclarations.join("\n")}`;
+
+	if (instanceClasses.length > 0) {
+		result += `/* Apply the variable axes set by the classes */
+${instanceClasses.join(",\n")} {
+    font-variation-settings: ${variationSettingsFormatted};
+}
+`;
+	}
+
+	return result;
 };
 
 // Linewrap a string of CSS properties divided by ", "
@@ -298,7 +345,6 @@ const getStylesheet = (fondue, options = {}) => {
 		const featureclasses = [];
 		const featuredecParts = [];
 		const cssvardecs = [];
-		const maxProps = 3;
 
 		// Cache featureChars to avoid expensive lookups in the loop
 		const allFeatureChars = fondue.featureChars?.["DFLT"]?.["dflt"] || {};
@@ -410,7 +456,7 @@ ${rootrules.join("\n")}
 }
 
 /* Classes to apply the layout features */
-${cssvardecs.join("")}/* Apply the values set by the classes */
+${cssvardecs.join("")}/* Apply the layout features set by the classes */
 ${featureclasses.join(",\n")} {
     font-feature-settings: ${featuredecFormatted};
 }
@@ -427,12 +473,7 @@ ${featureclasses.join(",\n")} {
 			if (sections.length === 0) {
 				sections.push(stylesheetIntro);
 			}
-			sections.push(`/**
- * Variable Instances
- */
-
-${varcss}
-`);
+			sections.push(varcss);
 		}
 	}
 
