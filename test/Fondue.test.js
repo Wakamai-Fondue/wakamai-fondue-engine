@@ -78,7 +78,7 @@ describe("The loaded font", () => {
 			"./test/fixtures/SourceCodeVariable-Roman.ttf"
 		);
 		expect(fondue.cssString).toContain(
-			'font-variation-settings: "wght" 900;'
+			'"wght" var(--source-code-variable-wght)'
 		);
 	});
 
@@ -94,7 +94,7 @@ describe("The loaded font", () => {
 			"./test/fixtures/SourceCodePro-Regular.otf"
 		);
 		expect(fondue.cssString).toContain(
-			"font-feature-settings: var(--source-code-pro-case)"
+			'"case" var(--source-code-pro-case)'
 		);
 	});
 
