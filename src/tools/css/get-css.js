@@ -12,6 +12,17 @@ export const BROWSER_SUPPORT_BOTH = "both";
 const unnamedFontName = "UNNAMED FONT";
 const maxProps = 3;
 
+// Poor man's formatting with line breaks
+const formatParts = (parts) =>
+	parts
+		.map((part, index) => {
+			if ((index + 1) % maxProps === 0 && index < parts.length - 1) {
+				return "\n        " + part;
+			}
+			return part;
+		})
+		.join(", ");
+
 // Get indexed version, e.g. ss03 → ss##
 const getFeatureIndex = (feature) => {
 	return feature.replace(/^(ss|cv).*?$/, "$1##");
@@ -188,17 +199,7 @@ ${axisUpdates.join("\n")}
 		return `"${axis.id}" var(--${customPropertyName})`;
 	});
 
-	const variationSettingsFormatted = variationSettingsParts
-		.map((part, index) => {
-			if (
-				(index + 1) % maxProps === 0 &&
-				index < variationSettingsParts.length - 1
-			) {
-				return "\n        " + part;
-			}
-			return part;
-		})
-		.join(", ");
+	const variationSettingsFormatted = formatParts(variationSettingsParts);
 
 	let result = `/**
  * Variable axes
@@ -431,18 +432,7 @@ const getStylesheet = (fondue, options = {}) => {
 		}
 
 		if (rootrules.length > 0) {
-			// Format font-feature-settings with proper line breaks
-			const featuredecFormatted = featuredecParts
-				.map((part, index) => {
-					if (
-						(index + 1) % maxProps === 0 &&
-						index < featuredecParts.length - 1
-					) {
-						return "\n        " + part;
-					}
-					return part;
-				})
-				.join(", ");
+			const featuredecFormatted = formatParts(featuredecParts);
 
 			sections.push(`/**
  * OpenType Layout Features
