@@ -3,22 +3,35 @@ import featureMapping from "../features/layout-features.js";
 import CssJson from "./css-json.js";
 
 const unnamedFontName = "UNNAMED FONT";
-const maxProps = 3;
 
 // Get custom property name with optional namespace
 const getCustomPropertyName = (namespace, id) =>
 	namespace ? `${namespace}-${id}` : id;
 
-// Poor man's formatting with line breaks
-const formatParts = (parts) =>
-	parts
-		.map((part, index) => {
-			if ((index + 1) % maxProps === 0 && index < parts.length - 1) {
-				return "\n        " + part;
-			}
-			return part;
-		})
-		.join(", ");
+// Join parts with ", " and wrap at maxLength, indenting continuation lines
+const formatParts = (
+	parts,
+	{ maxLength = 100, indent = "        ", lineStart = "" } = {}
+) => {
+	const joiner = ", ";
+	let result = "";
+	let lineLength = lineStart.length;
+
+	parts.forEach((part, index) => {
+		const isFirst = index === 0;
+		const addition = isFirst ? part : joiner + part;
+
+		if (!isFirst && lineLength + addition.length > maxLength) {
+			result += joiner + "\n" + indent + part;
+			lineLength = indent.length + part.length;
+		} else {
+			result += addition;
+			lineLength += addition.length;
+		}
+	});
+
+	return result;
+};
 
 // Get indexed version, e.g. ss03 → ss##
 const getFeatureIndex = (feature) => {
@@ -188,7 +201,9 @@ ${axisUpdates.join("\n")}
 		return `"${axis.id}" var(--${propName})`;
 	});
 
-	const variationSettingsFormatted = formatParts(variationSettingsParts);
+	const variationSettingsFormatted = formatParts(variationSettingsParts, {
+		lineStart: "    font-variation-settings: ",
+	});
 
 	let result = `/**
  * Variable axes
@@ -312,7 +327,9 @@ const getFeaturesCSS = (fondue, namespace, opts) => {
 		return "";
 	}
 
-	const featureDecFormatted = formatParts(featureDecParts);
+	const featureDecFormatted = formatParts(featureDecParts, {
+		lineStart: "    font-feature-settings: ",
+	});
 
 	return `/**
  * OpenType Layout Features
@@ -330,39 +347,6 @@ ${featureClasses.join(",\n")} {
 }
 
 `;
-};
-
-// Linewrap a string of CSS properties divided by ", "
-// Note that the tabSize is doubled for consecutive lines
-const lineWrap = (str, max = 78, tabSize = 4) => {
-	const joiner = ", ";
-	const chunks = str.split(joiner);
-
-	const lines = [];
-	let line = 0;
-	let lineLength = tabSize;
-
-	chunks.forEach((chunk) => {
-		if (lineLength + chunk.length + joiner.length >= max) {
-			line++;
-			lineLength = tabSize * 2;
-		} else {
-			lineLength += joiner.length;
-		}
-		lines[line] = lines[line] || [];
-		lines[line].push(chunk);
-		lineLength += chunk.length;
-	});
-
-	let tab = " ".repeat(tabSize);
-	let newline = "";
-
-	return lines.map((line) => {
-		const formattedLine = `${newline}${tab}${line.join(joiner)}`;
-		newline = "\n";
-		tab = " ".repeat(tabSize * 2);
-		return formattedLine;
-	});
 };
 
 const getFontFace = (font, opts) => {
@@ -386,11 +370,10 @@ const getFontFace = (font, opts) => {
 
 	// Add Unicode range
 	if (opts.include.fontFaceUnicodeRange) {
-		const cssFormattedRanges = font.unicodeRange
-			.map((c) => `U+${c}`)
-			.join(", ");
-		const unicodeRange = `unicode-range: ${cssFormattedRanges};`;
-		parts.push(lineWrap(unicodeRange).join(""));
+		const lineStart = "    unicode-range: ";
+		const ranges = font.unicodeRange.map((c) => `U+${c}`);
+		const formatted = formatParts(ranges, { lineStart });
+		parts.push(`${lineStart}${formatted};`);
 	}
 
 	return `@font-face {
