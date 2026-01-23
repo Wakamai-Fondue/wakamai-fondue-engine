@@ -8,12 +8,13 @@ const unnamedFontName = "UNNAMED FONT";
 const getCustomPropertyName = (namespace, id) =>
 	namespace ? `${namespace}-${id}` : id;
 
-// Join parts with ", " and wrap at maxLength, indenting continuation lines
-const formatParts = (
+// Join parts and wrap at maxLength
+const lineWrap = (
 	parts,
-	{ maxLength = 100, indent = "        ", lineStart = "" } = {}
+	{ maxLength = 100, indent = 8, lineStart = "" } = {}
 ) => {
 	const joiner = ", ";
+	const indentStr = " ".repeat(indent);
 	let result = "";
 	let lineLength = lineStart.length;
 
@@ -22,8 +23,8 @@ const formatParts = (
 		const addition = isFirst ? part : joiner + part;
 
 		if (!isFirst && lineLength + addition.length > maxLength) {
-			result += joiner + "\n" + indent + part;
-			lineLength = indent.length + part.length;
+			result += joiner + "\n" + indentStr + part;
+			lineLength = indent + part.length;
 		} else {
 			result += addition;
 			lineLength += addition.length;
@@ -201,7 +202,7 @@ ${axisUpdates.join("\n")}
 		return `"${axis.id}" var(--${propName})`;
 	});
 
-	const variationSettingsFormatted = formatParts(variationSettingsParts, {
+	const variationSettingsFormatted = lineWrap(variationSettingsParts, {
 		lineStart: "    font-variation-settings: ",
 	});
 
@@ -218,8 +219,9 @@ ${rootRules.join("\n")}
 ${instanceDeclarations.join("\n")}`;
 
 	if (instanceClasses.length > 0) {
+		const classesFormatted = lineWrap(instanceClasses, { indent: 0 });
 		result += `/* Apply the variable axes set by the classes */
-${instanceClasses.join(",\n")} {
+${classesFormatted} {
     font-variation-settings: ${variationSettingsFormatted};
 }
 `;
@@ -327,7 +329,7 @@ const getFeaturesCSS = (fondue, namespace, opts) => {
 		return "";
 	}
 
-	const featureDecFormatted = formatParts(featureDecParts, {
+	const featureDecFormatted = lineWrap(featureDecParts, {
 		lineStart: "    font-feature-settings: ",
 	});
 
@@ -342,7 +344,7 @@ ${rootRules.join("\n")}
 
 /* Classes to apply the layout features */
 ${cssVarDecs.join("")}/* Apply the layout features set by the classes */
-${featureClasses.join(",\n")} {
+${lineWrap(featureClasses, { indent: 0 })} {
     font-feature-settings: ${featureDecFormatted};
 }
 
@@ -372,7 +374,7 @@ const getFontFace = (font, opts) => {
 	if (opts.include.fontFaceUnicodeRange) {
 		const lineStart = "    unicode-range: ";
 		const ranges = font.unicodeRange.map((c) => `U+${c}`);
-		const formatted = formatParts(ranges, { lineStart });
+		const formatted = lineWrap(ranges, { lineStart });
 		parts.push(`${lineStart}${formatted};`);
 	}
 
