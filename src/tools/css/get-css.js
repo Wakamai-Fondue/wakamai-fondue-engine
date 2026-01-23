@@ -220,6 +220,125 @@ ${instanceClasses.join(",\n")} {
 	return result;
 };
 
+// Get CSS for layout features
+const getFeaturesCSS = (fondue, namespace, opts) => {
+	const features = getAvailableFeatures(fondue);
+	if (!features.length) {
+		return "";
+	}
+
+	// Filter features if specific ones are requested
+	const featuresToInclude = Array.isArray(opts.include.features)
+		? features.filter((f) => opts.include.features.includes(f))
+		: features;
+
+	const rootRules = [];
+	const featureClasses = [];
+	const featureDecParts = [];
+	const cssVarDecs = [];
+
+	// Cache featureChars to avoid expensive lookups in the loop
+	const allFeatureChars = fondue.featureChars?.["DFLT"]?.["dflt"] || {};
+
+	for (const feature of featuresToInclude) {
+		const featureIndex = getFeatureIndex(feature);
+		const featureData = {
+			...featureMapping.find((f) => f.tag == featureIndex),
+		};
+		const defaultState = featureData.state;
+		const isOnByDefault = defaultState !== "off";
+
+		if (isOnByDefault && !opts.include.includeDefaultOnFeatures) {
+			continue;
+		}
+
+		const fontFeature = fondue.features.find((f) => f.tag === feature);
+		let featureName = fontFeature
+			? slugify(fontFeature.uiName || fontFeature.name)
+			: feature;
+
+		const numberMatch = feature.match(/^(ss|cv)(\d+)$/);
+		if (numberMatch && fontFeature && !fontFeature.uiName) {
+			const number = parseInt(numberMatch[2], 10);
+			featureName = `${featureName}-${number}`;
+		}
+
+		const featureShortcut = getCustomPropertyName(namespace, featureName);
+		const customPropertyName = getCustomPropertyName(namespace, feature);
+
+		const wakamaiFondueCSS = opts.include.fontFeatureSettingsOnly
+			? ""
+			: getWakamaiFondueCSS(
+					feature,
+					namespace,
+					featureName,
+					customPropertyName,
+					opts.include.fontFeatureFallback
+				);
+		if (wakamaiFondueCSS) {
+			cssVarDecs.push(wakamaiFondueCSS);
+		} else {
+			const rootValue = isOnByDefault ? "on" : "off";
+			rootRules.push(`    --${customPropertyName}: ${rootValue};`);
+			featureClasses.push(`.${featureShortcut}`);
+			featureDecParts.push(`"${feature}" var(--${customPropertyName})`);
+
+			let featureValue;
+			let featureComment = "";
+
+			if (isOnByDefault) {
+				featureValue = "off";
+				featureComment = " /* Note! This turns the feature off! */";
+			} else {
+				// Check for type 3 lookups (alternate substitution)
+				featureValue = "on";
+				const featureChars = allFeatureChars[feature];
+				if (featureChars?.lookups) {
+					const type3Lookup = featureChars.lookups.find(
+						(lookup) => lookup.type === 3
+					);
+					if (type3Lookup) {
+						const maxAlternates = getMaxAlternates(type3Lookup);
+						if (maxAlternates > 1) {
+							featureValue = "1";
+							featureComment = ` /* Use value 1 to ${maxAlternates} for all alternates */`;
+						}
+					}
+				}
+			}
+
+			cssVarDecs.push(`.${featureShortcut} {
+    --${customPropertyName}: ${featureValue};${featureComment}
+}
+
+`);
+		}
+	}
+
+	if (rootRules.length === 0) {
+		return "";
+	}
+
+	const featureDecFormatted = formatParts(featureDecParts);
+
+	return `/**
+ * OpenType Layout Features
+ */
+
+/* Initial values for the layout features */
+:root {
+${rootRules.join("\n")}
+}
+
+/* Classes to apply the layout features */
+${cssVarDecs.join("")}/* Apply the layout features set by the classes */
+${featureClasses.join(",\n")} {
+    font-feature-settings: ${featureDecFormatted};
+}
+
+`;
+};
+
 // Linewrap a string of CSS properties divided by ", "
 // Note that the tabSize is doubled for consecutive lines
 const lineWrap = (str, max = 78, tabSize = 4) => {
@@ -303,8 +422,6 @@ const getStylesheet = (fondue, options = {}) => {
 		},
 	};
 
-	const features = getAvailableFeatures(fondue);
-
 	// Make a 'slug' of the font name and designer to use throughout CSS
 	const realName = getSafeName(fondue.summary["Font name"]);
 	const realDesigner = getSafeName(
@@ -331,125 +448,10 @@ const getStylesheet = (fondue, options = {}) => {
 		sections.push(getFontFace(fondue, opts));
 	}
 
-	if (opts.include.features && features.length) {
-		// Filter features if specific ones are requested
-		const featuresToInclude = Array.isArray(opts.include.features)
-			? features.filter((f) => opts.include.features.includes(f))
-			: features;
-
-		// Layout stuff
-		const rootrules = [];
-		const featureclasses = [];
-		const featuredecParts = [];
-		const cssvardecs = [];
-
-		// Cache featureChars to avoid expensive lookups in the loop
-		const allFeatureChars = fondue.featureChars?.["DFLT"]?.["dflt"] || {};
-
-		for (const feature of featuresToInclude) {
-			const featureIndex = getFeatureIndex(feature);
-			const featureData = {
-				...featureMapping.find((f) => f.tag == featureIndex),
-			};
-			const defaultState = featureData.state;
-			const isOnByDefault = defaultState !== "off";
-
-			if (isOnByDefault && !opts.include.includeDefaultOnFeatures) {
-				continue;
-			}
-
-			const fontFeature = fondue.features.find((f) => f.tag === feature);
-			let featureName = fontFeature
-				? slugify(fontFeature.uiName || fontFeature.name)
-				: feature;
-
-			const numberMatch = feature.match(/^(ss|cv)(\d+)$/);
-			if (numberMatch && fontFeature && !fontFeature.uiName) {
-				const number = parseInt(numberMatch[2], 10);
-				featureName = `${featureName}-${number}`;
-			}
-
-			const featureShortcut = getCustomPropertyName(
-				namespace,
-				featureName
-			);
-			const customPropertyName = getCustomPropertyName(
-				namespace,
-				feature
-			);
-
-			const wakamaiFondueCSS = opts.include.fontFeatureSettingsOnly
-				? ""
-				: getWakamaiFondueCSS(
-						feature,
-						namespace,
-						featureName,
-						customPropertyName,
-						opts.include.fontFeatureFallback
-					);
-			if (wakamaiFondueCSS) {
-				cssvardecs.push(wakamaiFondueCSS);
-			} else {
-				const rootValue = isOnByDefault ? "on" : "off";
-				rootrules.push(`    --${customPropertyName}: ${rootValue};`);
-				featureclasses.push(`.${featureShortcut}`);
-				featuredecParts.push(
-					`"${feature}" var(--${customPropertyName})`
-				);
-
-				let featureValue;
-				let featureComment = "";
-
-				if (isOnByDefault) {
-					featureValue = "off";
-					featureComment = " /* Note! This turns the feature off! */";
-				} else {
-					// Check for type 3 lookups (alternate substitution)
-					featureValue = "on";
-					const featureChars = allFeatureChars[feature];
-					if (featureChars?.lookups) {
-						const type3Lookup = featureChars.lookups.find(
-							(lookup) => lookup.type === 3
-						);
-						if (type3Lookup) {
-							const maxAlternates = getMaxAlternates(type3Lookup);
-							if (maxAlternates > 1) {
-								featureValue = "1";
-								featureComment = ` /* Use value 1 to ${maxAlternates} for all alternates */`;
-							}
-						}
-					}
-				}
-
-				cssvardecs.push(`.${featureShortcut} {
-    --${customPropertyName}: ${featureValue};${featureComment}
-}
-
-`);
-			}
-		}
-
-		if (rootrules.length > 0) {
-			const featuredecFormatted = formatParts(featuredecParts);
-
-			sections.push(`/**
- * OpenType Layout Features
- */
-
-`);
-
-			sections.push(`/* Initial values for the layout features */
-:root {
-${rootrules.join("\n")}
-}
-
-/* Classes to apply the layout features */
-${cssvardecs.join("")}/* Apply the layout features set by the classes */
-${featureclasses.join(",\n")} {
-    font-feature-settings: ${featuredecFormatted};
-}
-
-`);
+	if (opts.include.features) {
+		const featureCss = getFeaturesCSS(fondue, namespace, opts);
+		if (featureCss !== "") {
+			sections.push(featureCss);
 		}
 	}
 
