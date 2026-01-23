@@ -12,6 +12,10 @@ export const BROWSER_SUPPORT_BOTH = "both";
 const unnamedFontName = "UNNAMED FONT";
 const maxProps = 3;
 
+// Get custom property name with optional namespace
+const getCustomPropertyName = (namespace, id) =>
+	namespace ? `${namespace}-${id}` : id;
+
 // Poor man's formatting with line breaks
 const formatParts = (parts) =>
 	parts
@@ -110,9 +114,7 @@ const getWakamaiFondueCSS = (
 		return "";
 	}
 
-	const featureShortcut = namespace
-		? `${namespace}-${featureName}`
-		: featureName;
+	const featureShortcut = getCustomPropertyName(namespace, featureName);
 	const variantCSS = getFeatureCSS(feature, { format: "variant" });
 	const state = "on";
 	const ffsValue = `font-feature-settings: "${feature}" ${state};`;
@@ -160,10 +162,8 @@ const getVariableCSS = (font, namespace) => {
 
 	// Build :root with custom properties for each axis
 	const rootRules = axes.map((axis) => {
-		const customPropertyName = namespace
-			? `${namespace}-${axis.id}`
-			: axis.id;
-		return `    --${customPropertyName}: ${axis.default};`;
+		const propName = getCustomPropertyName(namespace, axis.id);
+		return `    --${propName}: ${axis.default};`;
 	});
 
 	// Build instance classes
@@ -171,18 +171,16 @@ const getVariableCSS = (font, namespace) => {
 	const instanceDeclarations = [];
 
 	for (const instanceName in instances) {
-		const instanceSlug = slugify(instanceName);
-		const className = namespace
-			? `${namespace}-${instanceSlug}`
-			: instanceSlug;
+		const className = getCustomPropertyName(
+			namespace,
+			slugify(instanceName)
+		);
 		instanceClasses.push(`.${className}`);
 
 		const axisUpdates = axes.map((axis) => {
-			const customPropertyName = namespace
-				? `${namespace}-${axis.id}`
-				: axis.id;
+			const propName = getCustomPropertyName(namespace, axis.id);
 			const value = instances[instanceName][axis.id];
-			return `    --${customPropertyName}: ${value};`;
+			return `    --${propName}: ${value};`;
 		});
 
 		instanceDeclarations.push(`.${className} {
@@ -193,10 +191,8 @@ ${axisUpdates.join("\n")}
 
 	// Build font-variation-settings declaration
 	const variationSettingsParts = axes.map((axis) => {
-		const customPropertyName = namespace
-			? `${namespace}-${axis.id}`
-			: axis.id;
-		return `"${axis.id}" var(--${customPropertyName})`;
+		const propName = getCustomPropertyName(namespace, axis.id);
+		return `"${axis.id}" var(--${propName})`;
 	});
 
 	const variationSettingsFormatted = formatParts(variationSettingsParts);
@@ -373,12 +369,14 @@ const getStylesheet = (fondue, options = {}) => {
 				featureName = `${featureName}-${number}`;
 			}
 
-			const featureShortcut = namespace
-				? `${namespace}-${featureName}`
-				: featureName;
-			const customPropertyName = namespace
-				? `${namespace}-${feature}`
-				: feature;
+			const featureShortcut = getCustomPropertyName(
+				namespace,
+				featureName
+			);
+			const customPropertyName = getCustomPropertyName(
+				namespace,
+				feature
+			);
 
 			const wakamaiFondueCSS = opts.include.fontFeatureSettingsOnly
 				? ""
