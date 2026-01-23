@@ -448,14 +448,9 @@ const getStylesheet = (fondue, options = {}) => {
 		}
 	}
 
-	// Variable stuff
 	if (opts.include.variables) {
 		const varcss = getVariableCSS(fondue, namespace);
-
 		if (varcss !== "") {
-			if (sections.length === 0) {
-				sections.push(stylesheetIntro);
-			}
 			sections.push(varcss);
 		}
 	}
