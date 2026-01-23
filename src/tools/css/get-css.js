@@ -220,7 +220,7 @@ ${instanceDeclarations.join("\n")}`;
 
 	if (instanceClasses.length > 0) {
 		const classesFormatted = lineWrap(instanceClasses, { indent: 0 });
-		result += `/* Apply the variable axes set by the classes */
+		result += `\n/* Apply the variable axes set by the classes */
 ${classesFormatted} {
     font-variation-settings: ${variationSettingsFormatted};
 }
