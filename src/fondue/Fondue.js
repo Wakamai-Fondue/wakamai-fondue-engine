@@ -490,6 +490,9 @@ export default class Fondue {
 				summary[record.predefined.name] = record.value;
 			}
 		});
+		this.os2.forEach((field) => {
+			summary[field.name] = String(field.value);
+		});
 		return summary;
 	}
 
