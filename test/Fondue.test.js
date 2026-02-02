@@ -23,7 +23,7 @@ const SSEmojiFont = async () => {
 };
 
 const OpenSansFont = async () => {
-	return await fromPath("./test/fixtures/OpenSans-Regular.ttf");
+	return await fromPath("./test/fixtures/OpenSans-Bold.ttf");
 };
 
 const SourceCodeProOTFFont = async () => {
@@ -482,7 +482,7 @@ describe("Layout features", () => {
 				typeName: "Ligature Substitution",
 				lookahead: [],
 				backtrack: [],
-				input: ["ffl", "ffi", "ff", "fl", "fi"],
+				input: ["ffi", "ffl", "ff", "fi", "fl"],
 				alternateCount: [],
 			})
 		);
