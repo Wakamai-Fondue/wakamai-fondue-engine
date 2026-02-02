@@ -629,4 +629,17 @@ describe("OS/2 table", () => {
 			])
 		);
 	});
+
+	test("returns width class", async () => {
+		const fondue = await SourceCodeProOTFFont();
+		expect(fondue.os2).toEqual(
+			expect.arrayContaining([
+				expect.objectContaining({
+					key: "usWidthClass",
+					name: "Width class",
+					value: 5,
+				}),
+			])
+		);
+	});
 });

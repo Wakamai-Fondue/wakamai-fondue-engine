@@ -22,6 +22,10 @@ const os2Fields = [
 		key: "usWeightClass",
 		name: "Weight class",
 	},
+	{
+		key: "usWidthClass",
+		name: "Width class",
+	},
 ];
 
 export default os2Fields;
