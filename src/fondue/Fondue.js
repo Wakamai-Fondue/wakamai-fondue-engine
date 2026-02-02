@@ -426,6 +426,7 @@ export default class Fondue {
 					key: field.key,
 					name: field.name,
 					value: value,
+					description: field.values?.[value] || null,
 				});
 			}
 			return result;
@@ -491,7 +492,11 @@ export default class Fondue {
 			}
 		});
 		this.os2.forEach((field) => {
-			summary[field.name] = String(field.value);
+			if (field.description) {
+				summary[field.name] = `${field.value} (${field.description})`;
+			} else {
+				summary[field.name] = `${field.value}`;
+			}
 		});
 		return summary;
 	}

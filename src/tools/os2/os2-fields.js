@@ -21,10 +21,32 @@ const os2Fields = [
 	{
 		key: "usWeightClass",
 		name: "Weight class",
+		values: {
+			100: "Thin",
+			200: "Extra-light or Ultra-light",
+			300: "Light",
+			400: "Regular",
+			500: "Medium",
+			600: "Semi-bold or Demi-bold",
+			700: "Bold",
+			800: "Extra-bold or Ultra-bold",
+			900: "Black or Heavy",
+		},
 	},
 	{
 		key: "usWidthClass",
 		name: "Width class",
+		values: {
+			1: "Ultra-condensed",
+			2: "Extra-condensed",
+			3: "Condensed",
+			4: "Semi-condensed",
+			5: "Medium",
+			6: "Semi-expanded",
+			7: "Expanded",
+			8: "Extra-expanded",
+			9: "Ultra-expanded",
+		},
 	},
 ];
 

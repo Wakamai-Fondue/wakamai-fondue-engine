@@ -612,6 +612,7 @@ describe("OS/2 table", () => {
 					key: "usWeightClass",
 					name: "Weight class",
 					value: 700,
+					description: "Bold",
 				}),
 			])
 		);
@@ -625,6 +626,7 @@ describe("OS/2 table", () => {
 					key: "usWeightClass",
 					name: "Weight class",
 					value: 400,
+					description: "Regular",
 				}),
 			])
 		);
@@ -638,6 +640,7 @@ describe("OS/2 table", () => {
 					key: "usWidthClass",
 					name: "Width class",
 					value: 5,
+					description: "Medium",
 				}),
 			])
 		);
