@@ -602,3 +602,31 @@ describe("Counting", () => {
 		expect(fondue.glyphCount).toEqual(1585);
 	});
 });
+
+describe("OS/2 table", () => {
+	test("returns weight class for bold font", async () => {
+		const fondue = await OpenSansFont();
+		expect(fondue.os2).toEqual(
+			expect.arrayContaining([
+				expect.objectContaining({
+					key: "usWeightClass",
+					name: "Weight class",
+					value: 700,
+				}),
+			])
+		);
+	});
+
+	test("returns weight class for regular font", async () => {
+		const fondue = await SourceCodeProOTFFont();
+		expect(fondue.os2).toEqual(
+			expect.arrayContaining([
+				expect.objectContaining({
+					key: "usWeightClass",
+					name: "Weight class",
+					value: 400,
+				}),
+			])
+		);
+	});
+});
