@@ -194,15 +194,29 @@ ${axisUpdates.join("\n")}
 }`);
 	}
 
-	// Build font-variation-settings declaration
-	const variationSettingsParts = axes.map((axis) => {
-		const propName = getCustomPropertyName(namespace, axis.id);
-		return `"${axis.id}" var(--${propName})`;
-	});
+	// We want to set weight and width directly, or not at all
+	const skipAxes = ["wght", "wdth"];
 
-	const variationSettingsFormatted = lineWrap(variationSettingsParts, {
-		lineStart: "    font-variation-settings: ",
-	});
+	// Build font-variation-settings for custom axes only
+	const variationSettingsParts = axes
+		.filter((axis) => !skipAxes.includes(axis.id))
+		.map((axis) => {
+			const propName = getCustomPropertyName(namespace, axis.id);
+			return `"${axis.id}" var(--${propName})`;
+		});
+
+	// Build standard axis CSS properties
+	const standardAxisProperties = [];
+	if (axes.some((a) => a.id === "wght")) {
+		const propName = getCustomPropertyName(namespace, "wght");
+		standardAxisProperties.push(`    font-weight: var(--${propName});`);
+	}
+	if (axes.some((a) => a.id === "wdth")) {
+		const propName = getCustomPropertyName(namespace, "wdth");
+		standardAxisProperties.push(
+			`    font-stretch: calc(var(--${propName}) * 1%);`
+		);
+	}
 
 	let result = `/**
  * Variable axes
@@ -218,11 +232,25 @@ ${instanceDeclarations.join("\n\n")}`;
 
 	if (instanceClasses.length > 0) {
 		const classesFormatted = lineWrap(instanceClasses, { indent: 0 });
+		const cssProperties = [...standardAxisProperties];
+
+		if (variationSettingsParts.length > 0) {
+			const variationSettingsFormatted = lineWrap(
+				variationSettingsParts,
+				{
+					lineStart: "    font-variation-settings: ",
+				}
+			);
+			cssProperties.push(
+				`    font-variation-settings: ${variationSettingsFormatted};`
+			);
+		}
+
 		result += `
 
 /* Apply the variable axes set by the classes */
 ${classesFormatted} {
-    font-variation-settings: ${variationSettingsFormatted};
+${cssProperties.join("\n")}
 }`;
 	}
 
