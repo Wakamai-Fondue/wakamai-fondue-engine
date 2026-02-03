@@ -23,7 +23,7 @@ const SSEmojiFont = async () => {
 };
 
 const OpenSansFont = async () => {
-	return await fromPath("./test/fixtures/OpenSans-Regular.ttf");
+	return await fromPath("./test/fixtures/OpenSans-Bold.ttf");
 };
 
 const SourceCodeProOTFFont = async () => {
@@ -207,6 +207,21 @@ describe("CSS generation options", () => {
 		expect(css).not.toContain("unicode-range:");
 		expect(css).not.toContain("font-feature-settings:");
 		expect(css).not.toContain("font-variation-settings:");
+	});
+
+	test("includes font-weight for variable font", async () => {
+		const fondue = await SourceCodeVariableTTFFont();
+		expect(fondue.cssString).toContain("font-weight: 200 900;");
+	});
+
+	test("includes font-weight for non-variable font", async () => {
+		const fondue = await OpenSansFont();
+		expect(fondue.cssString).toContain("font-weight: 700;");
+	});
+
+	test("includes font-stretch for non-variable font", async () => {
+		const fondue = await OpenSansFont();
+		expect(fondue.cssString).toContain("font-stretch: 100%;");
 	});
 });
 
@@ -482,7 +497,7 @@ describe("Layout features", () => {
 				typeName: "Ligature Substitution",
 				lookahead: [],
 				backtrack: [],
-				input: ["ffl", "ffi", "ff", "fl", "fi"],
+				input: ["ffi", "ffl", "ff", "fi", "fl"],
 				alternateCount: [],
 			})
 		);
@@ -600,5 +615,49 @@ describe("Counting", () => {
 	test("return number of glyphs", async () => {
 		const fondue = await SourceCodeProOTFFont();
 		expect(fondue.glyphCount).toEqual(1585);
+	});
+});
+
+describe("OS/2 table", () => {
+	test("returns weight class for bold font", async () => {
+		const fondue = await OpenSansFont();
+		expect(fondue.os2).toEqual(
+			expect.arrayContaining([
+				expect.objectContaining({
+					key: "usWeightClass",
+					name: "Weight class",
+					value: 700,
+					description: "Bold",
+				}),
+			])
+		);
+	});
+
+	test("returns weight class for regular font", async () => {
+		const fondue = await SourceCodeProOTFFont();
+		expect(fondue.os2).toEqual(
+			expect.arrayContaining([
+				expect.objectContaining({
+					key: "usWeightClass",
+					name: "Weight class",
+					value: 400,
+					description: "Regular",
+				}),
+			])
+		);
+	});
+
+	test("returns width class", async () => {
+		const fondue = await SourceCodeProOTFFont();
+		expect(fondue.os2).toEqual(
+			expect.arrayContaining([
+				expect.objectContaining({
+					key: "usWidthClass",
+					name: "Width class",
+					value: 5,
+					description: "Medium",
+				}),
+			])
+		);
 	});
 });

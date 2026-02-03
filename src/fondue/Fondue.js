@@ -21,6 +21,7 @@ import getStylesheet, {
 } from "../tools/css/get-css.js";
 import slugify from "../tools/css/slugify.js";
 import featureMapping from "../tools/features/layout-features.js";
+import os2Fields from "../tools/os2/os2-fields.js";
 import languageMapping from "../tools/ot-to-html-lang.js";
 import getFormat from "../tools/summary/format.js";
 import getFileSize from "../tools/summary/file-size.js";
@@ -411,6 +412,27 @@ export default class Fondue {
 		return this._featuresCache;
 	}
 
+	// Gets OS/2 table data.
+	// Usage:
+	//   fondue.os2
+	get os2() {
+		const os2Table = this._font.opentype.tables["OS/2"];
+		if (!os2Table) return [];
+
+		return os2Fields.reduce((result, field) => {
+			const value = os2Table[field.key];
+			if (value !== undefined) {
+				result.push({
+					key: field.key,
+					name: field.name,
+					value: value,
+					description: field.values?.[value] || null,
+				});
+			}
+			return result;
+		}, []);
+	}
+
 	// Gets all information about the font's variable features.
 	// Usage:
 	//   fondue.variable
@@ -467,6 +489,13 @@ export default class Fondue {
 		this.get("name").forEach((record) => {
 			if (record.value && record.predefined) {
 				summary[record.predefined.name] = record.value;
+			}
+		});
+		this.os2.forEach((field) => {
+			if (field.description) {
+				summary[field.name] = `${field.value} (${field.description})`;
+			} else {
+				summary[field.name] = `${field.value}`;
 			}
 		});
 		return summary;
