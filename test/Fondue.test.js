@@ -218,6 +218,11 @@ describe("CSS generation options", () => {
 		const fondue = await OpenSansFont();
 		expect(fondue.cssString).toContain("font-weight: 700;");
 	});
+
+	test("includes font-stretch for non-variable font", async () => {
+		const fondue = await OpenSansFont();
+		expect(fondue.cssString).toContain("font-stretch: 100%;");
+	});
 });
 
 describe("outline format", () => {
