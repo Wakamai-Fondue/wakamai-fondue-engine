@@ -195,7 +195,11 @@ ${axisUpdates.join("\n")}
 	}
 
 	// We want to set weight and width directly, or not at all
-	const skipAxes = ["wght", "wdth"];
+	const skipAxes = [
+		"wght", // We want `font-weight` instead
+		"wdth", // We want `font-stretch` instead
+		"opsz", // We want to leave that to the browser
+	];
 
 	// Build font-variation-settings for custom axes only
 	const variationSettingsParts = axes
