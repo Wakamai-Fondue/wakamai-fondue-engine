@@ -208,6 +208,16 @@ describe("CSS generation options", () => {
 		expect(css).not.toContain("font-feature-settings:");
 		expect(css).not.toContain("font-variation-settings:");
 	});
+
+	test("includes font-weight for variable font", async () => {
+		const fondue = await SourceCodeVariableTTFFont();
+		expect(fondue.cssString).toContain("font-weight: 200 900;");
+	});
+
+	test("includes font-weight for non-variable font", async () => {
+		const fondue = await OpenSansFont();
+		expect(fondue.cssString).toContain("font-weight: 700;");
+	});
 });
 
 describe("outline format", () => {

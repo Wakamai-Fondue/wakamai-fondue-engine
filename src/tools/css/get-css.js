@@ -354,7 +354,7 @@ const getFontFace = (font, opts) => {
 	parts.push(`    font-family: "${getSafeName(font.summary["Font name"])}";`);
 	parts.push(`    src: url("${font.summary["Filename"]}");`);
 
-	// Add variable defaults
+	// Add font-weight and font-stretch
 	if (font.isVariable) {
 		const weight = font.variable.axes.find((o) => o.id === "wght");
 		if (weight) {
@@ -364,6 +364,32 @@ const getFontFace = (font, opts) => {
 		const width = font.variable.axes.find((o) => o.id === "wdth");
 		if (width) {
 			parts.push(`    font-stretch: ${width.min}% ${width.max}%;`);
+		}
+	} else {
+		// For non-variable fonts, use OS/2 table values
+		const weightClass = font.os2.find((o) => o.key === "usWeightClass");
+		if (weightClass) {
+			parts.push(`    font-weight: ${weightClass.value};`);
+		}
+
+		const widthClass = font.os2.find((o) => o.key === "usWidthClass");
+		if (widthClass) {
+			// Map usWidthClass (1-9) to font-stretch percentage
+			const widthMap = {
+				1: 50,
+				2: 62.5,
+				3: 75,
+				4: 87.5,
+				5: 100,
+				6: 112.5,
+				7: 125,
+				8: 150,
+				9: 200,
+			};
+			const stretchValue = widthMap[widthClass.value];
+			if (stretchValue) {
+				parts.push(`    font-stretch: ${stretchValue}%;`);
+			}
 		}
 	}
 
