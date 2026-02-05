@@ -157,7 +157,7 @@ const getAvailableFeatures = (font) => {
 };
 
 // Get CSS for variabe axis
-const getVariableCSS = (font, namespace) => {
+const getVariableCSS = (font, namespace, skipAxes = []) => {
 	const fvar = font.get("fvar");
 	if (!fvar || !fvar.axes || fvar.axes.length === 0) {
 		return "";
@@ -193,13 +193,6 @@ const getVariableCSS = (font, namespace) => {
 ${axisUpdates.join("\n")}
 }`);
 	}
-
-	// We want to set weight and width directly, or not at all
-	const skipAxes = [
-		"wght", // We want `font-weight` instead
-		"wdth", // We want `font-stretch` instead
-		"opsz", // We want to leave that to the browser
-	];
 
 	// Build font-variation-settings for custom axes only
 	const variationSettingsParts = axes
@@ -438,6 +431,13 @@ ${parts.join("\n")}
 }`;
 };
 
+// We want to set weight and width directly, or not at all
+const DEFAULT_SKIP_AXES = [
+	"wght", // We want `font-weight` instead
+	"wdth", // We want `font-stretch` instead
+	"opsz", // We want to leave that to the browser
+];
+
 const getStylesheet = (fondue, options = {}) => {
 	// Merge user options with defaults
 	const opts = {
@@ -451,6 +451,7 @@ const getStylesheet = (fondue, options = {}) => {
 			variables: true,
 			...(options.include || {}),
 		},
+		skipAxes: options.skipAxes || DEFAULT_SKIP_AXES,
 	};
 
 	const realName = getSafeName(fondue.summary["Font name"]);
@@ -481,7 +482,7 @@ const getStylesheet = (fondue, options = {}) => {
 	}
 
 	if (opts.include.variables) {
-		const varcss = getVariableCSS(fondue, namespace);
+		const varcss = getVariableCSS(fondue, namespace, opts.skipAxes);
 		if (varcss !== "") {
 			sections.push(varcss);
 		}
