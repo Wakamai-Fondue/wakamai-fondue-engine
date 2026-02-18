@@ -4,6 +4,15 @@ import CssJson from "./css-json.js";
 
 const unnamedFontName = "UNNAMED FONT";
 
+const DEFAULT_SKIP_AXES = [
+	"opsz", // We want to leave that to the browser
+];
+
+const DEFAULT_USE_NATIVE_CSS = [
+	"wght", // We use `font-weight` instead
+	"wdth", // We use `font-stretch` instead
+];
+
 // Get custom property name with optional namespace
 const getCustomPropertyName = (namespace, id) =>
 	namespace ? `${namespace}-${id}` : id;
@@ -110,7 +119,6 @@ const getWakamaiFondueCSS = (
 	feature,
 	namespace,
 	featureName,
-	customPropertyName,
 	includeFallback = true
 ) => {
 	const featureIndex = getFeatureIndex(feature);
@@ -157,7 +165,7 @@ const getAvailableFeatures = (font) => {
 };
 
 // Get CSS for variabe axis
-const getVariableCSS = (font, namespace, skipAxes = []) => {
+const getVariableCSS = (font, namespace, skipAxes = [], useNativeCSS = []) => {
 	const fvar = font.get("fvar");
 	if (!fvar || !fvar.axes || fvar.axes.length === 0) {
 		return "";
@@ -198,18 +206,19 @@ ${axisUpdates.join("\n")}
 }`);
 	}
 
-	const variationSettingsParts = axes.map((axis) => {
-		const propName = getCustomPropertyName(namespace, axis.id);
-		return `"${axis.id}" var(--${propName})`;
-	});
+	const variationSettingsParts = axes
+		.filter((axis) => !useNativeCSS.includes(axis.id))
+		.map((axis) => {
+			const propName = getCustomPropertyName(namespace, axis.id);
+			return `"${axis.id}" var(--${propName})`;
+		});
 
-	// Build standard axis CSS properties
 	const standardAxisProperties = [];
-	if (axes.some((a) => a.id === "wght")) {
+	if (useNativeCSS.includes("wght") && axes.some((a) => a.id === "wght")) {
 		const propName = getCustomPropertyName(namespace, "wght");
 		standardAxisProperties.push(`    font-weight: var(--${propName});`);
 	}
-	if (axes.some((a) => a.id === "wdth")) {
+	if (useNativeCSS.includes("wdth") && axes.some((a) => a.id === "wdth")) {
 		const propName = getCustomPropertyName(namespace, "wdth");
 		standardAxisProperties.push(
 			`    font-stretch: calc(var(--${propName}) * 1%);`
@@ -432,10 +441,6 @@ ${parts.join("\n")}
 }`;
 };
 
-const DEFAULT_SKIP_AXES = [
-	"opsz", // We want to leave that to the browser
-];
-
 const getStylesheet = (fondue, options = {}) => {
 	// Merge user options with defaults
 	const opts = {
@@ -450,6 +455,7 @@ const getStylesheet = (fondue, options = {}) => {
 			...(options.include || {}),
 		},
 		skipAxes: options.skipAxes || DEFAULT_SKIP_AXES,
+		useNativeCSS: options.useNativeCSS || DEFAULT_USE_NATIVE_CSS,
 	};
 
 	const realName = getSafeName(fondue.summary["Font name"]);
@@ -480,7 +486,12 @@ const getStylesheet = (fondue, options = {}) => {
 	}
 
 	if (opts.include.variables) {
-		const varcss = getVariableCSS(fondue, namespace, opts.skipAxes);
+		const varcss = getVariableCSS(
+			fondue,
+			namespace,
+			opts.skipAxes,
+			opts.useNativeCSS
+		);
 		if (varcss !== "") {
 			sections.push(varcss);
 		}
