@@ -5,7 +5,11 @@ import CssJson from "./css-json.js";
 const unnamedFontName = "UNNAMED FONT";
 
 const DEFAULT_SKIP_AXES = [
-	"opsz", // We want to leave that to the browser
+	// I planned to skip `opsz` because we should leave it to the
+	// browser. But once we generate CSS by also looking at the
+	// `STAT` table, we can do a smarter exclude. So we don't skip
+	// `opsz` for now but leave the "skip axes" functionality in
+	// "opsz", // We want to leave that to the browser
 ];
 
 const DEFAULT_USE_NATIVE_CSS = [
