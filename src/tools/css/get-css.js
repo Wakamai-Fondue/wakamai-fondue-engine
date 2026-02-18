@@ -163,7 +163,11 @@ const getVariableCSS = (font, namespace, skipAxes = []) => {
 		return "";
 	}
 
-	const axes = fvar.axes;
+	const axes = fvar.axes.filter((axis) => !skipAxes.includes(axis.id));
+	if (axes.length === 0) {
+		return "";
+	}
+
 	const instances = fvar.instances || {};
 
 	// Build :root with custom properties for each axis
@@ -194,13 +198,10 @@ ${axisUpdates.join("\n")}
 }`);
 	}
 
-	// Build font-variation-settings for custom axes only
-	const variationSettingsParts = axes
-		.filter((axis) => !skipAxes.includes(axis.id))
-		.map((axis) => {
-			const propName = getCustomPropertyName(namespace, axis.id);
-			return `"${axis.id}" var(--${propName})`;
-		});
+	const variationSettingsParts = axes.map((axis) => {
+		const propName = getCustomPropertyName(namespace, axis.id);
+		return `"${axis.id}" var(--${propName})`;
+	});
 
 	// Build standard axis CSS properties
 	const standardAxisProperties = [];
@@ -431,10 +432,7 @@ ${parts.join("\n")}
 }`;
 };
 
-// We want to set weight and width directly, or not at all
 const DEFAULT_SKIP_AXES = [
-	"wght", // We want `font-weight` instead
-	"wdth", // We want `font-stretch` instead
 	"opsz", // We want to leave that to the browser
 ];
 
