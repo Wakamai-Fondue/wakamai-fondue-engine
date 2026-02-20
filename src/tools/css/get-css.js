@@ -4,6 +4,19 @@ import CssJson from "./css-json.js";
 
 const unnamedFontName = "UNNAMED FONT";
 
+const DEFAULT_SKIP_AXES = [
+	// I planned to skip `opsz` because we should leave it to the
+	// browser. But once we generate CSS by also looking at the
+	// `STAT` table, we can do a smarter exclude. So we don't skip
+	// `opsz` for now but leave the "skip axes" functionality in
+	// "opsz", // We want to leave that to the browser
+];
+
+const DEFAULT_USE_NATIVE_CSS = [
+	"wght", // We use `font-weight` instead
+	"wdth", // We use `font-stretch` instead
+];
+
 // Get custom property name with optional namespace
 const getCustomPropertyName = (namespace, id) =>
 	namespace ? `${namespace}-${id}` : id;
@@ -110,7 +123,6 @@ const getWakamaiFondueCSS = (
 	feature,
 	namespace,
 	featureName,
-	customPropertyName,
 	includeFallback = true
 ) => {
 	const featureIndex = getFeatureIndex(feature);
@@ -157,13 +169,17 @@ const getAvailableFeatures = (font) => {
 };
 
 // Get CSS for variabe axis
-const getVariableCSS = (font, namespace) => {
+const getVariableCSS = (font, namespace, skipAxes = [], useNativeCSS = []) => {
 	const fvar = font.get("fvar");
 	if (!fvar || !fvar.axes || fvar.axes.length === 0) {
 		return "";
 	}
 
-	const axes = fvar.axes;
+	const axes = fvar.axes.filter((axis) => !skipAxes.includes(axis.id));
+	if (axes.length === 0) {
+		return "";
+	}
+
 	const instances = fvar.instances || {};
 
 	// Build :root with custom properties for each axis
@@ -194,15 +210,24 @@ ${axisUpdates.join("\n")}
 }`);
 	}
 
-	// Build font-variation-settings declaration
-	const variationSettingsParts = axes.map((axis) => {
-		const propName = getCustomPropertyName(namespace, axis.id);
-		return `"${axis.id}" var(--${propName})`;
-	});
+	const variationSettingsParts = axes
+		.filter((axis) => !useNativeCSS.includes(axis.id))
+		.map((axis) => {
+			const propName = getCustomPropertyName(namespace, axis.id);
+			return `"${axis.id}" var(--${propName})`;
+		});
 
-	const variationSettingsFormatted = lineWrap(variationSettingsParts, {
-		lineStart: "    font-variation-settings: ",
-	});
+	const standardAxisProperties = [];
+	if (useNativeCSS.includes("wght") && axes.some((a) => a.id === "wght")) {
+		const propName = getCustomPropertyName(namespace, "wght");
+		standardAxisProperties.push(`    font-weight: var(--${propName});`);
+	}
+	if (useNativeCSS.includes("wdth") && axes.some((a) => a.id === "wdth")) {
+		const propName = getCustomPropertyName(namespace, "wdth");
+		standardAxisProperties.push(
+			`    font-stretch: calc(var(--${propName}) * 1%);`
+		);
+	}
 
 	let result = `/**
  * Variable axes
@@ -218,11 +243,25 @@ ${instanceDeclarations.join("\n\n")}`;
 
 	if (instanceClasses.length > 0) {
 		const classesFormatted = lineWrap(instanceClasses, { indent: 0 });
+		const cssProperties = [...standardAxisProperties];
+
+		if (variationSettingsParts.length > 0) {
+			const variationSettingsFormatted = lineWrap(
+				variationSettingsParts,
+				{
+					lineStart: "    font-variation-settings: ",
+				}
+			);
+			cssProperties.push(
+				`    font-variation-settings: ${variationSettingsFormatted};`
+			);
+		}
+
 		result += `
 
 /* Apply the variable axes set by the classes */
 ${classesFormatted} {
-    font-variation-settings: ${variationSettingsFormatted};
+${cssProperties.join("\n")}
 }`;
 	}
 
@@ -419,6 +458,8 @@ const getStylesheet = (fondue, options = {}) => {
 			variables: true,
 			...(options.include || {}),
 		},
+		skipAxes: options.skipAxes || DEFAULT_SKIP_AXES,
+		useNativeCSS: options.useNativeCSS || DEFAULT_USE_NATIVE_CSS,
 	};
 
 	const realName = getSafeName(fondue.summary["Font name"]);
@@ -449,7 +490,12 @@ const getStylesheet = (fondue, options = {}) => {
 	}
 
 	if (opts.include.variables) {
-		const varcss = getVariableCSS(fondue, namespace);
+		const varcss = getVariableCSS(
+			fondue,
+			namespace,
+			opts.skipAxes,
+			opts.useNativeCSS
+		);
 		if (varcss !== "") {
 			sections.push(varcss);
 		}

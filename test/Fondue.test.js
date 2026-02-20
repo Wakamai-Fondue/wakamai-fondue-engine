@@ -78,7 +78,7 @@ describe("The loaded font", () => {
 			"./test/fixtures/SourceCodeVariable-Roman.ttf"
 		);
 		expect(fondue.cssString).toContain(
-			'"wght" var(--source-code-variable-wght)'
+			"font-weight: var(--source-code-variable-wght);"
 		);
 	});
 
