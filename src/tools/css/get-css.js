@@ -268,6 +268,59 @@ ${cssProperties.join("\n")}
 	return result;
 };
 
+// Get CSS for color palettes
+const getPalettesCSS = (fondue, namespace) => {
+	const palettes = fondue.colorPalettes;
+	if (!palettes || palettes.length <= 1) {
+		return "";
+	}
+
+	const fontName = getSafeName(fondue.summary["Font name"]);
+	const lines = [];
+
+	lines.push(`/**`);
+	lines.push(` * Color palettes`);
+	lines.push(` */`);
+	lines.push(``);
+
+	// First all @font-palette-values definitions...
+	for (let i = 1; i < palettes.length; i++) {
+		const paletteName = getCustomPropertyName(namespace, `palette-${i}`);
+		lines.push(`@font-palette-values --${paletteName} {`);
+		lines.push(`    font-family: "${fontName}";`);
+		lines.push(`    base-palette: ${i};`);
+
+		if (i === 1) {
+			lines.push(`    /**`);
+			lines.push(`     * Use this to override colors of a palette:`);
+			lines.push(`     * override-colors:`);
+			lines.push(`     *     0         /* Index of the color */`);
+			lines.push(`     *     #ff0000;  /* New color value */`);
+			lines.push(`     */`);
+		}
+
+		lines.push(`}`);
+		if (i < palettes.length - 1) {
+			lines.push(``);
+		}
+	}
+
+	lines.push(``);
+
+	// ...then all classes to apply them
+	for (let i = 1; i < palettes.length; i++) {
+		const paletteName = getCustomPropertyName(namespace, `palette-${i}`);
+		lines.push(`.${paletteName} {`);
+		lines.push(`    font-palette: --${paletteName};`);
+		lines.push(`}`);
+		if (i < palettes.length - 1) {
+			lines.push(``);
+		}
+	}
+
+	return lines.join("\n");
+};
+
 // Get CSS for layout features
 const getFeaturesCSS = (fondue, namespace, opts) => {
 	const features = getAvailableFeatures(fondue);
@@ -456,6 +509,7 @@ const getStylesheet = (fondue, options = {}) => {
 			features: true,
 			includeDefaultOnFeatures: false,
 			variables: true,
+			palettes: true,
 			...(options.include || {}),
 		},
 		skipAxes: options.skipAxes || DEFAULT_SKIP_AXES,
@@ -498,6 +552,13 @@ const getStylesheet = (fondue, options = {}) => {
 		);
 		if (varcss !== "") {
 			sections.push(varcss);
+		}
+	}
+
+	if (opts.include.palettes) {
+		const paletteCss = getPalettesCSS(fondue, namespace);
+		if (paletteCss !== "") {
+			sections.push(paletteCss);
 		}
 	}
 
