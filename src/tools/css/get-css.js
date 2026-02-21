@@ -289,6 +289,16 @@ const getPalettesCSS = (fondue, namespace) => {
 		lines.push(`@font-palette-values --${paletteName} {`);
 		lines.push(`    font-family: "${fontName}";`);
 		lines.push(`    base-palette: ${i};`);
+
+		if (i === 1) {
+			lines.push(`    /**`);
+			lines.push(`     * Use this to override colors of a palette:`);
+			lines.push(`     * override-colors:`);
+			lines.push(`     *     0         /* Index of the color */`);
+			lines.push(`     *     #ff0000;  /* New color value */`);
+			lines.push(`     */`);
+		}
+
 		lines.push(`}`);
 		if (i < palettes.length - 1) {
 			lines.push(``);
