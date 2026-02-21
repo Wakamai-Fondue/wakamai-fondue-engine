@@ -283,11 +283,25 @@ const getPalettesCSS = (fondue, namespace) => {
 	lines.push(` */`);
 	lines.push(``);
 
+	// First all @font-palette-values definitions...
 	for (let i = 1; i < palettes.length; i++) {
 		const paletteName = getCustomPropertyName(namespace, `palette-${i}`);
 		lines.push(`@font-palette-values --${paletteName} {`);
 		lines.push(`    font-family: "${fontName}";`);
 		lines.push(`    base-palette: ${i};`);
+		lines.push(`}`);
+		if (i < palettes.length - 1) {
+			lines.push(``);
+		}
+	}
+
+	lines.push(``);
+
+	// ...then all classes to apply them
+	for (let i = 1; i < palettes.length; i++) {
+		const paletteName = getCustomPropertyName(namespace, `palette-${i}`);
+		lines.push(`.${paletteName} {`);
+		lines.push(`    font-palette: --${paletteName};`);
 		lines.push(`}`);
 		if (i < palettes.length - 1) {
 			lines.push(``);
