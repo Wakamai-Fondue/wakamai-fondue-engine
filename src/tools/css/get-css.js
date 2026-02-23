@@ -268,6 +268,14 @@ ${cssProperties.join("\n")}
 	return result;
 };
 
+// Get palette name, using the font's name if available, otherwise a numbered fallback
+const getPaletteName = (palette, index, namespace) => {
+	if (palette.name) {
+		return getCustomPropertyName(namespace, slugify(palette.name));
+	}
+	return getCustomPropertyName(namespace, `palette-${index}`);
+};
+
 // Get CSS for color palettes
 const getPalettesCSS = (fondue, namespace) => {
 	const palettes = fondue.colorPalettes;
@@ -285,7 +293,7 @@ const getPalettesCSS = (fondue, namespace) => {
 
 	// First all @font-palette-values definitions...
 	for (let i = 1; i < palettes.length; i++) {
-		const paletteName = getCustomPropertyName(namespace, `palette-${i}`);
+		const paletteName = getPaletteName(palettes[i], i, namespace);
 		lines.push(`@font-palette-values --${paletteName} {`);
 		lines.push(`    font-family: "${fontName}";`);
 		lines.push(`    base-palette: ${i};`);
@@ -309,7 +317,7 @@ const getPalettesCSS = (fondue, namespace) => {
 
 	// ...then all classes to apply them
 	for (let i = 1; i < palettes.length; i++) {
-		const paletteName = getCustomPropertyName(namespace, `palette-${i}`);
+		const paletteName = getPaletteName(palettes[i], i, namespace);
 		lines.push(`.${paletteName} {`);
 		lines.push(`    font-palette: --${paletteName};`);
 		lines.push(`}`);
