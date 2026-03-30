@@ -277,16 +277,19 @@ describe("hasColorPaletteTable", () => {
 	test("CPAL entries", async () => {
 		const fondue = await SSEmojiFont();
 		expect(fondue.colorPalettes).toEqual([
-			[
-				"#34343fff",
-				"#fcc200ff",
-				"#e541414d",
-				"#ffffffff",
-				"#9f4f00ff",
-				"#592700ff",
-				"#e54141ff",
-				"#69b2ccff",
-			],
+			{
+				name: null,
+				colors: [
+					"#34343fff",
+					"#fcc200ff",
+					"#e541414d",
+					"#ffffffff",
+					"#9f4f00ff",
+					"#592700ff",
+					"#e54141ff",
+					"#69b2ccff",
+				],
+			},
 		]);
 	});
 

@@ -456,26 +456,47 @@ export default class Fondue {
 		// Create padded hex value for color string
 		const hex = (d) => Number(d).toString(16).padStart(2, "0");
 
+		// Get palette names for CPALv1
+		const paletteNames = [];
+		if (cpal.version === 1 && cpal.offsetPaletteLabelArray) {
+			const labels = cpal.paletteLabelArray?.paletteLabels || [];
+			for (const nameId of labels) {
+				// 0xFFFF == no name
+				if (nameId === 0xffff) {
+					paletteNames.push(null);
+				} else {
+					const name = this.name(nameId);
+					paletteNames.push(
+						name ? this._removeNullBytes(name) : null
+					);
+				}
+			}
+		}
+
 		// CPAL's colorRecords is one large, flat array of colors.
 		// We need to chop these up depending on numPaletteEntries
 		// (the number of colors per palette) so we can return an
 		// array of color-arrays.
-		return cpal.colorRecords.reduce((colors, clr, index) => {
-			const groupIndex = Math.floor(index / cpal.numPaletteEntries);
-
-			if (!colors[groupIndex]) {
-				colors[groupIndex] = [];
+		const palettes = [];
+		for (let i = 0; i < cpal.numPalettes; i++) {
+			const startIndex = cpal.colorRecordIndices[i];
+			const colors = [];
+			for (let j = 0; j < cpal.numPaletteEntries; j++) {
+				const clr = cpal.colorRecords[startIndex + j];
+				colors.push(
+					`#${hex(clr.red)}` +
+						`${hex(clr.green)}` +
+						`${hex(clr.blue)}` +
+						`${hex(clr.alpha)}`
+				);
 			}
+			palettes.push({
+				name: paletteNames[i] || null,
+				colors,
+			});
+		}
 
-			colors[groupIndex].push(
-				`#${hex(clr.red)}` +
-					`${hex(clr.green)}` +
-					`${hex(clr.blue)}` +
-					`${hex(clr.alpha)}`
-			);
-
-			return colors;
-		}, []);
+		return palettes;
 	}
 
 	// Gets all information about the font summary.
