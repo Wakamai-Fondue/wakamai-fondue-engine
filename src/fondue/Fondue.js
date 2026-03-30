@@ -490,9 +490,11 @@ export default class Fondue {
 						`${hex(clr.alpha)}`
 				);
 			}
+			const name = paletteNames[i] || null;
 			palettes.push({
-				name: paletteNames[i] || null,
+				name,
 				colors,
+				cssName: name ? slugify(name) : `palette-${i}`,
 			});
 		}
 

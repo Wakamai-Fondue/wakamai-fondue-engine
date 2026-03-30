@@ -270,20 +270,20 @@ ${cssProperties.join("\n")}
 
 // Get palette name, using the font's name if available, otherwise a numbered fallback
 const getPaletteName = (palette, index, namespace) => {
-	if (palette.name) {
-		return getCustomPropertyName(namespace, slugify(palette.name));
-	}
-	return getCustomPropertyName(namespace, `palette-${index}`);
+	return getCustomPropertyName(
+		namespace,
+		palette.cssName || `palette-${index}`
+	);
 };
 
 // Get CSS for color palettes
-const getPalettesCSS = (fondue, namespace) => {
+const getPalettesCSS = (fondue, namespace, fontFamily) => {
 	const palettes = fondue.colorPalettes;
 	if (!palettes || palettes.length <= 1) {
 		return "";
 	}
 
-	const fontName = getSafeName(fondue.summary["Font name"]);
+	const fontName = fontFamily || getSafeName(fondue.summary["Font name"]);
 	const lines = [];
 
 	lines.push(`/**`);
@@ -522,6 +522,7 @@ const getStylesheet = (fondue, options = {}) => {
 		},
 		skipAxes: options.skipAxes || DEFAULT_SKIP_AXES,
 		useNativeCSS: options.useNativeCSS || DEFAULT_USE_NATIVE_CSS,
+		fontFamily: options.fontFamily || null,
 	};
 
 	const realName = getSafeName(fondue.summary["Font name"]);
@@ -564,7 +565,7 @@ const getStylesheet = (fondue, options = {}) => {
 	}
 
 	if (opts.include.palettes) {
-		const paletteCss = getPalettesCSS(fondue, namespace);
+		const paletteCss = getPalettesCSS(fondue, namespace, opts.fontFamily);
 		if (paletteCss !== "") {
 			sections.push(paletteCss);
 		}
