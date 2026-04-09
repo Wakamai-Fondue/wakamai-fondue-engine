@@ -289,6 +289,7 @@ describe("hasColorPaletteTable", () => {
 					"#e54141ff",
 					"#69b2ccff",
 				],
+				cssName: "palette-0",
 			},
 		]);
 	});
