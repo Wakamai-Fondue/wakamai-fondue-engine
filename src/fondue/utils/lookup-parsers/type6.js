@@ -1,9 +1,24 @@
 import { mergeUniqueCoverage } from "../lookup-utils.js";
 
+function filterGlyphsToChars(glyphs, charFor) {
+	const chars = [];
+	let alreadyAlternateCount = 0;
+	for (const g of glyphs) {
+		const char = charFor(g);
+		if (char !== undefined) {
+			chars.push(char);
+		} else {
+			alreadyAlternateCount++;
+		}
+	}
+	return { chars, alreadyAlternateCount };
+}
+
 function extractFormat1Sequences(subtable, charFor) {
 	let inputChars = [];
 	let backtrackChars = [];
 	let lookaheadChars = [];
+	let alreadyAlternateCount = 0;
 
 	for (
 		let setIndex = 0;
@@ -22,47 +37,56 @@ function extractFormat1Sequences(subtable, charFor) {
 				chainSubRule.inputGlyphCount > 0 &&
 				chainSubRule.inputSequence
 			) {
-				const inputGlyphs = chainSubRule.inputSequence
-					.filter((g) => charFor(g) !== undefined)
-					.map(charFor);
-				inputChars = mergeUniqueCoverage(inputChars, inputGlyphs);
+				const result = filterGlyphsToChars(
+					chainSubRule.inputSequence,
+					charFor
+				);
+				inputChars = mergeUniqueCoverage(inputChars, result.chars);
+				alreadyAlternateCount += result.alreadyAlternateCount;
 			}
 
 			if (
 				chainSubRule.backtrackGlyphCount > 0 &&
 				chainSubRule.backtrackSequence
 			) {
-				const backtrackGlyphs = chainSubRule.backtrackSequence
-					.filter((g) => charFor(g) !== undefined)
-					.map(charFor);
+				const result = filterGlyphsToChars(
+					chainSubRule.backtrackSequence,
+					charFor
+				);
 				backtrackChars = mergeUniqueCoverage(
 					backtrackChars,
-					backtrackGlyphs
+					result.chars
 				);
+				alreadyAlternateCount += result.alreadyAlternateCount;
 			}
 
 			if (
 				chainSubRule.lookaheadGlyphCount > 0 &&
 				chainSubRule.lookaheadSequence
 			) {
-				const lookaheadGlyphs = chainSubRule.lookaheadSequence
-					.filter((g) => charFor(g) !== undefined)
-					.map(charFor);
+				const result = filterGlyphsToChars(
+					chainSubRule.lookaheadSequence,
+					charFor
+				);
 				lookaheadChars = mergeUniqueCoverage(
 					lookaheadChars,
-					lookaheadGlyphs
+					result.chars
 				);
+				alreadyAlternateCount += result.alreadyAlternateCount;
 			}
 		}
 	}
 
-	return { inputChars, backtrackChars, lookaheadChars };
+	return {
+		inputChars,
+		backtrackChars,
+		lookaheadChars,
+		alreadyAlternateCount,
+	};
 }
 
 function extractFormat2Sequences(subtable, charFor) {
-	let inputChars = [];
-	let backtrackChars = [];
-	let lookaheadChars = [];
+	let alreadyAlternateCount = 0;
 
 	const inputClassDef = subtable.getInputClassDef();
 	const backtrackClassDef = subtable.getBacktrackClassDef();
@@ -90,48 +114,71 @@ function extractFormat2Sequences(subtable, charFor) {
 		return glyphs;
 	}
 
-	inputChars = glyphsFromClassDef(inputClassDef)
-		.filter((g) => charFor(g) !== undefined)
-		.map(charFor);
+	const inputResult = filterGlyphsToChars(
+		glyphsFromClassDef(inputClassDef),
+		charFor
+	);
+	const backtrackResult = filterGlyphsToChars(
+		glyphsFromClassDef(backtrackClassDef),
+		charFor
+	);
+	const lookaheadResult = filterGlyphsToChars(
+		glyphsFromClassDef(lookaheadClassDef),
+		charFor
+	);
 
-	backtrackChars = glyphsFromClassDef(backtrackClassDef)
-		.filter((g) => charFor(g) !== undefined)
-		.map(charFor);
+	alreadyAlternateCount +=
+		inputResult.alreadyAlternateCount +
+		backtrackResult.alreadyAlternateCount +
+		lookaheadResult.alreadyAlternateCount;
 
-	lookaheadChars = glyphsFromClassDef(lookaheadClassDef)
-		.filter((g) => charFor(g) !== undefined)
-		.map(charFor);
-
-	return { inputChars, backtrackChars, lookaheadChars };
+	return {
+		inputChars: inputResult.chars,
+		backtrackChars: backtrackResult.chars,
+		lookaheadChars: lookaheadResult.chars,
+		alreadyAlternateCount,
+	};
 }
 
 function extractFormat3Sequences(subtable, charFor, charactersFromGlyphs) {
 	let inputChars = [];
 	let backtrackChars = [];
 	let lookaheadChars = [];
+	let alreadyAlternateCount = 0;
 
 	if (subtable.inputGlyphCount > 0) {
 		subtable.inputCoverageOffsets.forEach((offset) => {
 			const coverage = subtable.getCoverageFromOffset(offset);
-			inputChars = charactersFromGlyphs(coverage, charFor);
+			const result = charactersFromGlyphs(coverage, charFor);
+			inputChars = result.characters;
+			alreadyAlternateCount += result.alreadyAlternateCount;
 		});
 	}
 
 	if (subtable.backtrackGlyphCount > 0) {
 		subtable.backtrackCoverageOffsets.forEach((offset) => {
 			const coverage = subtable.getCoverageFromOffset(offset);
-			backtrackChars = charactersFromGlyphs(coverage, charFor);
+			const result = charactersFromGlyphs(coverage, charFor);
+			backtrackChars = result.characters;
+			alreadyAlternateCount += result.alreadyAlternateCount;
 		});
 	}
 
 	if (subtable.lookaheadGlyphCount > 0) {
 		subtable.lookaheadCoverageOffsets.forEach((offset) => {
 			const coverage = subtable.getCoverageFromOffset(offset);
-			lookaheadChars = charactersFromGlyphs(coverage, charFor);
+			const result = charactersFromGlyphs(coverage, charFor);
+			lookaheadChars = result.characters;
+			alreadyAlternateCount += result.alreadyAlternateCount;
 		});
 	}
 
-	return { inputChars, backtrackChars, lookaheadChars };
+	return {
+		inputChars,
+		backtrackChars,
+		lookaheadChars,
+		alreadyAlternateCount,
+	};
 }
 
 // When a lookup has a lookahead or backtrack with *only* glyphs (so
@@ -234,6 +281,7 @@ export function parseLookupType6(lookup, charFor, charactersFromGlyphs) {
 		backtrack: [],
 		lookahead: [],
 		alternateCount: [],
+		alreadyAlternateCount: 0,
 	};
 
 	// Note that currently if a ChainContextSubst contains multiple coverages,
@@ -252,23 +300,36 @@ export function parseLookupType6(lookup, charFor, charactersFromGlyphs) {
 			let inputChars = [];
 			let backtrackChars = [];
 			let lookaheadChars = [];
+			let alreadyAlternateCount = 0;
 
 			if (format === 1) {
 				// Format 1: nested in chainSubRules
-				({ inputChars, backtrackChars, lookaheadChars } =
-					extractFormat1Sequences(subtable, charFor));
+				({
+					inputChars,
+					backtrackChars,
+					lookaheadChars,
+					alreadyAlternateCount,
+				} = extractFormat1Sequences(subtable, charFor));
 			} else if (format === 2) {
 				// Format 2: class-based rules
-				({ inputChars, backtrackChars, lookaheadChars } =
-					extractFormat2Sequences(subtable, charFor));
+				({
+					inputChars,
+					backtrackChars,
+					lookaheadChars,
+					alreadyAlternateCount,
+				} = extractFormat2Sequences(subtable, charFor));
 			} else if (format === 3) {
 				// Format 3: direct access
-				({ inputChars, backtrackChars, lookaheadChars } =
-					extractFormat3Sequences(
-						subtable,
-						charFor,
-						charactersFromGlyphs
-					));
+				({
+					inputChars,
+					backtrackChars,
+					lookaheadChars,
+					alreadyAlternateCount,
+				} = extractFormat3Sequences(
+					subtable,
+					charFor,
+					charactersFromGlyphs
+				));
 			} else {
 				// Yeah, now what?
 				console.warn("No implementation for type 6, format", format);
@@ -278,6 +339,7 @@ export function parseLookupType6(lookup, charFor, charactersFromGlyphs) {
 
 			if (shouldIncludeSequences(sequences, subtable, format)) {
 				mergeParsedData(parsedData, sequences, i);
+				parsedData.alreadyAlternateCount += alreadyAlternateCount;
 			}
 		} catch (error) {
 			console.warn(

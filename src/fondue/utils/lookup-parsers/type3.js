@@ -7,6 +7,7 @@ export function parseLookupType3(lookup, charFor, charactersFromGlyphs) {
 		backtrack: [],
 		lookahead: [],
 		alternateCount: [],
+		alreadyAlternateCount: 0,
 	};
 
 	lookup.subtableOffsets.forEach((_, i) => {
@@ -17,8 +18,16 @@ export function parseLookupType3(lookup, charFor, charactersFromGlyphs) {
 		// inside the same lookup (e.g. 10 alternates for "A", 5 for
 		// "B"), so we keep track of the alternateCount per glyph.
 		subtable.alternateSetOffsets.forEach((_, j) => {
-			const results = charactersFromGlyphs(coverage, charFor, j);
-			parsedData.input = mergeUniqueCoverage(parsedData.input, results);
+			const { characters, alreadyAlternateCount } = charactersFromGlyphs(
+				coverage,
+				charFor,
+				j
+			);
+			parsedData.input = mergeUniqueCoverage(
+				parsedData.input,
+				characters
+			);
+			parsedData.alreadyAlternateCount += alreadyAlternateCount;
 
 			const altset = subtable.getAlternateSet(j);
 			parsedData.alternateCount.push(altset.alternateGlyphIDs.length);

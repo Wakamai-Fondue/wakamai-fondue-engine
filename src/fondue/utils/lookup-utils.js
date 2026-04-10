@@ -21,8 +21,10 @@ export function mergeUniqueCoverage(existing, addition) {
 // ignored.
 // If only a specific rangeRecord needs to be processed, e.g.
 // for lookup type 3, you can pass the desired index.
+// Returns { characters: [...], alreadyAlternateCount: N }
 export function charactersFromGlyphs(coverage, charFor, index) {
 	let results = [];
+	let alreadyAlternateCount = 0;
 
 	if (!coverage.glyphArray) {
 		let records;
@@ -37,22 +39,30 @@ export function charactersFromGlyphs(coverage, charFor, index) {
 				const char = charFor(g);
 				if (char !== undefined) {
 					results.push(char);
+				} else {
+					alreadyAlternateCount++;
 				}
 			}
 		}
 	} else {
 		// Individual glyphs
-		results = coverage.glyphArray
-			.filter((g) => charFor(g) !== undefined)
-			.map(charFor);
+		for (const g of coverage.glyphArray) {
+			const char = charFor(g);
+			if (char !== undefined) {
+				results.push(char);
+			} else {
+				alreadyAlternateCount++;
+			}
+		}
 	}
-	return results;
+	return { characters: results, alreadyAlternateCount };
 }
 
 export const createType6Summary = (feature, randomize, uniqueOnly) => {
 	let allInputs = [];
 	let allBacktracks = [];
 	let allLookaheads = [];
+	let alreadyAlternateCount = 0;
 
 	const shuffleArray = (array) => {
 		for (let i = array.length - 1; i > 0; i--) {
@@ -66,6 +76,11 @@ export const createType6Summary = (feature, randomize, uniqueOnly) => {
 	const uniqueCombinationsSet = new Set();
 
 	for (const lookup of feature["lookups"]) {
+		// Aggregate alreadyAlternateCount from all lookups
+		if (lookup.alreadyAlternateCount) {
+			alreadyAlternateCount += lookup.alreadyAlternateCount;
+		}
+
 		if (lookup.type !== 6) continue;
 
 		// Create combinations based on position
@@ -128,6 +143,7 @@ export const createType6Summary = (feature, randomize, uniqueOnly) => {
 			uniqueCombinations: cappedCombinations,
 			totalCombinations: totalCombinations,
 			isCapped: isCapped,
+			alreadyAlternateCount: alreadyAlternateCount,
 		};
 	}
 
@@ -154,5 +170,6 @@ export const createType6Summary = (feature, randomize, uniqueOnly) => {
 		uniqueCombinations: cappedCombinations,
 		totalCombinations: totalCombinations,
 		isCapped: isCapped,
+		alreadyAlternateCount: alreadyAlternateCount,
 	};
 };

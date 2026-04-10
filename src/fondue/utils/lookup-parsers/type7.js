@@ -11,6 +11,7 @@ export function parseLookupType7(
 		backtrack: [],
 		lookahead: [],
 		alternateCount: [],
+		alreadyAlternateCount: 0,
 	};
 
 	const subtable = lookup.getSubTable(0);
