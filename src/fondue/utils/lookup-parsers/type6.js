@@ -59,19 +59,48 @@ function extractFormat1Sequences(subtable, charFor) {
 	return { inputChars, backtrackChars, lookaheadChars };
 }
 
-function extractFormat2Sequences(subtable) {
+function extractFormat2Sequences(subtable, charFor) {
 	let inputChars = [];
 	let backtrackChars = [];
 	let lookaheadChars = [];
 
-	for (
-		let setIndex = 0;
-		setIndex < subtable.chainSubClassSetCount;
-		setIndex++
-	) {
-		const chainSubClassSet = subtable.getChainSubClassSet(setIndex);
-		console.log(`ChainSubClassSet ${setIndex}:`, chainSubClassSet);
+	const inputClassDef = subtable.getInputClassDef();
+	const backtrackClassDef = subtable.getBacktrackClassDef();
+	const lookaheadClassDef = subtable.getLookaheadClassDef();
+
+	function glyphsFromClassDef(classDef) {
+		const glyphs = [];
+		if (classDef.classFormat === 1) {
+			for (let i = 0; i < classDef.glyphCount; i++) {
+				if (classDef.classValueArray[i] > 0) {
+					glyphs.push(classDef.startGlyphID + i);
+				}
+			}
+		} else if (classDef.classFormat === 2) {
+			for (const record of classDef.classRangeRecords) {
+				for (
+					let gid = record.startGlyphID;
+					gid <= record.endGlyphID;
+					gid++
+				) {
+					glyphs.push(gid);
+				}
+			}
+		}
+		return glyphs;
 	}
+
+	inputChars = glyphsFromClassDef(inputClassDef)
+		.filter((g) => charFor(g) !== undefined)
+		.map(charFor);
+
+	backtrackChars = glyphsFromClassDef(backtrackClassDef)
+		.filter((g) => charFor(g) !== undefined)
+		.map(charFor);
+
+	lookaheadChars = glyphsFromClassDef(lookaheadClassDef)
+		.filter((g) => charFor(g) !== undefined)
+		.map(charFor);
 
 	return { inputChars, backtrackChars, lookaheadChars };
 }
@@ -145,7 +174,24 @@ function shouldIncludeSequences(sequences, subtable, format) {
 			}
 		}
 	} else if (format === 2) {
-		console.log(subtable);
+		const backtrackClassDef = subtable.getBacktrackClassDef();
+		const lookaheadClassDef = subtable.getLookaheadClassDef();
+
+		const hasBacktrackClasses =
+			backtrackClassDef.classFormat === 2
+				? backtrackClassDef.classRangeCount > 0
+				: backtrackClassDef.glyphCount > 0;
+		const hasLookaheadClasses =
+			lookaheadClassDef.classFormat === 2
+				? lookaheadClassDef.classRangeCount > 0
+				: lookaheadClassDef.glyphCount > 0;
+
+		if (hasBacktrackClasses && !hasBacktrackData) {
+			shouldIncludeLookup = false;
+		}
+		if (hasLookaheadClasses && !hasLookaheadData) {
+			shouldIncludeLookup = false;
+		}
 	} else if (format === 3) {
 		if (subtable.backtrackGlyphCount > 0 && !hasBacktrackData) {
 			shouldIncludeLookup = false;
@@ -214,7 +260,7 @@ export function parseLookupType6(lookup, charFor, charactersFromGlyphs) {
 			} else if (format === 2) {
 				// Format 2: class-based rules
 				({ inputChars, backtrackChars, lookaheadChars } =
-					extractFormat2Sequences(subtable));
+					extractFormat2Sequences(subtable, charFor));
 			} else if (format === 3) {
 				// Format 3: direct access
 				({ inputChars, backtrackChars, lookaheadChars } =

@@ -59,14 +59,6 @@ import {
 } from "./utils/font-data.js";
 
 export default class Fondue {
-	_removeNullBytes(value) {
-		// Currently lib-font returns null bytes in name table
-		// strings, we filter them here.
-		// https://github.com/Pomax/lib-font/issues/74
-		/* eslint-disable no-control-regex */
-		return value.replace(/\x00/g, "");
-	}
-
 	_toUnicodeValue(value) {
 		// Return neatly formatted Unicode value for a character
 		return value.toString(16).padStart(4, "0").toUpperCase();
@@ -289,9 +281,7 @@ export default class Fondue {
 								NAME_RECORD[record.platformID].language[
 									record.languageID
 								];
-							const value = this._removeNullBytes(
-								this.name(nameId)
-							);
+							const value = this.name(nameId);
 							return {
 								id: nameId,
 								platformId,
@@ -375,7 +365,7 @@ export default class Fondue {
 				if (params && params.UINameID) {
 					const uiName = this.name(params.UINameID);
 					if (uiName) {
-						return this._removeNullBytes(uiName);
+						return uiName;
 					}
 				}
 			}
@@ -466,9 +456,7 @@ export default class Fondue {
 					paletteNames.push(null);
 				} else {
 					const name = this.name(nameId);
-					paletteNames.push(
-						name ? this._removeNullBytes(name) : null
-					);
+					paletteNames.push(name || null);
 				}
 			}
 		}
@@ -646,7 +634,7 @@ export default class Fondue {
 
 	get customText() {
 		const text = this._font.opentype.tables.name.get(19);
-		return text ? this._removeNullBytes(text) : null;
+		return text || null;
 	}
 
 	// Language support (from old Wakamai Fondue)
