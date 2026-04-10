@@ -119,8 +119,8 @@ export const createType6Summary = (feature, randomize, uniqueOnly) => {
 
 	const uniqueCombinations = Array.from(uniqueCombinationsSet).sort();
 	const totalCombinations = uniqueCombinations.length;
-	const isCapped = totalCombinations > 1000;
-	const cappedCombinations = uniqueCombinations.slice(0, 1000);
+	const isCapped = totalCombinations > 250;
+	const cappedCombinations = uniqueCombinations.slice(0, 250);
 
 	// Return a small, de-duplicated list of features
 	if (uniqueOnly) {

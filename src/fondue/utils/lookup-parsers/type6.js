@@ -139,7 +139,7 @@ function extractFormat3Sequences(subtable, charFor, charactersFromGlyphs) {
 // result in a lookup that *looks* okay, but isn't.
 // Example: backtrack [a, b, c], input [n], lookahead[x.alt, y.alt, z.alt]
 // Since the lookhead contains no chars, it will be reduced to [], and the
-// lookup with look like this: backtrack [a, b, c], input [n]. This is
+// lookup will look like this: backtrack [a, b, c], input [n]. This is
 // wrong, as that only the backtrack+input will not result in any changed
 // chars
 function shouldIncludeSequences(sequences, subtable, format) {
