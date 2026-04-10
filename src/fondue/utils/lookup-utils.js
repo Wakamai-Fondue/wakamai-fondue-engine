@@ -141,6 +141,7 @@ export const createType6Summary = (feature, randomize, uniqueOnly) => {
 	if (uniqueOnly) {
 		return {
 			uniqueCombinations: cappedCombinations,
+			allCombinations: uniqueCombinations,
 			totalCombinations: totalCombinations,
 			isCapped: isCapped,
 			alreadyAlternateCount: alreadyAlternateCount,
