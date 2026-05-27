@@ -102,17 +102,39 @@ export const createType6Summary = (feature, randomize, uniqueOnly) => {
 				];
 			}
 
-			// Create backtrack + input combinations
-			for (const backtrackChar of backtrackChars) {
-				for (const inputChar of inputChars) {
-					uniqueCombinationsSet.add(backtrackChar + inputChar);
-				}
-			}
+			// Create combinations based on what context is required
+			const hasBacktrack = backtrackChars.length > 0;
+			const hasLookahead = lookaheadChars.length > 0;
 
-			// Create input + lookahead combinations
-			for (const inputChar of inputChars) {
-				for (const lookaheadChar of lookaheadChars) {
-					uniqueCombinationsSet.add(inputChar + lookaheadChar);
+			if (hasBacktrack && hasLookahead) {
+				// Full context: backtrack + input + lookahead triplets
+				for (const backtrackChar of backtrackChars) {
+					for (const inputChar of inputChars) {
+						for (const lookaheadChar of lookaheadChars) {
+							uniqueCombinationsSet.add(
+								backtrackChar + inputChar + lookaheadChar
+							);
+						}
+					}
+				}
+			} else if (hasBacktrack) {
+				// Backtrack + input pairs
+				for (const backtrackChar of backtrackChars) {
+					for (const inputChar of inputChars) {
+						uniqueCombinationsSet.add(backtrackChar + inputChar);
+					}
+				}
+			} else if (hasLookahead) {
+				// Input + lookahead pairs
+				for (const inputChar of inputChars) {
+					for (const lookaheadChar of lookaheadChars) {
+						uniqueCombinationsSet.add(inputChar + lookaheadChar);
+					}
+				}
+			} else {
+				// Input only
+				for (const inputChar of inputChars) {
+					uniqueCombinationsSet.add(inputChar);
 				}
 			}
 		}
