@@ -7,6 +7,7 @@ export function parseLookupType4(lookup, charFor) {
 		backtrack: [],
 		lookahead: [],
 		alternateCount: [],
+		alreadyAlternateCount: 0,
 	};
 
 	lookup.subtableOffsets.forEach((_, i) => {
@@ -29,6 +30,8 @@ export function parseLookupType4(lookup, charFor) {
 					// Only keep sequences with glyphs mapped to letters
 					if (!sequence.includes(undefined)) {
 						results.push(sequence.join(""));
+					} else {
+						parsedData.alreadyAlternateCount++;
 					}
 				});
 			});

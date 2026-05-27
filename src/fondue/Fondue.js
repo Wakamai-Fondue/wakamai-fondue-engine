@@ -497,6 +497,9 @@ export default class Fondue {
 		summary.Filename = getFilename(this);
 		summary.Filesize = getFileSize(this);
 		summary.Format = getFormat(this);
+		summary.familyName = this.familyName;
+		summary.subfamilyName = this.subfamilyName;
+		summary.fullName = this.fullName;
 		this.get("name").forEach((record) => {
 			if (record.value && record.predefined) {
 				summary[record.predefined.name] = record.value;
@@ -560,6 +563,23 @@ export default class Fondue {
 		} else {
 			return "";
 		}
+	}
+
+	// Returns the preferred family name following OpenType spec:
+	// ID 16 (Typographic Family) if present, otherwise ID 1 (Font Family)
+	get familyName() {
+		return this.name(16) || this.name(1);
+	}
+
+	// Returns the preferred subfamily name following OpenType spec:
+	// ID 17 (Typographic Subfamily) if present, otherwise ID 2 (Font Subfamily)
+	get subfamilyName() {
+		return this.name(17) || this.name(2);
+	}
+
+	// Returns the full font name (ID 4)
+	get fullName() {
+		return this.name(4);
 	}
 
 	// Returns an array of all supported Unicode characters
