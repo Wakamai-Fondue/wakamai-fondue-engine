@@ -1,3 +1,6 @@
+export const COMBINATIONS_MAX_CAPACITY = 10000;
+export const COMBINATIONS_MAX_DISPLAY = 250;
+
 export function createGlyphToCharMapper(cmap) {
 	const charForCache = new Map();
 
@@ -74,8 +77,10 @@ export const createType6Summary = (feature, randomize, uniqueOnly) => {
 
 	// Create unique combinations of backtrack+input and input+lookahead
 	const uniqueCombinationsSet = new Set();
+	const atCapacity = () =>
+		uniqueCombinationsSet.size >= COMBINATIONS_MAX_CAPACITY;
 
-	for (const lookup of feature["lookups"]) {
+	lookups: for (const lookup of feature["lookups"]) {
 		// Aggregate alreadyAlternateCount from all lookups
 		if (lookup.alreadyAlternateCount) {
 			alreadyAlternateCount += lookup.alreadyAlternateCount;
@@ -114,6 +119,7 @@ export const createType6Summary = (feature, randomize, uniqueOnly) => {
 							uniqueCombinationsSet.add(
 								backtrackChar + inputChar + lookaheadChar
 							);
+							if (atCapacity()) break lookups;
 						}
 					}
 				}
@@ -122,6 +128,7 @@ export const createType6Summary = (feature, randomize, uniqueOnly) => {
 				for (const backtrackChar of backtrackChars) {
 					for (const inputChar of inputChars) {
 						uniqueCombinationsSet.add(backtrackChar + inputChar);
+						if (atCapacity()) break lookups;
 					}
 				}
 			} else if (hasLookahead) {
@@ -129,12 +136,14 @@ export const createType6Summary = (feature, randomize, uniqueOnly) => {
 				for (const inputChar of inputChars) {
 					for (const lookaheadChar of lookaheadChars) {
 						uniqueCombinationsSet.add(inputChar + lookaheadChar);
+						if (atCapacity()) break lookups;
 					}
 				}
 			} else {
 				// Input only
 				for (const inputChar of inputChars) {
 					uniqueCombinationsSet.add(inputChar);
+					if (atCapacity()) break lookups;
 				}
 			}
 		}
@@ -156,8 +165,12 @@ export const createType6Summary = (feature, randomize, uniqueOnly) => {
 
 	const uniqueCombinations = Array.from(uniqueCombinationsSet).sort();
 	const totalCombinations = uniqueCombinations.length;
-	const isCapped = totalCombinations > 250;
-	const cappedCombinations = uniqueCombinations.slice(0, 250);
+	const isCapped = totalCombinations > COMBINATIONS_MAX_DISPLAY;
+	const exceededMax = totalCombinations >= COMBINATIONS_MAX_CAPACITY;
+	const cappedCombinations = uniqueCombinations.slice(
+		0,
+		COMBINATIONS_MAX_DISPLAY
+	);
 
 	// Return a small, de-duplicated list of features
 	if (uniqueOnly) {
@@ -166,6 +179,7 @@ export const createType6Summary = (feature, randomize, uniqueOnly) => {
 			allCombinations: uniqueCombinations,
 			totalCombinations: totalCombinations,
 			isCapped: isCapped,
+			exceededMax: exceededMax,
 			alreadyAlternateCount: alreadyAlternateCount,
 		};
 	}
@@ -193,6 +207,7 @@ export const createType6Summary = (feature, randomize, uniqueOnly) => {
 		uniqueCombinations: cappedCombinations,
 		totalCombinations: totalCombinations,
 		isCapped: isCapped,
+		exceededMax: exceededMax,
 		alreadyAlternateCount: alreadyAlternateCount,
 	};
 };
