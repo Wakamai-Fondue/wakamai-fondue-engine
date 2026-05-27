@@ -590,6 +590,7 @@ export default class Fondue {
 		}
 		const chars = new Set();
 		const cmap = this.getBestCmap();
+
 		if (cmap) {
 			for (const chunk of cmap) {
 				for (let i = chunk.start; i <= chunk.end; i++) {
@@ -598,13 +599,11 @@ export default class Fondue {
 					// https://github.com/Pomax/lib-font/issues/68
 					if (i == 65535) continue;
 
-					// Double-check if character is actually supported
-					if (this.supports(String.fromCharCode(i))) {
-						chars.add(this._toUnicodeValue(i));
-					}
+					chars.add(this._toUnicodeValue(i));
 				}
 			}
 		}
+
 		this._supportedCharactersCache = Array.from(chars);
 		return this._supportedCharactersCache;
 	}
