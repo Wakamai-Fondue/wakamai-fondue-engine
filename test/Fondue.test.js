@@ -514,6 +514,7 @@ describe("Layout features", () => {
 			// Yes, four empty spaces (artifact of old font editing software)
 			fondue.featureChars["    "]["dflt"]["calt"]["lookups"][0]
 		).toEqual({
+			alreadyAlternateCount: 0,
 			alternateCount: [],
 			backtrack: [
 				["j"],

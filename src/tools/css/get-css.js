@@ -381,7 +381,6 @@ const getFeaturesCSS = (fondue, namespace, opts) => {
 					feature,
 					namespace,
 					featureName,
-					customPropertyName,
 					opts.include.fontFeatureFallback
 				);
 		if (wakamaiFondueCSS) {
