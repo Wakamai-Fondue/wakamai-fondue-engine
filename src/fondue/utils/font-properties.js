@@ -1,3 +1,5 @@
+import { CMAP_PREFERENCES } from "./font-data.js";
+
 export function isVariable(font) {
 	return font.opentype.tables.fvar != undefined;
 }
@@ -78,19 +80,8 @@ export function getColorFormats(font) {
 	return tables.filter((table) => colorTables.includes(table));
 }
 
-// Helper function for getBestCmap - will be moved when character analysis is extracted
 function getBestCmap(font) {
-	const cmapPreferences = [
-		[3, 10],
-		[0, 6],
-		[0, 4],
-		[3, 1],
-		[0, 3],
-		[0, 2],
-		[0, 1],
-		[0, 0],
-	];
-	for (const [platformID, platEncID] of cmapPreferences) {
+	for (const [platformID, platEncID] of CMAP_PREFERENCES) {
 		const cmapSubtable = font.opentype.tables.cmap.getSupportedCharCodes(
 			platformID,
 			platEncID

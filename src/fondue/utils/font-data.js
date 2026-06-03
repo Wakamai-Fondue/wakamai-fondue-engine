@@ -11,6 +11,7 @@ export const CMAP_PREFERENCES = [
 	[0, 2],
 	[0, 1],
 	[0, 0],
+	[3, 0],
 ];
 
 // Characters to ignore when checking language support
