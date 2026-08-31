@@ -433,8 +433,12 @@ export default class Fondue {
 
 		if (!head) return null;
 
+		const upm = head.unitsPerEm;
+		const toPercent = (value) =>
+			value !== undefined ? (value / upm) * 100 : undefined;
+
 		return {
-			unitsPerEm: head.unitsPerEm,
+			unitsPerEm: upm,
 			hhea: {
 				ascender: hhea?.ascender,
 				descender: hhea?.descender,
@@ -448,6 +452,18 @@ export default class Fondue {
 				sCapHeight: os2?.sCapHeight,
 				usWinAscent: os2?.usWinAscent,
 				usWinDescent: os2?.usWinDescent,
+			},
+			percentageOfEm: {
+				hheaAscender: toPercent(hhea?.ascender),
+				hheaDescender: toPercent(hhea?.descender),
+				hheaLineGap: toPercent(hhea?.lineGap),
+				typoAscender: toPercent(os2?.sTypoAscender),
+				typoDescender: toPercent(os2?.sTypoDescender),
+				typoLineGap: toPercent(os2?.sTypoLineGap),
+				xHeight: toPercent(os2?.sxHeight),
+				capHeight: toPercent(os2?.sCapHeight),
+				winAscent: toPercent(os2?.usWinAscent),
+				winDescent: toPercent(os2?.usWinDescent),
 			},
 		};
 	}
