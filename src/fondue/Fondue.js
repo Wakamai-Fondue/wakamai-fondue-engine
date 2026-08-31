@@ -453,14 +453,20 @@ export default class Fondue {
 				usWinAscent: os2?.usWinAscent,
 				usWinDescent: os2?.usWinDescent,
 			},
-			percentageOfEm: {
+			cssMetrics: {
 				ascender: toPercent(os2?.sTypoAscender ?? hhea?.ascender),
 				descender: toPercent(os2?.sTypoDescender ?? hhea?.descender),
 				lineGap: toPercent(os2?.sTypoLineGap ?? hhea?.lineGap),
 				xHeight: toPercent(os2?.sxHeight),
 				capHeight: toPercent(os2?.sCapHeight),
-				winAscent: toPercent(os2?.usWinAscent),
-				winDescent: toPercent(os2?.usWinDescent),
+			},
+			cssOverrides: {
+				ascentOverride: toPercent(os2?.sTypoAscender ?? hhea?.ascender),
+				descentOverride: Math.abs(
+					toPercent(os2?.sTypoDescender ?? hhea?.descender)
+				),
+				lineGapOverride:
+					toPercent(os2?.sTypoLineGap ?? hhea?.lineGap) ?? 0,
 			},
 		};
 	}
