@@ -423,6 +423,35 @@ export default class Fondue {
 		}, []);
 	}
 
+	// Gets font metrics.
+	// Usage:
+	//   fondue.metrics
+	get metrics() {
+		const head = this._font.opentype.tables.head;
+		const hhea = this._font.opentype.tables.hhea;
+		const os2 = this._font.opentype.tables["OS/2"];
+
+		if (!head) return null;
+
+		return {
+			unitsPerEm: head.unitsPerEm,
+			hhea: {
+				ascender: hhea?.ascender,
+				descender: hhea?.descender,
+				lineGap: hhea?.lineGap,
+			},
+			os2: {
+				sTypoAscender: os2?.sTypoAscender,
+				sTypoDescender: os2?.sTypoDescender,
+				sTypoLineGap: os2?.sTypoLineGap,
+				sxHeight: os2?.sxHeight,
+				sCapHeight: os2?.sCapHeight,
+				usWinAscent: os2?.usWinAscent,
+				usWinDescent: os2?.usWinDescent,
+			},
+		};
+	}
+
 	// Gets all information about the font's variable features.
 	// Usage:
 	//   fondue.variable
