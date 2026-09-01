@@ -664,3 +664,19 @@ describe("OS/2 table", () => {
 		);
 	});
 });
+
+describe("metrics", () => {
+	test("returns metrics with percentageOfEm values", async () => {
+		const fondue = await SourceCodeProOTFFont();
+		const metrics = fondue.metrics;
+
+		// Check some font metrics
+		expect(metrics.unitsPerEm).toEqual(1000);
+		expect(metrics.hhea.ascender).toEqual(984);
+		expect(metrics.os2.sCapHeight).toEqual(660);
+
+		// Check our CSS stuff
+		expect(metrics.cssMetrics.xHeight).toEqual(48);
+		expect(metrics.cssOverrides.descentOverride).toEqual(25);
+	});
+});
