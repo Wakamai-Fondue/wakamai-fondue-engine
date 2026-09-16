@@ -423,6 +423,54 @@ export default class Fondue {
 		}, []);
 	}
 
+	// Gets font metrics.
+	// Usage:
+	//   fondue.metrics
+	get metrics() {
+		const head = this._font.opentype.tables.head;
+		const hhea = this._font.opentype.tables.hhea;
+		const os2 = this._font.opentype.tables["OS/2"];
+
+		if (!head) return null;
+
+		const upm = head.unitsPerEm;
+		const toPercent = (value) =>
+			value !== undefined ? (value / upm) * 100 : undefined;
+
+		return {
+			unitsPerEm: upm,
+			hhea: {
+				ascender: hhea?.ascender,
+				descender: hhea?.descender,
+				lineGap: hhea?.lineGap,
+			},
+			os2: {
+				sTypoAscender: os2?.sTypoAscender,
+				sTypoDescender: os2?.sTypoDescender,
+				sTypoLineGap: os2?.sTypoLineGap,
+				sxHeight: os2?.sxHeight,
+				sCapHeight: os2?.sCapHeight,
+				usWinAscent: os2?.usWinAscent,
+				usWinDescent: os2?.usWinDescent,
+			},
+			cssMetrics: {
+				ascender: toPercent(os2?.sTypoAscender ?? hhea?.ascender),
+				descender: toPercent(os2?.sTypoDescender ?? hhea?.descender),
+				lineGap: toPercent(os2?.sTypoLineGap ?? hhea?.lineGap),
+				xHeight: toPercent(os2?.sxHeight),
+				capHeight: toPercent(os2?.sCapHeight),
+			},
+			cssOverrides: {
+				ascentOverride: toPercent(os2?.sTypoAscender ?? hhea?.ascender),
+				descentOverride: Math.abs(
+					toPercent(os2?.sTypoDescender ?? hhea?.descender)
+				),
+				lineGapOverride:
+					toPercent(os2?.sTypoLineGap ?? hhea?.lineGap) ?? 0,
+			},
+		};
+	}
+
 	// Gets all information about the font's variable features.
 	// Usage:
 	//   fondue.variable
