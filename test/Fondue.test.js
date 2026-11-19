@@ -586,6 +586,23 @@ describe("Layout features", () => {
 		]);
 	});
 
+	test("returns features that combine with an earlier feature", async () => {
+		const fondue = await OpenSansFont();
+		const digits = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
+
+		expect(
+			fondue.featureChars["DFLT"]["dflt"]["onum"]["combinesWith"]
+		).toEqual({ pnum: digits });
+	});
+
+	test("ignores features that combine with a later feature", async () => {
+		const fondue = await OpenSansFont();
+
+		expect(
+			fondue.featureChars["DFLT"]["dflt"]["pnum"]["combinesWith"]
+		).toEqual({});
+	});
+
 	test("has no GSUB layout features", async () => {
 		const fondue = await WFTestFont();
 
