@@ -909,9 +909,26 @@ export default class Fondue {
 							);
 					});
 
-					allGlyphs[script][lang][feature.featureTag][
-						"combinesWith"
-					] = findCombinesWith(GSUB, feature, producedBy, charFor);
+					const featureGlyphs =
+						allGlyphs[script][lang][feature.featureTag];
+					const { combinesWith, tracedGlyphCount } = findCombinesWith(
+						GSUB,
+						feature,
+						producedBy,
+						charFor
+					);
+
+					featureGlyphs["combinesWith"] = combinesWith;
+
+					if (featureGlyphs["summary"]) {
+						featureGlyphs["summary"]["alreadyAlternateCount"] =
+							Math.max(
+								0,
+								featureGlyphs["summary"][
+									"alreadyAlternateCount"
+								] - tracedGlyphCount
+							);
+					}
 				});
 			});
 		});

@@ -84,10 +84,12 @@ export function createProducedByMap(GSUB, features, charFor) {
 }
 
 // Returns the characters this feature changes when combined
-// with another feature, e.g. { ss01: ["0", "1"] }
+// with another feature, and how many glyphs that are, e.g.
+// { combinesWith: { ss01: ["0", "1"] }, tracedGlyphCount: 2 }
 // The OTHER feature's lookup needs to happen first!
 export function findCombinesWith(GSUB, feature, producedBy, charFor) {
 	const combinesWith = {};
+	const tracedGlyphs = new Set();
 
 	feature.lookupListIndices.forEach((lookupIndex) => {
 		const lookup = GSUB.getLookup(lookupIndex);
@@ -106,6 +108,7 @@ export function findCombinesWith(GSUB, feature, producedBy, charFor) {
 					if (producer.feature === feature.featureTag) return;
 					if (producer.lookupIndex >= lookupIndex) return;
 
+					tracedGlyphs.add(glyph);
 					combinesWith[producer.feature] = mergeUniqueCoverage(
 						combinesWith[producer.feature],
 						[producer.char]
@@ -115,7 +118,7 @@ export function findCombinesWith(GSUB, feature, producedBy, charFor) {
 		});
 	});
 
-	return combinesWith;
+	return { combinesWith, tracedGlyphCount: tracedGlyphs.size };
 }
 
 // Returns glyphs that are mapped directly to characters for
