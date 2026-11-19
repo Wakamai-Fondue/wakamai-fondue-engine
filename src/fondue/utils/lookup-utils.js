@@ -19,6 +19,23 @@ export function mergeUniqueCoverage(existing, addition) {
 	return [...new Set([...(existing || []), ...addition])];
 }
 
+// Returns all glyphs for this coverage in the same order as
+// the coverage. E.g. ranges 10-12 and 20 = [10, 11, 12, 20]
+// Note: not just when mapped to a character!
+export function glyphsFromCoverage(coverage) {
+	if (coverage.glyphArray) {
+		return [...coverage.glyphArray];
+	}
+
+	const glyphs = [];
+	for (const range of coverage.rangeRecords) {
+		for (let g = range.startGlyphID; g < range.endGlyphID + 1; g++) {
+			glyphs.push(g);
+		}
+	}
+	return glyphs;
+}
+
 // Returns glyphs that are mapped directly to characters for
 // this coverage. If a glyph maps to another glyph, it's
 // ignored.
