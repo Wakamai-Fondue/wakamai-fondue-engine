@@ -850,6 +850,10 @@ export default class Fondue {
 			}
 		}
 
+		const offByDefaultTags = this.features
+			.filter((f) => f.state === "off")
+			.map((f) => f.tag);
+
 		const scripts = GSUB.getSupportedScripts();
 		let allGlyphs = {};
 
