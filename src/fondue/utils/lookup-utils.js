@@ -36,6 +36,54 @@ export function glyphsFromCoverage(coverage) {
 	return glyphs;
 }
 
+// Returns which feature turned which character into a glyph,
+// e.g. { 512: [{ feature: "ss01", char: "0", lookupIndex: 12 }] }
+// Only type 1 for now!!
+export function createProducedByMap(GSUB, features, charFor) {
+	const producedBy = {};
+
+	features.forEach((feature) => {
+		if (!feature || !feature.lookupListIndices) return;
+
+		feature.lookupListIndices.forEach((lookupIndex) => {
+			const lookup = GSUB.getLookup(lookupIndex);
+
+			lookup.subtableOffsets.forEach((_, i) => {
+				const subtable = lookup.getSubTable(i);
+				if (subtable.type !== 1) return;
+
+				const inputGlyphs = glyphsFromCoverage(
+					subtable.getCoverageTable()
+				);
+
+				inputGlyphs.forEach((inputGlyph, coverageIndex) => {
+					const char = charFor(inputGlyph);
+					if (char === undefined) return;
+
+					let outputGlyph;
+					if (subtable.format === 1) {
+						outputGlyph =
+							(inputGlyph + subtable.deltaGlyphID) % 65536;
+					} else {
+						outputGlyph =
+							subtable.substituteGlyphIDs[coverageIndex];
+					}
+
+					producedBy[outputGlyph] = producedBy[outputGlyph] || [];
+					producedBy[outputGlyph].push({
+						feature: feature.featureTag,
+						char: char,
+						lookupIndex: lookupIndex,
+					});
+				});
+			});
+		});
+	});
+
+	console.log(producedBy);
+	return producedBy;
+}
+
 // Returns glyphs that are mapped directly to characters for
 // this coverage. If a glyph maps to another glyph, it's
 // ignored.
