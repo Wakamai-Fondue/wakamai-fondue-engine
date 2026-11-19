@@ -31,6 +31,8 @@ import {
 	createGlyphToCharMapper,
 	charactersFromGlyphs,
 	createType6Summary,
+	createProducedByMap,
+	findCombinesWith,
 } from "./utils/lookup-utils.js";
 import {
 	parseLookupType1,
@@ -866,6 +868,14 @@ export default class Fondue {
 				let langSysTable = GSUB.getLangSysTable(script, lang);
 				let features = GSUB.getFeatures(langSysTable);
 
+				const producedBy = createProducedByMap(
+					GSUB,
+					features.filter((f) =>
+						offByDefaultTags.includes(f?.featureTag)
+					),
+					charFor
+				);
+
 				allGlyphs[script][lang] = {};
 
 				features.forEach((feature) => {
@@ -898,6 +908,10 @@ export default class Fondue {
 								uniqueOnly
 							);
 					});
+
+					allGlyphs[script][lang][feature.featureTag][
+						"combinesWith"
+					] = findCombinesWith(GSUB, feature, producedBy, charFor);
 				});
 			});
 		});

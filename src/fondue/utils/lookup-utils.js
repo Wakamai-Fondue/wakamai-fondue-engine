@@ -80,8 +80,42 @@ export function createProducedByMap(GSUB, features, charFor) {
 		});
 	});
 
-	console.log(producedBy);
 	return producedBy;
+}
+
+// Returns the characters this feature changes when combined
+// with another feature, e.g. { ss01: ["0", "1"] }
+// The OTHER feature's lookup needs to happen first!
+export function findCombinesWith(GSUB, feature, producedBy, charFor) {
+	const combinesWith = {};
+
+	feature.lookupListIndices.forEach((lookupIndex) => {
+		const lookup = GSUB.getLookup(lookupIndex);
+
+		lookup.subtableOffsets.forEach((_, i) => {
+			const subtable = lookup.getSubTable(i);
+			if (subtable.type !== 1) return;
+
+			const glyphs = glyphsFromCoverage(subtable.getCoverageTable());
+
+			glyphs.forEach((glyph) => {
+				if (charFor(glyph) !== undefined) return;
+
+				const producers = producedBy[glyph] || [];
+				producers.forEach((producer) => {
+					if (producer.feature === feature.featureTag) return;
+					if (producer.lookupIndex >= lookupIndex) return;
+
+					combinesWith[producer.feature] = mergeUniqueCoverage(
+						combinesWith[producer.feature],
+						[producer.char]
+					);
+				});
+			});
+		});
+	});
+
+	return combinesWith;
 }
 
 // Returns glyphs that are mapped directly to characters for
