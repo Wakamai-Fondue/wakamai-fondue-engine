@@ -2,6 +2,7 @@ import { describe, test, expect, it } from "vitest";
 import { fromPath } from "../node.js";
 import { fromDataBuffer } from "../browser.js";
 import { toArrayBuffer } from "./support/utils";
+import { glyphsFromCoverage } from "../src/fondue/utils/lookup-utils.js";
 import fs from "node:fs";
 
 const readFile = fs.promises.readFile;
@@ -585,6 +586,23 @@ describe("Layout features", () => {
 		]);
 	});
 
+	test("returns features that combine with an earlier feature", async () => {
+		const fondue = await OpenSansFont();
+		const digits = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
+
+		expect(
+			fondue.featureChars["DFLT"]["dflt"]["onum"]["combinesWith"]
+		).toEqual({ pnum: digits });
+	});
+
+	test("ignores features that combine with a later feature", async () => {
+		const fondue = await OpenSansFont();
+
+		expect(
+			fondue.featureChars["DFLT"]["dflt"]["pnum"]["combinesWith"]
+		).toEqual({});
+	});
+
 	test("has no GSUB layout features", async () => {
 		const fondue = await WFTestFont();
 
@@ -662,5 +680,22 @@ describe("OS/2 table", () => {
 				}),
 			])
 		);
+	});
+});
+
+describe("glyphsFromCoverage", () => {
+	test("returns glyphs from a glyph array", () => {
+		const coverage = { glyphArray: [5, 3, 9] };
+		expect(glyphsFromCoverage(coverage)).toEqual([5, 3, 9]);
+	});
+
+	test("returns glyphs from range records", () => {
+		const coverage = {
+			rangeRecords: [
+				{ startGlyphID: 10, endGlyphID: 12 },
+				{ startGlyphID: 20, endGlyphID: 20 },
+			],
+		};
+		expect(glyphsFromCoverage(coverage)).toEqual([10, 11, 12, 20]);
 	});
 });
