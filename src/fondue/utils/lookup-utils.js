@@ -19,6 +19,108 @@ export function mergeUniqueCoverage(existing, addition) {
 	return [...new Set([...(existing || []), ...addition])];
 }
 
+// Returns all glyphs for this coverage in the same order as
+// the coverage. E.g. ranges 10-12 and 20 = [10, 11, 12, 20]
+// Note: not just when mapped to a character!
+export function glyphsFromCoverage(coverage) {
+	if (coverage.glyphArray) {
+		return [...coverage.glyphArray];
+	}
+
+	const glyphs = [];
+	for (const range of coverage.rangeRecords) {
+		for (let g = range.startGlyphID; g < range.endGlyphID + 1; g++) {
+			glyphs.push(g);
+		}
+	}
+	return glyphs;
+}
+
+// Returns which feature turned which character into a glyph,
+// e.g. { 512: [{ feature: "ss01", char: "0", lookupIndex: 12 }] }
+// Only type 1 for now!!
+export function createProducedByMap(GSUB, features, charFor) {
+	const producedBy = {};
+
+	features.forEach((feature) => {
+		if (!feature || !feature.lookupListIndices) return;
+
+		feature.lookupListIndices.forEach((lookupIndex) => {
+			const lookup = GSUB.getLookup(lookupIndex);
+
+			lookup.subtableOffsets.forEach((_, i) => {
+				const subtable = lookup.getSubTable(i);
+				if (subtable.type !== 1) return;
+
+				const inputGlyphs = glyphsFromCoverage(
+					subtable.getCoverageTable()
+				);
+
+				inputGlyphs.forEach((inputGlyph, coverageIndex) => {
+					const char = charFor(inputGlyph);
+					if (char === undefined) return;
+
+					let outputGlyph;
+					if (subtable.format === 1) {
+						outputGlyph =
+							(inputGlyph + subtable.deltaGlyphID) % 65536;
+					} else {
+						outputGlyph =
+							subtable.substituteGlyphIDs[coverageIndex];
+					}
+
+					producedBy[outputGlyph] = producedBy[outputGlyph] || [];
+					producedBy[outputGlyph].push({
+						feature: feature.featureTag,
+						char: char,
+						lookupIndex: lookupIndex,
+					});
+				});
+			});
+		});
+	});
+
+	return producedBy;
+}
+
+// Returns the characters this feature changes when combined
+// with another feature, and how many glyphs that are, e.g.
+// { combinesWith: { ss01: ["0", "1"] }, tracedGlyphCount: 2 }
+// The OTHER feature's lookup needs to happen first!
+export function findCombinesWith(GSUB, feature, producedBy, charFor) {
+	const combinesWith = {};
+	const tracedGlyphs = new Set();
+
+	feature.lookupListIndices.forEach((lookupIndex) => {
+		const lookup = GSUB.getLookup(lookupIndex);
+
+		lookup.subtableOffsets.forEach((_, i) => {
+			const subtable = lookup.getSubTable(i);
+			if (subtable.type !== 1) return;
+
+			const glyphs = glyphsFromCoverage(subtable.getCoverageTable());
+
+			glyphs.forEach((glyph) => {
+				if (charFor(glyph) !== undefined) return;
+
+				const producers = producedBy[glyph] || [];
+				producers.forEach((producer) => {
+					if (producer.feature === feature.featureTag) return;
+					if (producer.lookupIndex >= lookupIndex) return;
+
+					tracedGlyphs.add(glyph);
+					combinesWith[producer.feature] = mergeUniqueCoverage(
+						combinesWith[producer.feature],
+						[producer.char]
+					);
+				});
+			});
+		});
+	});
+
+	return { combinesWith, tracedGlyphCount: tracedGlyphs.size };
+}
+
 // Returns glyphs that are mapped directly to characters for
 // this coverage. If a glyph maps to another glyph, it's
 // ignored.
