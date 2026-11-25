@@ -17,6 +17,7 @@
 import { NAME_TABLE, NAME_RECORD, CMAP_RECORD } from "../tools/variables.js";
 import getStylesheet, {
 	getFeatureCSS,
+	getMaxAlternates,
 	getCSSAsJSON,
 } from "../tools/css/get-css.js";
 import slugify from "../tools/css/slugify.js";
@@ -548,7 +549,11 @@ export default class Fondue {
 
 	// Get CSS for a single feature
 	featureCSS(featureTag, options) {
-		return getFeatureCSS(featureTag, options);
+		const featureChars = this.featureChars?.["DFLT"]?.["dflt"] || {};
+		return getFeatureCSS(featureTag, {
+			maxAlternates: getMaxAlternates(featureChars[featureTag]),
+			...options,
+		});
 	}
 
 	// Returns whether a specific character is supported by this font.

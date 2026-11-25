@@ -73,7 +73,12 @@ const getMaxAlternates = (featureChars) => {
 
 // Get CSS for a single feature
 const getFeatureCSS = (featureTag, options = {}) => {
-	const { value = 1, format = "auto", comments = false } = options;
+	const {
+		value = 1,
+		format = "auto",
+		comments = false,
+		maxAlternates = 0,
+	} = options;
 
 	const featureIndex = getFeatureIndex(featureTag);
 	const featureData = featureMapping.find((f) => f.tag === featureIndex);
@@ -96,8 +101,13 @@ const getFeatureCSS = (featureTag, options = {}) => {
 		(format === "auto" && !css.variant) ||
 		format === "both"
 	) {
-		const state = value === 0 ? "off" : value === 1 ? "on" : value;
-		const ffsValue = `font-feature-settings: "${featureTag}" ${state};`;
+		let state = value === 0 ? "off" : value === 1 ? "on" : value;
+		let alternatesComment = "";
+		if (maxAlternates > 1) {
+			state = value;
+			alternatesComment = ` /* Use value 1 to ${maxAlternates} for all alternates */`;
+		}
+		const ffsValue = `font-feature-settings: "${featureTag}" ${state};${alternatesComment}`;
 
 		if (format === "both" && css.variant && result) {
 			const comment = `/* for older browsers, optionally add: */\n`;
@@ -567,4 +577,4 @@ const getCSSAsJSON = (font) => {
 };
 
 export default getStylesheet;
-export { getFeatureCSS, getCSSAsJSON };
+export { getFeatureCSS, getMaxAlternates, getCSSAsJSON };
