@@ -549,9 +549,10 @@ export default class Fondue {
 
 	// Get CSS for a single feature
 	featureCSS(featureTag, options) {
-		const featureChars = this.featureChars?.["DFLT"]?.["dflt"] || {};
 		return getFeatureCSS(featureTag, {
-			maxAlternates: getMaxAlternates(featureChars[featureTag]),
+			maxAlternates: getMaxAlternates(
+				this.defaultFeatureChars[featureTag]
+			),
 			...options,
 		});
 	}
@@ -944,5 +945,21 @@ export default class Fondue {
 		// Cache the result before returning
 		this._featureCharsCache = allGlyphs;
 		return allGlyphs;
+	}
+
+	// Return characters per feature for the "best" script and language
+	get defaultFeatureChars() {
+		const featureChars = this.featureChars;
+		if (featureChars["DFLT"]?.["dflt"]) {
+			return featureChars["DFLT"]["dflt"];
+		} else if (featureChars["latn"]?.["dflt"]) {
+			return featureChars["latn"]["dflt"];
+		} else if (Object.keys(featureChars).length > 0) {
+			// If all else fails, return first
+			const first = Object.keys(featureChars)[0];
+			return Object.values(featureChars[first])[0];
+		} else {
+			return {};
+		}
 	}
 }

@@ -356,7 +356,7 @@ const getFeaturesCSS = (fondue, namespace, opts) => {
 	const cssVarDecs = [];
 
 	// Cache featureChars to avoid expensive lookups in the loop
-	const allFeatureChars = fondue.featureChars?.["DFLT"]?.["dflt"] || {};
+	const allFeatureChars = fondue.defaultFeatureChars;
 
 	for (const feature of featuresToInclude) {
 		const fontFeature = fondue.features.find((f) => f.tag === feature);
