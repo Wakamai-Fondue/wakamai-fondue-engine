@@ -229,6 +229,13 @@ describe("CSS generation options", () => {
 			'font-feature-settings: "roel" on;'
 		);
 	});
+
+	test("feature CSS for feature with alternates", async () => {
+		const fondue = await AthenaRubyFont();
+		expect(fondue.featureCSS("cv01", { format: "both" })).toBe(
+			'font-feature-settings: "cv01" 1; /* Use value 1 to 27 for all alternates */'
+		);
+	});
 });
 
 describe("outline format", () => {
