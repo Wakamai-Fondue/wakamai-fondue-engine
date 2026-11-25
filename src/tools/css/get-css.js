@@ -61,11 +61,14 @@ const getSafeName = (name) => {
 };
 
 // Get max alternate count for type 3 lookups
-const getMaxAlternates = (lookup) => {
-	if (!lookup.alternateCount || lookup.alternateCount.length === 0) {
+const getMaxAlternates = (featureChars) => {
+	const type3Lookup = featureChars?.lookups?.find(
+		(lookup) => lookup.type === 3
+	);
+	if (!type3Lookup?.alternateCount?.length) {
 		return 0;
 	}
-	return Math.max(...lookup.alternateCount);
+	return Math.max(...type3Lookup.alternateCount);
 };
 
 // Get CSS for a single feature
@@ -400,18 +403,12 @@ const getFeaturesCSS = (fondue, namespace, opts) => {
 			} else {
 				// Check for type 3 lookups (alternate substitution)
 				featureValue = "on";
-				const featureChars = allFeatureChars[feature];
-				if (featureChars?.lookups) {
-					const type3Lookup = featureChars.lookups.find(
-						(lookup) => lookup.type === 3
-					);
-					if (type3Lookup) {
-						const maxAlternates = getMaxAlternates(type3Lookup);
-						if (maxAlternates > 1) {
-							featureValue = "1";
-							featureComment = ` /* Use value 1 to ${maxAlternates} for all alternates */`;
-						}
-					}
+				const maxAlternates = getMaxAlternates(
+					allFeatureChars[feature]
+				);
+				if (maxAlternates > 1) {
+					featureValue = "1";
+					featureComment = ` /* Use value 1 to ${maxAlternates} for all alternates */`;
 				}
 			}
 
