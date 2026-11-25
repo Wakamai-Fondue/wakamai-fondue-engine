@@ -78,11 +78,7 @@ const getFeatureCSS = (featureTag, options = {}) => {
 	const featureIndex = getFeatureIndex(featureTag);
 	const featureData = featureMapping.find((f) => f.tag === featureIndex);
 
-	if (!featureData) {
-		console.error(`Unknown feature: ${featureTag}`);
-	}
-
-	const { css } = featureData;
+	const css = featureData?.css || {};
 
 	let result = "";
 
@@ -114,7 +110,7 @@ const getFeatureCSS = (featureTag, options = {}) => {
 	}
 
 	// Comments
-	if (comments && featureData.comment) {
+	if (comments && featureData?.comment) {
 		result = `/* ${featureData.comment} */\n${result}`;
 	}
 

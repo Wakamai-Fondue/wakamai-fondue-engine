@@ -222,6 +222,13 @@ describe("CSS generation options", () => {
 		const fondue = await OpenSansFont();
 		expect(fondue.cssString).toContain("font-stretch: 100%;");
 	});
+
+	test("feature CSS for unknown feature", async () => {
+		const fondue = await OpenSansFont();
+		expect(fondue.featureCSS("roel", { format: "both" })).toBe(
+			'font-feature-settings: "roel" on;'
+		);
+	});
 });
 
 describe("outline format", () => {
