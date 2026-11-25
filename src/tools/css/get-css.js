@@ -349,18 +349,14 @@ const getFeaturesCSS = (fondue, namespace, opts) => {
 	const allFeatureChars = fondue.featureChars?.["DFLT"]?.["dflt"] || {};
 
 	for (const feature of featuresToInclude) {
-		const featureIndex = getFeatureIndex(feature);
-		const featureData = {
-			...featureMapping.find((f) => f.tag == featureIndex),
-		};
-		const defaultState = featureData.state;
+		const fontFeature = fondue.features.find((f) => f.tag === feature);
+		const defaultState = fontFeature?.state;
 		const isOnByDefault = defaultState !== "off";
 
 		if (isOnByDefault && !opts.include.includeDefaultOnFeatures) {
 			continue;
 		}
 
-		const fontFeature = fondue.features.find((f) => f.tag === feature);
 		let featureName = fontFeature
 			? slugify(fontFeature.uiName || fontFeature.name)
 			: feature;

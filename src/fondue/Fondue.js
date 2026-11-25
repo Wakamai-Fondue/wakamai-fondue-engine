@@ -383,7 +383,10 @@ export default class Fondue {
 		const result = [...rawFeatures].reduce((features, rawFeature) => {
 			const featureIndex = getFeatureIndex(rawFeature);
 			const feature = {
-				...featureMapping.find((f) => f.tag == featureIndex),
+				...(featureMapping.find((f) => f.tag == featureIndex) || {
+					name: rawFeature,
+					state: "off",
+				}),
 			};
 			if (feature) {
 				// Restore original tag in case of enumerated tag (ss## or cv##)
