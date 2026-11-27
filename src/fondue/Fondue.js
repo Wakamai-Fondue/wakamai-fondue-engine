@@ -17,6 +17,7 @@
 import { NAME_TABLE, NAME_RECORD, CMAP_RECORD } from "../tools/variables.js";
 import getStylesheet, {
 	getFeatureCSS,
+	getCombinedFeatureCSS,
 	getMaxAlternates,
 	getCSSAsJSON,
 } from "../tools/css/get-css.js";
@@ -555,6 +556,11 @@ export default class Fondue {
 			),
 			...options,
 		});
+	}
+
+	// Get CSS for features that work together
+	combinedFeatureCSS(featureTags) {
+		return getCombinedFeatureCSS(featureTags);
 	}
 
 	// Returns whether a specific character is supported by this font.

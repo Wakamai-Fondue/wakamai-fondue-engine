@@ -127,6 +127,27 @@ const getFeatureCSS = (featureTag, options = {}) => {
 	return result;
 };
 
+// Get CSS for features that work together
+const getCombinedFeatureCSS = (featureTags) => {
+	const lines = [];
+	const featureSettings = [];
+
+	featureTags.forEach((featureTag) => {
+		const variantCSS = getFeatureCSS(featureTag, { format: "variant" });
+		if (variantCSS) {
+			lines.push(variantCSS);
+		} else {
+			featureSettings.push(`"${featureTag}" on`);
+		}
+	});
+
+	if (featureSettings.length) {
+		lines.push(`font-feature-settings: ${featureSettings.join(", ")};`);
+	}
+
+	return lines.join("\n");
+};
+
 // Return CSS with custom CSS properties
 const getWakamaiFondueCSS = (
 	feature,
@@ -577,4 +598,4 @@ const getCSSAsJSON = (font) => {
 };
 
 export default getStylesheet;
-export { getFeatureCSS, getMaxAlternates, getCSSAsJSON };
+export { getFeatureCSS, getCombinedFeatureCSS, getMaxAlternates, getCSSAsJSON };
