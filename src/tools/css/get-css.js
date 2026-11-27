@@ -61,25 +61,29 @@ const getSafeName = (name) => {
 };
 
 // Get max alternate count for type 3 lookups
-const getMaxAlternates = (lookup) => {
-	if (!lookup.alternateCount || lookup.alternateCount.length === 0) {
+const getMaxAlternates = (featureChars) => {
+	const type3Lookup = featureChars?.lookups?.find(
+		(lookup) => lookup.type === 3
+	);
+	if (!type3Lookup?.alternateCount?.length) {
 		return 0;
 	}
-	return Math.max(...lookup.alternateCount);
+	return Math.max(...type3Lookup.alternateCount);
 };
 
 // Get CSS for a single feature
 const getFeatureCSS = (featureTag, options = {}) => {
-	const { value = 1, format = "auto", comments = false } = options;
+	const {
+		value = 1,
+		format = "auto",
+		comments = false,
+		maxAlternates = 0,
+	} = options;
 
 	const featureIndex = getFeatureIndex(featureTag);
 	const featureData = featureMapping.find((f) => f.tag === featureIndex);
 
-	if (!featureData) {
-		console.error(`Unknown feature: ${featureTag}`);
-	}
-
-	const { css } = featureData;
+	const css = featureData?.css || {};
 
 	let result = "";
 
@@ -97,8 +101,13 @@ const getFeatureCSS = (featureTag, options = {}) => {
 		(format === "auto" && !css.variant) ||
 		format === "both"
 	) {
-		const state = value === 0 ? "off" : value === 1 ? "on" : value;
-		const ffsValue = `font-feature-settings: "${featureTag}" ${state};`;
+		let state = value === 0 ? "off" : value === 1 ? "on" : value;
+		let alternatesComment = "";
+		if (maxAlternates > 1) {
+			state = value;
+			alternatesComment = ` /* Use value 1 to ${maxAlternates} for all alternates */`;
+		}
+		const ffsValue = `font-feature-settings: "${featureTag}" ${state};${alternatesComment}`;
 
 		if (format === "both" && css.variant && result) {
 			const comment = `/* for older browsers, optionally add: */\n`;
@@ -111,11 +120,32 @@ const getFeatureCSS = (featureTag, options = {}) => {
 	}
 
 	// Comments
-	if (comments && featureData.comment) {
+	if (comments && featureData?.comment) {
 		result = `/* ${featureData.comment} */\n${result}`;
 	}
 
 	return result;
+};
+
+// Get CSS for features that work together
+const getCombinedFeatureCSS = (featureTags) => {
+	const lines = [];
+	const featureSettings = [];
+
+	featureTags.forEach((featureTag) => {
+		const variantCSS = getFeatureCSS(featureTag, { format: "variant" });
+		if (variantCSS) {
+			lines.push(variantCSS);
+		} else {
+			featureSettings.push(`"${featureTag}" on`);
+		}
+	});
+
+	if (featureSettings.length) {
+		lines.push(`font-feature-settings: ${featureSettings.join(", ")};`);
+	}
+
+	return lines.join("\n");
 };
 
 // Return CSS with custom CSS properties
@@ -347,21 +377,17 @@ const getFeaturesCSS = (fondue, namespace, opts) => {
 	const cssVarDecs = [];
 
 	// Cache featureChars to avoid expensive lookups in the loop
-	const allFeatureChars = fondue.featureChars?.["DFLT"]?.["dflt"] || {};
+	const allFeatureChars = fondue.defaultFeatureChars;
 
 	for (const feature of featuresToInclude) {
-		const featureIndex = getFeatureIndex(feature);
-		const featureData = {
-			...featureMapping.find((f) => f.tag == featureIndex),
-		};
-		const defaultState = featureData.state;
+		const fontFeature = fondue.features.find((f) => f.tag === feature);
+		const defaultState = fontFeature?.state;
 		const isOnByDefault = defaultState !== "off";
 
 		if (isOnByDefault && !opts.include.includeDefaultOnFeatures) {
 			continue;
 		}
 
-		const fontFeature = fondue.features.find((f) => f.tag === feature);
 		let featureName = fontFeature
 			? slugify(fontFeature.uiName || fontFeature.name)
 			: feature;
@@ -400,18 +426,12 @@ const getFeaturesCSS = (fondue, namespace, opts) => {
 			} else {
 				// Check for type 3 lookups (alternate substitution)
 				featureValue = "on";
-				const featureChars = allFeatureChars[feature];
-				if (featureChars?.lookups) {
-					const type3Lookup = featureChars.lookups.find(
-						(lookup) => lookup.type === 3
-					);
-					if (type3Lookup) {
-						const maxAlternates = getMaxAlternates(type3Lookup);
-						if (maxAlternates > 1) {
-							featureValue = "1";
-							featureComment = ` /* Use value 1 to ${maxAlternates} for all alternates */`;
-						}
-					}
+				const maxAlternates = getMaxAlternates(
+					allFeatureChars[feature]
+				);
+				if (maxAlternates > 1) {
+					featureValue = "1";
+					featureComment = ` /* Use value 1 to ${maxAlternates} for all alternates */`;
 				}
 			}
 
@@ -578,4 +598,4 @@ const getCSSAsJSON = (font) => {
 };
 
 export default getStylesheet;
-export { getFeatureCSS, getCSSAsJSON };
+export { getFeatureCSS, getCombinedFeatureCSS, getMaxAlternates, getCSSAsJSON };

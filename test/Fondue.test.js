@@ -222,6 +222,41 @@ describe("CSS generation options", () => {
 		const fondue = await OpenSansFont();
 		expect(fondue.cssString).toContain("font-stretch: 100%;");
 	});
+
+	test("feature CSS for unknown feature", async () => {
+		const fondue = await OpenSansFont();
+		expect(fondue.featureCSS("roel", { format: "both" })).toBe(
+			'font-feature-settings: "roel" on;'
+		);
+	});
+
+	test("feature CSS for feature with alternates", async () => {
+		const fondue = await AthenaRubyFont();
+		expect(fondue.featureCSS("cv01", { format: "both" })).toBe(
+			'font-feature-settings: "cv01" 1; /* Use value 1 to 27 for all alternates */'
+		);
+	});
+
+	test("combined feature with font-variant", async () => {
+		const fondue = await OpenSansFont();
+		expect(fondue.combinedFeatureCSS(["sups", "zero"])).toBe(
+			"font-variant-position: super;\nfont-variant-numeric: slashed-zero;"
+		);
+	});
+
+	test("combined feature with font-variant and font-feature-settings", async () => {
+		const fondue = await OpenSansFont();
+		expect(fondue.combinedFeatureCSS(["onum", "ss01"])).toBe(
+			'font-variant-numeric: oldstyle-nums;\nfont-feature-settings: "ss01" on;'
+		);
+	});
+
+	test("combined feature with font-feature-settings", async () => {
+		const fondue = await OpenSansFont();
+		expect(fondue.combinedFeatureCSS(["ss01", "ss02"])).toBe(
+			'font-feature-settings: "ss01" on, "ss02" on;'
+		);
+	});
 });
 
 describe("outline format", () => {

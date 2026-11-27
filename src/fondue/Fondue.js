@@ -17,6 +17,8 @@
 import { NAME_TABLE, NAME_RECORD, CMAP_RECORD } from "../tools/variables.js";
 import getStylesheet, {
 	getFeatureCSS,
+	getCombinedFeatureCSS,
+	getMaxAlternates,
 	getCSSAsJSON,
 } from "../tools/css/get-css.js";
 import slugify from "../tools/css/slugify.js";
@@ -383,7 +385,10 @@ export default class Fondue {
 		const result = [...rawFeatures].reduce((features, rawFeature) => {
 			const featureIndex = getFeatureIndex(rawFeature);
 			const feature = {
-				...featureMapping.find((f) => f.tag == featureIndex),
+				...(featureMapping.find((f) => f.tag == featureIndex) || {
+					name: rawFeature,
+					state: "off",
+				}),
 			};
 			if (feature) {
 				// Restore original tag in case of enumerated tag (ss## or cv##)
@@ -545,7 +550,17 @@ export default class Fondue {
 
 	// Get CSS for a single feature
 	featureCSS(featureTag, options) {
-		return getFeatureCSS(featureTag, options);
+		return getFeatureCSS(featureTag, {
+			maxAlternates: getMaxAlternates(
+				this.defaultFeatureChars[featureTag]
+			),
+			...options,
+		});
+	}
+
+	// Get CSS for features that work together
+	combinedFeatureCSS(featureTags) {
+		return getCombinedFeatureCSS(featureTags);
 	}
 
 	// Returns whether a specific character is supported by this font.
@@ -936,5 +951,21 @@ export default class Fondue {
 		// Cache the result before returning
 		this._featureCharsCache = allGlyphs;
 		return allGlyphs;
+	}
+
+	// Return characters per feature for the "best" script and language
+	get defaultFeatureChars() {
+		const featureChars = this.featureChars;
+		if (featureChars["DFLT"]?.["dflt"]) {
+			return featureChars["DFLT"]["dflt"];
+		} else if (featureChars["latn"]?.["dflt"]) {
+			return featureChars["latn"]["dflt"];
+		} else if (Object.keys(featureChars).length > 0) {
+			// If all else fails, return first
+			const first = Object.keys(featureChars)[0];
+			return Object.values(featureChars[first])[0];
+		} else {
+			return {};
+		}
 	}
 }
